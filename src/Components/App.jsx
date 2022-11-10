@@ -7,7 +7,7 @@ let arr = [{title: "merda"}, {title: "gg"}]
 const App = () =>
   <div>
     <Header />
-    <p>React with hot reload</p>\
+    <p>React with hot reload</p>
     {arr.map(tt => <JobOffer title={tt.title} />)}
   </div>;
 

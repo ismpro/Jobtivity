@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 let config = {
   mode: 'development',
@@ -18,7 +19,8 @@ let config = {
         use: {
           loader: "babel-loader",
           options: {
-            presets: ['@babel/preset-env']
+            presets: ['@babel/preset-env'],
+            plugins: [require.resolve('react-refresh/babel')],
           }
         }
       },
@@ -40,7 +42,7 @@ let config = {
       },
     ],
   },
-  plugins: [new webpack.HotModuleReplacementPlugin()],
+  plugins: [new webpack.HotModuleReplacementPlugin(), new ReactRefreshWebpackPlugin()],
   resolve: {
     extensions: ['*', '.js', '.jsx'],
   },
