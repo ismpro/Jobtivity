@@ -1,0 +1,49 @@
+{
+    "codes": [
+        {
+            "code": 200,
+            "message": "Request Accepted",
+            "color": "#00ff00"
+        },
+        {
+            "code": 201,
+            "message": "Request Created",
+            "color": "#00ff00"
+        },
+        {
+            "code": 209,
+            "message": "Link Expired",
+            "color": "#cc0000"
+        },
+        {
+            "code": 304,
+            "message": "Request Not Modified",
+            "color": "#ffff00"
+        },
+        {
+            "code": 401,
+            "message": "Request Unauthorized",
+            "color": "#0000ff"
+        },
+        {
+            "code": 404,
+            "message": "Request Not Found",
+            "color": "#cc0000"
+        },
+        {
+            "code": 417,
+            "message": "Request With Expectation Failed",
+            "color": "#9900cc"
+        },
+        {
+            "code": 501,
+            "message": "Request Not Implemented",
+            "color": "#cc0000"
+        },
+        {
+            "code": 500,
+            "message": "Server Error",
+            "color": "#cc0000"
+        }
+    ]
+}
