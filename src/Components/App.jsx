@@ -1,14 +1,22 @@
 import React from 'react';
 import Header from './Header.jsx';
-import JobOffer from './JobOffer.jsx';
-
-let arr = [{title: "merda"}, {title: "gg"}]
+import { BrowserRouter as Router } from "react-router-dom";
+import {
+  Switch,
+  Route
+} from "react-router";
+import Home from './Home/Home.jsx'
 
 const App = () =>
   <div>
-    <Header />
-    <p>React with hot reload</p>
-    {arr.map(tt => <JobOffer title={tt.title} />)}
+    <Header isLogin />
+    <Router>
+      <Switch>
+        <Route path="/">
+          <Home />
+        </Route>
+      </Switch>
+    </Router>
   </div>;
 
 export default App;
