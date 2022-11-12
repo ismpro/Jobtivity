@@ -16,8 +16,9 @@ console.log(chalk.green('\n  Starting server'));
 
 //Config
 const app = express()
-app.use(helmet())
 dotenv.config()
+
+require('./app/config/db')
 
 //Some varibles
 app.set("port", process.env.PORT || 3001);
@@ -26,7 +27,9 @@ global.appRoot = path.resolve(__dirname);
 global.NODE_MODE = Boolean(process.env.NODE_DEV === 'true');
 console.log(chalk.green(`  Node Mode: ${(global.NODE_MODE ? 'DEV' : 'PRD')}`));
 
+
 //Disabling things for security
+app.use(helmet())
 app.disable('x-powered-by');
 
 //Webpack
@@ -34,7 +37,7 @@ const config = require('./webpack.config.js');
 const compiler = webpack(config);
 
 app.use((req, res, next) => {
-  if (['/jobs', '/about', '/jobs/', '/about/'].some((url => req.url === url))
+  if (['/jobs', '/about', '/jobs/', '/about/', '/home', '/home/'].some((url => req.url === url))
     && !req.url.includes('.png')) {
     req.url = '/' // this would make express-js serve index.html
   }
@@ -63,6 +66,13 @@ app.use(logger());
 //Adding Routes
 //require('./app/routes.js')(app)
 
+/* try {
+  await sequelize.authenticate();
+  console.log('Connection has been established successfully.');
+} catch (error) {
+  console.error('Unable to connect to the database:', error);
+}
+ */
 app.listen(3000,
   () => {
     console.log(chalk.green(`\n  Server Listing on 3000`))
