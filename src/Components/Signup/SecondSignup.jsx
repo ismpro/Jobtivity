@@ -7,7 +7,7 @@ export default function SecondSignup(props) {
     return (
        <div>
             <h1>Get started</h1>
-            <p>Almost there...</p>
+            <p>Almost there..</p>
             <form className="signup_form" noValidate>
                 <input type="text" placeholder='First Name' name='name' required></input>
                 <input type="text" placeholder='Last Name' name='lastname' required></input>

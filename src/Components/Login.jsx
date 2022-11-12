@@ -9,7 +9,7 @@ export default function Login(props) {
         <div className='main'>
             <div className="login_container">
                 <h1>Login</h1>
-                <p>New here? <a href="#">Sign up</a></p>
+                <p>New here?? <a href="#">Sign up</a></p>
                 <form className='login_form'>
                     <input type="text" placeholder='Enter username' name='name' required></input>
                     <input type="password" placeholder='Enter password' name='password' required></input>

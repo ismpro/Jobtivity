@@ -14,20 +14,7 @@ export default function Signup(props) {
         setStep(step + 1);
     }
 
-    const [userData, setUserData] = useState("");
-    const [, setValue] = useContext(SignedContext);
-
-    const updateUserData =  (e)  =>  {
-        setUserData(e.target.value)
-    }
-
-    const handleFormSubmission = (e) => {
-        e.preventDefault()
-        setValue(userData)
-    }
-
-
-    const components = [<FirstSignup onContinue={addStep}/>, <SecondSignup onContinue={addStep}/>, <ThirdSignup onFinish={addStep}/>];
+    const components = [<FirstSignup onContinue={addStep}/>, <SecondSignup onContinue={addStep}/>, <ThirdSignup onContinue={addStep}/>];
    
     return (
         <div className='main'>

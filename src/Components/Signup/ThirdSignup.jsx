@@ -8,9 +8,9 @@ export default function ThirdSignup(props) {
        <div>
             <h1>Get started</h1>
             <p>Last step</p>
-            <form className="signup_form" noValidate  onSubmit={handleFormSubmission()}>
+            <form className="signup_form" noValidate>
                 <textarea rows="10" cols="30" name="description" placeholder="Tell us something about you.."></textarea>
-                <button onClick={() => addStep()}>Continue</button>
+                <button onClick={() => props.onContinue()}>Continue</button>
             </form>
         </div>
     )

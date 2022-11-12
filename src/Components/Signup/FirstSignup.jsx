@@ -7,7 +7,7 @@ export default function FirstSignup(props) {
     return (
        <div>
             <h1>Get started</h1>
-            <p>It only takes a few seconds..</p>
+            <p>It only takes a few seconds...</p>
             <form className="signup_form" noValidate>
                 <input type="email" placeholder='Email' name='email' required></input>
                 <input type="password" placeholder='Password' name='password' required></input>
