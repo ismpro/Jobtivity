@@ -33,6 +33,14 @@ app.disable('x-powered-by');
 const config = require('./webpack.config.js');
 const compiler = webpack(config);
 
+app.use((req, res, next) => {
+  if (['/jobs', '/about', '/jobs/', '/about/'].some((url => req.url === url))
+    && !req.url.includes('.png')) {
+    req.url = '/' // this would make express-js serve index.html
+  }
+  next()
+})
+
 app.use(webpackDevMiddleware(compiler));
 app.use(webpackHotMiddleware(compiler, {
   log: console.log
@@ -46,7 +54,7 @@ app.use(bodyParser.json())
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
-    extended: false
+  extended: false
 }))
 
 //Logger
@@ -56,6 +64,6 @@ app.use(logger());
 //require('./app/routes.js')(app)
 
 app.listen(3000,
-() => {
+  () => {
     console.log(chalk.green(`\n  Server Listing on 3000`))
-})
+  })

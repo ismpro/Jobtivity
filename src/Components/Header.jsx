@@ -1,18 +1,44 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 import "../styles/header.css";
 import logo from '../images/logo.png'
-import about from '../images/Icons/about.png'
+import about from '../images/Icons/iconAbout.png'
 
 let arrayIcons = [
     {
-        name: "About",
-        text: "About  Us",
-        img: about
+        name: "home",
+        text: "Home",
+        img: about,
+        link: '/home',
+        login: true
     },
     {
-        name: "About",
-        text: "gg",
-        img: about
+        name: "people",
+        text: "People",
+        img: about,
+        link: '/people',
+        login: true
+    },
+    {
+        name: "jobs",
+        text: "Jobs",
+        img: about,
+        link: '/jobs',
+        login: true
+    },
+    {
+        name: "about",
+        text: "About  Us",
+        img: about,
+        link: '/about',
+        login: false
+    },
+    {
+        name: "profile",
+        text: "Profile",
+        img: about,
+        link: '/profile',
+        login: true
     }
 ]
 
@@ -21,17 +47,21 @@ export default function Header(props) {
     return (
         <div className='container'>
             <div className='logoContainer'>
-                <img src={logo} alt="Logo" />
+                <Link to="/">
+                    <img src={logo} alt="Logo" />
+                </Link>
             </div>
             <div className='leftContainer'>
                 <div className='icons'>
-                    {arrayIcons.map((icon) =>
-                        <div>
-                            <img src={icon.img} alt={icon.name} />
-                            <p>{icon.text}</p>
+                    {arrayIcons.filter(icons => icons.login === props.isLogin || icons.login === false).map((icon) =>
+                        <div key={icon.name}>
+                            <Link to={icon.link}>
+                                <img src={icon.img} alt={icon.name} />
+                                <p>{icon.text}</p>
+                            </Link>
                         </div>)}
                 </div>
-                {props.isLogin ?
+                {props.isLogin === false ?
                     (<div>
                         <button>Sign Up</button>
                         <button style={{ backgroundColor: "#3366ff", color: "white" }}>Login</button>

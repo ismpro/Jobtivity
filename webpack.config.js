@@ -48,6 +48,7 @@ let config = {
   },
   devServer: {
     contentBase: "public",
+    historyApiFallback: true,
     overlay: true,
     hot: true
   },

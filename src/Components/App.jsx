@@ -1,22 +1,20 @@
 import React from 'react';
 import Header from './Header.jsx';
-import { BrowserRouter as Router } from "react-router-dom";
-import {
-  Switch,
-  Route
-} from "react-router";
+import { BrowserRouter, Routes, Route  } from 'react-router-dom';
 import Home from './Home/Home.jsx'
+import Jobs from './Jobs/Jobs.jsx'
 
 const App = () =>
-  <div>
-    <Header isLogin />
-    <Router>
-      <Switch>
-        <Route path="/">
-          <Home />
-        </Route>
-      </Switch>
-    </Router>
-  </div>;
+  <BrowserRouter>
+    <div>
+      <Header isLogin={false} />
+      <div>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/jobs" element={<Jobs />} />
+        </Routes>
+      </div>
+    </div>
+  </BrowserRouter>;
 
 export default App;
