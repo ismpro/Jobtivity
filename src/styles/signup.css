@@ -1,0 +1,91 @@
+.main{
+    margin: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.title{
+    text-align: center;
+    color: blue;
+}
+.signup_container{
+    width: 20%;
+    height: auto;
+    outline: 1px solid white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.signup_form{
+    text-align: center;
+    align-items: center;
+    padding: 10% 10% 10% 10%;
+}
+
+.signup_container >  h1{
+    text-align: center;
+    color:#0c59cf;
+    font-weight: bold;
+}
+
+.signup_container > p{
+    text-align: center;
+}
+
+.signup_form > input{
+    height: 35px;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid grey;
+    float: left;
+}
+
+.signup_form > input[type="checkbox"] 
+{
+    height: auto;
+}
+
+.signup_form > button{
+    background-color: #0c59cf;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px;
+    height: 50px;
+    width: 100%;
+    margin-top: 25px;
+    margin-bottom: 20px;
+}
+
+.signup_form > input + input{
+    margin-top: 20px;
+}
+
+.signup_form > select + input{
+    margin-top: 20px;
+}
+
+.signup_form > select{
+    height: 35px;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid grey;
+    float: left;
+    margin-top: 20px;
+}
+
+div > h1{
+    text-align: center;
+    color: blue;
+}
+
+div > p{
+    text-align: center;
+}
+
+textarea{
+    resize: none;
+    height: 100%;
+    width: 100%;
+    
+}

@@ -1,0 +1,58 @@
+.main{
+    margin: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    top: 50%;
+}
+
+.title{
+    text-align: center;
+    color: blue;
+}
+.login_container{
+    width: 20%;
+    height: auto;
+    outline: 1px solid white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.login_form{
+    text-align: center;
+    align-items: center;
+    padding: 10% 10% 10% 10%;
+}
+
+.login_container >  h1{
+    text-align: center;
+    color:#0c59cf;
+    font-weight: bold;
+}
+
+.login_container > p{
+    text-align: center;
+}
+
+.login_form > input{
+    height: 35px;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid grey;
+}
+
+.login_form > button{
+    background-color: #0c59cf;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px;
+    height: 50px;
+    width: 100%;
+    margin-top: 25px;
+    margin-bottom: 20px;
+}
+
+.login_form > input + input{
+    margin-top: 20px;
+}
