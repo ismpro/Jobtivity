@@ -1,0 +1,44 @@
+.pendingContainer {
+    display: inline;
+    height: 200px !important; 
+}
+
+.pendingButtons {
+    position: relative;
+    float: right;
+}
+
+.pendingCompany {
+    float: left;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 0px 50px;
+    grid-template-areas:
+        "pendingLogo pendingCompanyName"
+        "pendingLogo pendingDescription"
+        "pendingLogo pendingLink";
+}
+
+.pendingLogo {
+    grid-area: pendingLogo;
+    height: 100%;
+}
+
+.pendingLogo img {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.pendingCompanyName {
+    grid-area: pendingCompanyName;
+}
+
+.pendingDescription {
+    grid-area: pendingDescription;
+}
+
+.pendingLink {
+    grid-area: pendingLink;
+}

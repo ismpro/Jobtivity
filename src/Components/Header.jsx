@@ -45,7 +45,7 @@ let arrayIcons = [
 export default function Header(props) {
 
     return (
-        <div className='container'>
+        <header className='container'>
             <div className='logoContainer'>
                 <Link to="/">
                     <img src={logo} alt="Logo" />
@@ -67,6 +67,6 @@ export default function Header(props) {
                         <button style={{ backgroundColor: "#3366ff", color: "white" }}>Login</button>
                     </div>) : null}
             </div>
-        </div>
+        </header>
     )
 }

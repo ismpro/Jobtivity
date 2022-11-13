@@ -37,7 +37,7 @@ const config = require('./webpack.config.js');
 const compiler = webpack(config);
 
 app.use((req, res, next) => {
-  if (['/jobs', '/about', '/jobs/', '/about/', '/home', '/home/'].some((url => req.url === url))
+  if (['/jobs', '/about', '/jobs/', '/about/', '/home', '/home/', '/admin', '/admin/'].some((url => req.url === url))
     && !req.url.includes('.png')) {
     req.url = '/' // this would make express-js serve index.html
   }
