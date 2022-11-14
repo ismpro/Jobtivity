@@ -20,8 +20,8 @@ let sequelize = require('./app/db')
 //Some varibles
 app.set("port", process.env.PORT || 3000);
 global.appRoot = path.resolve(__dirname);
-global.NODE_MODE = Boolean(process.env.NODE_DEV === 'true');
-console.log(chalk.green(`  Node Mode: ${(global.NODE_MODE ? 'DEV' : 'PRD')}`));
+global.NODE_DEV = Boolean(process.env.NODE_ENV === 'development');
+console.log(chalk.green(`  Node Mode: ${(global.NODE_DEV ? 'DEV' : 'PRD')}`));
 
 console.log(chalk.green('  Configurating Server'));
 
@@ -69,10 +69,10 @@ app.use(morgan('combined'));
 
 console.log(chalk.green('  Done configurating Server'));
 
-(async function() {
+(async function () {
   try {
-    await sequelize.authenticate();
-    console.log(chalk.green('  Connection has been established successfully to database'));
+    await sequelize.authenticate({ logging: false });
+    console.log(chalk.green('\n  Connection has been established successfully to the database'));
   } catch (error) {
     console.log(chalk.red('  Unable to connect to the database'));
     console.error(error)
