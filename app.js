@@ -15,15 +15,15 @@ console.log(chalk.green('\n  Starting server'));
 const app = express()
 dotenv.config()
 
-require('./app/db')
+let sequelize = require('./app/db')
 
 //Some varibles
-app.set("port", process.env.PORT || 3001);
-app.set("pin", process.env.PIN || 1234);
+app.set("port", process.env.PORT || 3000);
 global.appRoot = path.resolve(__dirname);
 global.NODE_MODE = Boolean(process.env.NODE_DEV === 'true');
 console.log(chalk.green(`  Node Mode: ${(global.NODE_MODE ? 'DEV' : 'PRD')}`));
 
+console.log(chalk.green('  Configurating Server'));
 
 //Disabling things for security
 app.use(helmet())
@@ -67,14 +67,23 @@ app.use(morgan('combined'));
 //Adding Routes
 //require('./app/routes.js')(app)
 
-try {
-  await sequelize.authenticate();
-  console.log('Connection has been established successfully.');
-} catch (error) {
-  console.error('Unable to connect to the database:', error);
-}
+console.log(chalk.green('  Done configurating Server'));
 
-app.listen(3000,
-  () => {
-    console.log(chalk.green(`\n  Server Listing on 3000`))
-  })
+(async function() {
+  try {
+    await sequelize.authenticate();
+    console.log(chalk.green('  Connection has been established successfully to database'));
+  } catch (error) {
+    console.log(chalk.red('  Unable to connect to the database'));
+    console.error(error)
+  }
+
+  app.listen(app.get("port"),
+    () => {
+      console.log(chalk.green(`\n  Server Listing on ${app.get("port")}`))
+    })
+}())
+
+
+
+
