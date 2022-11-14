@@ -1,0 +1,109 @@
+.container {
+    padding: 30px;
+    height: fit-content;
+    height: 50px;
+}
+
+.logoContainer {
+    float: left;
+}
+
+.leftContainer {
+    float: right;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    margin-right: 50;
+}
+
+.leftContainer button {
+    margin-right: 50px;
+    border-radius: 29px;
+    border: 0;
+    height: 50px;
+    width: 100px;
+}
+
+.icons {
+    display: flex;
+    margin-right: 100px;
+    
+}
+
+.icons section {
+    text-align: center;
+    margin-left: 30px;
+}
+
+.icons img {
+    height: 30px;
+    width: 30px;
+}
+
+.cardContainer {
+    position: relative;
+    left: 10%;
+    height: 200px;
+    width: 70vw;
+    margin: 50px;
+    /* padding: 50px; */
+    border-radius: 20px;
+    outline: 1px solid white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    justify-items: center;
+    align-items: center;    
+    display: grid; 
+    grid-auto-flow: column; 
+    grid-template-columns: 1fr 1fr 1fr; 
+    grid-template-rows: 1fr 1fr 1fr; 
+    gap: 0px 0px; 
+    grid-template-areas: 
+      "title . area"
+      "description description money"
+      "duration . available";
+}
+
+
+
+
+.title {
+    grid-area: title;
+    width: 100%;
+    text-align: left;
+    margin-left: 50px;
+    font-size: 25px;
+}
+
+.area{
+    grid-area: area;
+    width: 100%;
+    text-align: right;
+    margin-right: 25px;
+}
+
+.description {
+    grid-area: description;
+    width: 100%;
+    text-align: left;
+    margin-left: 50px;
+}
+
+.duration {
+    grid-area: duration;
+    width: 100%;
+    text-align: left;
+    margin-left: 50px;
+}
+
+.money {
+    grid-area: money;
+    width: 100%;
+    text-align: center;
+    font-size: 20px;
+}
+
+.available{
+    grid-area: available;
+    width: 100%;
+    text-align: right;
+}
