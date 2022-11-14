@@ -11,7 +11,8 @@
     "ignore": [
       "db/*",
       "src/*",
-      "public/*"
+      "public/*",
+      "requests.json"
     ]
   },
   "author": "Ismael Lourenço e Bruno Russo",

@@ -6,7 +6,7 @@ const dotenv = require('dotenv')
 const path = require('path')
 const helmet = require('helmet')
 const chalk = require('chalk');
-const morgan = require('morgan')
+const logger = require('./app/logger')
 
 console.clear()
 console.log(chalk.green('\n  Starting server'));
@@ -50,6 +50,9 @@ app.use(webpackHotMiddleware(compiler, {
   log: console.log
 })); */
 
+//Logger
+app.use(logger)
+
 //Serving statics files
 app.use(express.static('public'))
 
@@ -60,9 +63,6 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
   extended: false
 }))
-
-//Logger
-app.use(morgan('combined'));
 
 //Adding Routes
 //require('./app/routes.js')(app)

@@ -1,7 +1,17 @@
+/**
+ * A colection of functions useful for your node application
+ * @module functions
+ */
 const fs = require('fs');
 const path = require('path')
 
+/**
+ * Reads a json file
+ * @param {string} filePath - The filepath of the json file
+ * @param {Function} cb - Callback Function
+ */
 exports.jsonReader = function (filePath, cb) {
+    if (filePath[0] === '.') filePath = path.resolve(filePath)
     if (filePath)
         fs.readFile(filePath, (err, fileData) => {
             if (err) {
@@ -16,7 +26,14 @@ exports.jsonReader = function (filePath, cb) {
         })
 }
 
+/**
+ * Writes a object to a json file
+ * @param {string} filePath - The filepath of the json file
+ * @param {object} object - Object thats going to be write on the file
+ * @param {Function} cb - Callback Function
+ */
 exports.jsonWriter = function (filePath, object, cb) {
+    if (filePath[0] === '.') filePath = path.resolve(filePath)
     if (filePath && object)
         fs.writeFile(filePath, JSON.stringify(object), (err) => {
             if (err) {
@@ -27,6 +44,12 @@ exports.jsonWriter = function (filePath, object, cb) {
         })
 }
 
+/**
+ * Writes a object to a json file
+ * @param {string} filePath - The filepath of the json file
+ * @param {string} object - Object thats going to be write on the file
+ * @param {Function} cb - Callback Function
+ */
 exports.asyncForEach = async function (array, callback) {
     if (array) {
         for (let index = 0; index < array.length; index++) {
