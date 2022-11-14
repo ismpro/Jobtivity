@@ -4,12 +4,9 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const dotenv = require('dotenv')
 const path = require('path')
-const logger = require('./app/logger.js')
 const helmet = require('helmet')
 const chalk = require('chalk');
-const webpack = require('webpack');
-const webpackDevMiddleware = require('webpack-dev-middleware');
-const webpackHotMiddleware = require('webpack-hot-middleware');
+const morgan = require('morgan')
 
 console.clear()
 console.log(chalk.green('\n  Starting server'));
@@ -18,7 +15,7 @@ console.log(chalk.green('\n  Starting server'));
 const app = express()
 dotenv.config()
 
-require('./app/config/db')
+require('./app/db')
 
 //Some varibles
 app.set("port", process.env.PORT || 3001);
@@ -32,7 +29,11 @@ console.log(chalk.green(`  Node Mode: ${(global.NODE_MODE ? 'DEV' : 'PRD')}`));
 app.use(helmet())
 app.disable('x-powered-by');
 
-//Webpack
+/* 
+//Webpack configuration
+const webpack = require('webpack');
+const webpackDevMiddleware = require('webpack-dev-middleware');
+const webpackHotMiddleware = require('webpack-hot-middleware');
 const config = require('./webpack.config.js');
 const compiler = webpack(config);
 
@@ -47,7 +48,7 @@ app.use((req, res, next) => {
 app.use(webpackDevMiddleware(compiler));
 app.use(webpackHotMiddleware(compiler, {
   log: console.log
-}));
+})); */
 
 //Serving statics files
 app.use(express.static('public'))
@@ -61,18 +62,18 @@ app.use(bodyParser.urlencoded({
 }))
 
 //Logger
-app.use(logger());
+app.use(morgan('combined'));
 
 //Adding Routes
 //require('./app/routes.js')(app)
 
-/* try {
+try {
   await sequelize.authenticate();
   console.log('Connection has been established successfully.');
 } catch (error) {
   console.error('Unable to connect to the database:', error);
 }
- */
+
 app.listen(3000,
   () => {
     console.log(chalk.green(`\n  Server Listing on 3000`))

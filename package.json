@@ -2,15 +2,16 @@
   "name": "pw-webesite",
   "version": "0.1.0",
   "description": "",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node server.js",
-    "start-dev": "nodemon server.js"
+    "start": "node app.js",
+    "start-dev": "nodemon app.js"
   },
   "nodemonConfig": {
     "ignore": [
       "db/*",
-      "src/*"
+      "src/*",
+      "public/*"
     ]
   },
   "author": "Ismael Lourenço e Bruno Russo",
@@ -40,12 +41,12 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "helmet": "^6.0.0",
+    "morgan": "^1.10.0",
     "mysql2": "^2.3.3",
-    "node-fetch": "^2.6.7",
-    "node-iplocate": "^1.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router": "^6.4.3",
-    "react-router-dom": "^6.4.3"
+    "react-router-dom": "^6.4.3",
+    "sequelize": "^6.25.5"
   }
 }
