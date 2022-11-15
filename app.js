@@ -31,6 +31,7 @@ app.disable('x-powered-by');
 
 /* 
 //Webpack configuration
+if(global.NODE_DEV) {
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
@@ -48,7 +49,9 @@ app.use((req, res, next) => {
 app.use(webpackDevMiddleware(compiler));
 app.use(webpackHotMiddleware(compiler, {
   log: console.log
-})); */
+}));
+}
+*/
 
 //Logger
 app.use(logger)
@@ -65,7 +68,7 @@ app.use(bodyParser.urlencoded({
 }))
 
 //Adding Routes
-//require('./app/routes.js')(app)
+require('./routes/index')(app)
 
 console.log(chalk.green('  Done configurating Server'));
 
