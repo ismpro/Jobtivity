@@ -4,11 +4,44 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Security-Policy" content="img-src * data:;" />
+    <link rel="stylesheet" href="styles/index.css">
 </head>
 
 <body>
-    <div id="app"></div>
-    <script src="/bundle.js"></script>
+    <header class='container'>
+        <div class='logoContainer'>
+            <a href="/">
+                <img src="images/logo.png" alt="Logo" />
+            </a>
+        </div>
+        <div class='leftContainer'>
+            <div class='icons'>
+                <a href="/about">
+                    <img src="images/iconAbout.png" alt="about" />
+                    <p>About</p>
+                </a>
+                <a href="/about">
+                    <img src="images/iconAbout.png" alt="about" />
+                    <p>About</p>
+                </a>
+            </div>
+            <div>
+                <button type="button">Sign Up</button>
+                <button type="button" id="login">Login</button>
+            </div>
+        </div>
+    </header>
+    <main class='home'>
+        <section>
+            <h2>Number 1 connecting companies with workers</h2>
+            <h5>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+                ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+                fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                deserunt mollit anim id est laborum.</h5>
+        </section>
+        <img src="images/imageJobs.png" alt="Jobs" />
+    </main>
 </body>
 
 </html>
