@@ -7,7 +7,7 @@ const Area = {
 
 var jobsObj = [{
         nome: "Deloitte",
-        descricao: "Programador React",
+        descricao: "Procuramos programador de React que seja bastante bom a tocar flauta de olhos vendados enquanto descasca uma maçã com os dedos dos pés. Oferecemos  remuneração  simpática. Pena é não terem tempo livre para aproveitar o salário.",
         area: Area.Dev,
         duracao: 12,
         valor: 1500,

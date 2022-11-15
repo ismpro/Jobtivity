@@ -1,7 +1,19 @@
+body{
+    background-image: url(../images/bg.svg);
+    background-repeat: no-repeat;
+}
+
+*{
+    padding: 0;
+    margin: 0;
+}
+
 .container {
     padding: 30px;
     height: fit-content;
     height: 50px;
+    background-color: white;
+    position: relative;
 }
 
 .logoContainer {
@@ -62,9 +74,6 @@
       "description description money"
       "duration . available";
 }
-
-
-
 
 .title {
     grid-area: title;
