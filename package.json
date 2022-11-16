@@ -9,10 +9,7 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "db/*",
-      "src/*",
-      "public/*",
-      "requests.json"
+      "www/*"
     ]
   },
   "author": "Ismael Lourenço e Bruno Russo",
