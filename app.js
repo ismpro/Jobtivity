@@ -2,9 +2,8 @@
 /* eslint-disable no-undef */
 const express = require('express')
 const bodyParser = require('body-parser')
-const dotenv = require('dotenv')
+require('dotenv').config()
 const path = require('path')
-const helmet = require('helmet')
 const chalk = require('chalk');
 const logger = require('./app/logger')
 
@@ -13,8 +12,6 @@ console.log(chalk.green('\n  Starting server'));
 
 //Config
 const app = express()
-dotenv.config()
-
 let sequelize = require('./app/db')
 
 //Some varibles
@@ -29,7 +26,7 @@ console.log(chalk.green('  Configurating Server'));
 app.use(logger)
 
 //Serving statics files
-app.use(express.static('public'))
+app.use(express.static('www'))
 
 // parse application/json
 app.use(bodyParser.json())
