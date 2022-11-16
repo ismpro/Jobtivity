@@ -6,6 +6,7 @@ require('dotenv').config()
 const path = require('path')
 const chalk = require('chalk');
 const logger = require('./app/logger')
+let DB = require('./app/db')
 
 console.clear()
 console.log(chalk.green('\n  Starting server'));
@@ -21,7 +22,12 @@ global.appRoot = path.resolve(__dirname);
 global.NODE_DEV = Boolean(process.env.NODE_ENV === 'development');
 console.log(chalk.green(`  Node Mode: ${(global.NODE_DEV ? 'DEV' : 'PRD')}`));
 
-let sequelize = require('./app/db')
+let db = new DB({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: 'pw'
+})
 
 //Logger
 app.use(logger)
@@ -42,20 +48,12 @@ require('./routes/index')(app)
 
 console.log(chalk.green('  Done configurating Server'));
 
-(async function () {
-  try {
-    await sequelize.authenticate({ logging: false });
-    console.log(chalk.green('\n  Connection has been established successfully to the database'));
-  } catch (error) {
-    console.log(chalk.red('  Unable to connect to the database'));
-    console.error(error)
-  }
-
+db.connect().then(function () {
   app.listen(app.get("port"),
     () => {
       console.log(chalk.green(`\n  Server Listing on ${app.get("port")}`))
     })
-}())
+})
 
 
 
