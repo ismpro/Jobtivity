@@ -4,7 +4,7 @@ const fs = require("fs")
 
 const connection = new Sequelize(require('./config/database'));
 
-let folder = path.resolve("./models")
+let folder = global.appRoot + '/models'
 
 fs.readdirSync(folder).forEach(file => {
     let Model = require(folder + "/" + file);

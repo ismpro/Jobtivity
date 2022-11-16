@@ -12,7 +12,8 @@ console.log(chalk.green('\n  Starting server'));
 
 //Config
 const app = express()
-let sequelize = require('./app/db')
+
+console.log(chalk.green('  Configurating Server'));
 
 //Some varibles
 app.set("port", process.env.PORT || 3000);
@@ -20,7 +21,7 @@ global.appRoot = path.resolve(__dirname);
 global.NODE_DEV = Boolean(process.env.NODE_ENV === 'development');
 console.log(chalk.green(`  Node Mode: ${(global.NODE_DEV ? 'DEV' : 'PRD')}`));
 
-console.log(chalk.green('  Configurating Server'));
+let sequelize = require('./app/db')
 
 //Logger
 app.use(logger)
