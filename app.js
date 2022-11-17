@@ -33,7 +33,7 @@ let db = new DB({
 app.use(logger)
 
 //Serving statics files
-app.use(express.static('www'))
+app.use(express.static(path.join(__dirname, 'www')))
 
 // parse application/json
 app.use(bodyParser.json())

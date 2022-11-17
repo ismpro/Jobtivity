@@ -4,11 +4,37 @@ A website for your job needs
 
 ## Features
 
-- TODO
+- The system must allow all users to access job offers.
+- The system must allow job offers to be filtered by duration, area or both.
+- The system must allow job offers to be sorted by base value or by expiry date (ascending or descending)
+- The system must allow the registration of new users.
+- The system must allow users to login.
+- The system must have 3 types of users: companies, administrators and professionals.
+- The system must allow administrators to see registration requests from companies and accept or reject them.
+- The system must allow administrators to view all professional portfolios, regardless of whether the option of being viewed by companies or not and being able to filter by location or age should also be available.
+- The system must only allow companies to login when accepted by an administrator.
+- The system must send an email if the company registration is rejected by an administrator.
+- The system must allow the companies to see the portfolio list of the professionals they chose to be seen by the companies and to filter by location and age.
+- The system must allow professionals to add and delete information about the places where they have worked.
+- The system should allow professionals to add and delete information about academic courses and other training.
+- The system should allow professionals to manage their friends list, make friend requests, accept friend requests, view friends list and remove friends.
+- The system should allow professionals to view friends' portfolios.
+- The system should allow professionals to put their profile as private so it is hidden from other companies and professionals but not their friends.
+- The system may allow users to use a chat so they can communicate.
+- The system may allow the company to start a chat with professionals but not the other way around.
+- The system may allow professionals to start a conversation with other professionals since they are friends or plubic profile.
+
+## Tech
+
+Jobtivity uses a number of open source projects to work properly:
+
+- [JavaScript](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript) - JavaScript is a scripting or programming language that allows you to implement complex features on web pages
+- [Node.js](https://nodejs.org/) - Node.js is an asynchronous event-driven JavaScript runtime and is designed to build scalable network applications.
+- [MySQL](https://www.mysql.com/) - MySQL is a relational database management system (RDBMS) developed by Oracle that is based on structured query language (SQL).
 
 ## Installation
 
-Jobtivity requires [Node.js](https://nodejs.org/) to run and a [MySql server](https://dev.mysql.com/downloads/mysql/).
+Jobtivity requires [Node.js](https://nodejs.org/) to run and a [MySql server](https://www.mysql.com/).
 
 Install the dependencies and devDependencies and start the server.
 

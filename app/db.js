@@ -1,5 +1,5 @@
 const mysql = require('mysql2');
-const fs = require("fs");
+const chalk = require('chalk');
 
 class Db {
     static pool;
@@ -46,6 +46,7 @@ class Db {
               
                 if (connection)  {
                     connection.release()
+                    console.log(chalk.green("  Connection to the database"))
                     Db.pool = pool.promise();
                     resolve(pool.promise())
                 }

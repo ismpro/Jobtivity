@@ -1,0 +1,20 @@
+- O sistema deve permitir que todos os utilizadores tenham acesso as ofertas de empregos.
+- O sistema deve permitir filtrar as ofertas de empregos por duração, por área ou ambas.
+- O sistema deve permitir ordenar as ofertas de empregos por valor base ou por data de validade (crescente ou decrescente)
+- O sistema deve permitir o registo de novos usuários.
+- O sistema deve permitir o login de usuários.
+- O sistema deve ter 3 tipos de utilizadores: empresas, administradores e profissionais.
+- O sistema deve permitir os administradores ver os pedidos de registo de empresas e aceitar ou rejeitar os mesmos.
+- O sistema deve permitir os administradores ver todos os portefólios de profissionais, independentemente de ter sido escolhida a opção 
+de ser visto por empresas ou não e podendo filtrar por localidade ou por idade também devem estar disponíveis.
+- O sistema deve só deixar que as empresas façam login só quando for aceite por um administrador.
+- O sistema deve mandar um email caso o registo da empresa seja rejeitado por um administrador.
+- O sistema deve permitir as empresas ver a lista de portefólios dos profissionais que escolheram ser vistos por empresas podendo filtrar por localidade e por idade.
+- O sistema deve permitir aos profissionais adicionar e apagar informação sobre os locais onde trabalharam.
+- O sistema deve permitir aos profissionais adicionar e apagar informação sobre cursos académicos e outras formações.
+- O sistema deve permitir aos profissionais gerir a lista de amigos, fazer pedido de amizade, aceitar pedido de amizade, ver lista de amigos e remover amigos.
+- O sistema deve permitir aos profissionais ver os portefólios dos amigos.
+- O sistema deve permitir aos profissionais colocar o seu perfil como privado assim ficando escondido de outras empresas e profissionais mas não seus amigos.
+- O sistema poderá permitir aos utilizadores usar um chat para que possam comunicar.
+- O sistema poderá permitir a empresa iniciar uma conversa com profissionais mas não ou contrario.
+- O sistema poderá permitir aos profissionais iniciar uma conversa com outros profissionais desde sejam amigos ou perfil plubico.
