@@ -2,6 +2,8 @@
 
 A website for your job needs
 
+Jobtivity is a business social network that is focused on the business world and the more professional side of life, allowing the creation of individual or company profiles. It is comparable to social networks, and is mainly used by professionals to present their skills in a way that other companies can see and analyse. The platform is a vehicle for personal marketing par excellence, allowing different professionals to strengthen their image. It is a good way to promote themselves and build a reputation in their field. Jobtivity is also an excellent tool to search for a job or to look for new job opportunities. Jobtivity is also the perfect place to create a network of professional contacts, either to get new job opportunities, or to enter into collaborations or future partnerships. The site allows registered users to maintain a detailed contact list of people they know and trust.
+
 ## Features
 
 - The system must allow all users to access job offers.

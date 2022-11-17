@@ -1,3 +1,12 @@
+Jobtivity é uma rede social de negócios que está focada no universo empresarial e no lado mais profissional da vida, permitindo a criação de perfis individuais ou de empresas. 
+É comparável a redes de relacionamentos, e é principalmente utilizada por profissionais com o intuito de apresentar suas aptidões, de uma forma que outras empresa possam ver e analisar. 
+A plataforma é um veículo por excelência de marketing pessoal, permitindo aos diversos profissionais fortalecerem a sua imagem. 
+É uma boa forma de se promoverem e de construíram uma reputação na sua área de atuação. 
+A Jobtivity é também uma excelente ferramenta para procurar um emprego ou para procurar novas oportunidades de trabalho. 
+Jobtivity também o espaço perfeito para criar uma rede de contactos profissionais, seja para arranjar novas oportunidades de emprego, seja para firmar colaborações ou para futuras parcerias. 
+O site permite que usuários registrados possam manter uma lista detalhada de contatos de pessoas que eles conheçam e em quem confiem.
+
+
 - O sistema deve permitir que todos os utilizadores tenham acesso as ofertas de empregos.
 - O sistema deve permitir filtrar as ofertas de empregos por duração, por área ou ambas.
 - O sistema deve permitir ordenar as ofertas de empregos por valor base ou por data de validade (crescente ou decrescente)
