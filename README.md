@@ -24,7 +24,7 @@ Jobtivity is a business social network that is focused on the business world and
 - The system should allow professionals to put their profile as private so it is hidden from other companies and professionals but not their friends.
 - The system may allow users to use a chat so they can communicate.
 - The system may allow the company to start a chat with professionals but not the other way around.
-- The system may allow professionals to start a conversation with other professionals since they are friends or plubic profile.
+- The system may allow professionals to start a conversation with other professionals provided that they are friends or plubic profile.
 
 ## Tech
 
@@ -45,6 +45,7 @@ npm i
 ```
 
 Create the .env file on the root folder.
+
 ```sh
 #Env Varaibles
 
@@ -70,7 +71,7 @@ npm run start
 ```
 
 Done! Now you can access using the link `localhost:PORT`
- 
+
 ## Frameworks
 
 Below is a list of framework used in the project.

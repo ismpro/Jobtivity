@@ -26,4 +26,4 @@ de ser visto por empresas ou não e podendo filtrar por localidade ou por idade 
 - O sistema deve permitir aos profissionais colocar o seu perfil como privado assim ficando escondido de outras empresas e profissionais mas não seus amigos.
 - O sistema poderá permitir aos utilizadores usar um chat para que possam comunicar.
 - O sistema poderá permitir a empresa iniciar uma conversa com profissionais mas não ou contrario.
-- O sistema poderá permitir aos profissionais iniciar uma conversa com outros profissionais desde sejam amigos ou perfil plubico.
+- O sistema poderá permitir aos profissionais iniciar uma conversa com outros profissionais desde que sejam amigos ou perfil plubico.

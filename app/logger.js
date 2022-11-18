@@ -67,16 +67,21 @@ function loggerCodes(code) {
 }
 
 module.exports = morgan(function (tokens, req, res) {
-    let status = loggerCodes(tokens.status(req, res))
-    let ip =  Boolean(
-        tokens['remote-addr'](req, res) === '::1' ||
-        tokens['remote-addr'](req, res) === '[::1]' ||
-        // 127.0.0.1/8 is considered localhost for IPv4.
-        tokens['remote-addr'](req, res).match(
-            /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
-        ) ||
-        tokens['remote-addr'](req, res) === '0000:0000:0000:0000:0000:0000:0000:0001'
-    ) ? 'localhost' : tokens['remote-addr'](req, res);
-    return `\nRequest: ${ip} ${tokens.method(req, res)} ${tokens.url(req, res)} - ${tokens['response-time'](req, res)}
+    try {
+        let status = loggerCodes(tokens.status(req, res))
+        let ip = Boolean(
+            tokens['remote-addr'](req, res) === '::1' ||
+            tokens['remote-addr'](req, res) === '[::1]' ||
+            // 127.0.0.1/8 is considered localhost for IPv4.
+            tokens['remote-addr'](req, res).match(
+                /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
+            ) ||
+            tokens['remote-addr'](req, res) === '0000:0000:0000:0000:0000:0000:0000:0001'
+        ) ? 'localhost' : tokens['remote-addr'](req, res);
+        return `\nRequest: ${ip} ${tokens.method(req, res)} ${tokens.url(req, res)} - ${tokens['response-time'](req, res)}
     Code: ${chalk.hex(status.color)(status.code)} -> ${status.message}`
+    } catch (error) {
+        if (error.message === 'Code Not Found') { console.error("\n Erro on code: " + tokens.status(req, res)) }
+        else { console.error("Error on logger") }
+    }
 })

@@ -16,13 +16,13 @@
     </div>
     <div class='leftContainer'>
         <div class='icons'>
-            <a href="/about.html">
+            <a href="/about">
                 <img src="images/about-us.png" alt="about" />
             </a>
-            <a href="./jobs.html">
+            <a href="./jobs">
                 <img src="images/job-icon.png" alt="about" />
             </a>
-            <a href="./jobs.html">
+            <a href="./jobs">
                 <img src="images/portfolio-icon.png" alt="about" />
             </a>
         </div>
@@ -32,9 +32,32 @@
         </div>
     </div>
 </header>
+
 <body>
+    <section>
+        <button onclick="javascript: onSort('valor')"><span></span>Valor</button>
+        <button onclick="javascript: onSort('validade')"><span></span>Data validade</button>
+        <div class="range_container">
+            <div class="sliders_control">
+                <input id="fromSlider" type="range" value="10" min="0" max="100" />
+                <input id="toSlider" type="range" value="40" min="0" max="100" />
+            </div>
+            <div class="form_control">
+                <div class="form_control_container">
+                    <div class="form_control_container__time">Min</div>
+                    <input class="form_control_container__time__input" type="number" id="fromInput" value="10" min="0"
+                        max="100" />
+                </div>
+                <div class="form_control_container">
+                    <div class="form_control_container__time">Max</div>
+                    <input class="form_control_container__time__input" type="number" id="toInput" value="40" min="0"
+                        max="100" />
+                </div>
+            </div>
+        </div>
+    </section>
     <section id="section_jobs">
-        
+
     </section>
 </body>
 
