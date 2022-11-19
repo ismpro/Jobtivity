@@ -29,8 +29,7 @@ var jobsObj = [{
     duracao: 45,
     valor: 2000,
     validade: new Date("2024-12-31")
-}
-];
+}];
 
 const jobsConst = jobsObj.slice()
 Object.freeze(jobsConst)
@@ -109,13 +108,46 @@ function onSort(type) {
     onLoad()
 }
 
-function addFilter(params) {
+const filterController = (function () {
+    const filters = [];
 
-}
+    let filterDOM = function () {
+        jobsObj = jobsConst.filter((job) => filters.every(filter => filter.fn(job)))
+        onLoad();
+    }
 
-function removeFilter(params) {
+    /**
+     * 
+     * @param {{type: String, fn: Function}} obj 
+     */
+    let addFilter = function (obj) {
+        let filter = filters.find(filter => filter.type === obj.type)
+        if (filter) {
+            filter.fn = obj.fn;
+        } else {
+            filters.push(obj)
+        }
+        filterDOM();
+    }
 
-}
+    /**
+     * 
+     * @param {String} type 
+     */
+    let removeFilter = function (type) {
+        let index = filters.findIndex(filter => filter.type === type);
+        if (index === -1) return;
+        filters.splice(index, 1);
+        filterDOM();
+    }
+
+    return {
+        add: addFilter,
+        remove: removeFilter
+    }
+}())
+
+
 
 function controlFromInput(fromSlider, fromInput, toInput, controlSlider) {
     const [from, to] = getParsed(fromInput, toInput);
@@ -193,24 +225,16 @@ function setToggleAccessible(currentTarget) {
     }
 }
 
-function filterByValue(from, to) {
-    jobsObj = jobsConst.filter((job) => job.valor >= from && job.valor <= to);
-    onLoad()
-}
-
-window.addEventListener("DOMContentLoaded", function (params) {
+window.addEventListener("DOMContentLoaded", function () {
     const fromSlider = document.getElementById('fromSlider');
     const toSlider = document.getElementById('toSlider');
     const fromInput = document.getElementById('fromInput');
     const toInput = document.getElementById('toInput');
+    const areaDiv = document.getElementById("areaDiv");
 
     let arr = jobsConst.map(job => job.valor);
     let max = Math.max(...arr);
     let min = Math.min(...arr);
-
-    console.log(arr)
-    console.log(max)
-    console.log(min)
 
     fromSlider.max = max;
     fromSlider.min = min;
@@ -228,15 +252,63 @@ window.addEventListener("DOMContentLoaded", function (params) {
     toInput.min = min;
     toInput.value = max;
 
+    let ul = document.createElement("ul")
+    areaDiv.appendChild(ul);
+
+    let arrArea = [];
+
+    for (const job of jobsConst) {
+
+        let areaControl = false;
+
+        let li = document.createElement("li");
+        let btn = document.createElement("button");
+
+        btn.innerHTML = `${job.area} <span id="span${job.area}"></span>`;
+        btn.addEventListener("click", () => {
+            let index = arrArea.findIndex(area => job.area === area);
+            if(index === -1) {
+                document.getElementById(`span${job.area}`).innerText = "(X)";
+                arrArea.push(job.area)
+            } else {
+                document.getElementById(`span${job.area}`).innerText = "";
+                arrArea.splice(index, 1)
+            }
+
+            if(!arrArea.length) {
+                filterController.remove(`area`);
+            } else {
+                filterController.add({
+                    type: `area`,
+                    fn: (jobF) => arrArea.includes(jobF.area)
+                });
+            }
+            areaControl = !areaControl;
+        })
+
+        li.appendChild(btn)
+        ul.appendChild(li)
+    }
+
     fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
     setToggleAccessible(toSlider);
+
+    function sliderFilter() {
+        filterController.add({
+            type: "valor",
+            fn: (job) => job.valor >= fromSlider.value && job.valor <= toSlider.value
+        });
+    }
 
     fromSlider.addEventListener("input", () => controlFromSlider(fromSlider, toSlider, fromInput))
     toSlider.addEventListener("input", () => controlToSlider(fromSlider, toSlider, toInput))
     fromInput.addEventListener("input", () => controlFromInput(fromSlider, fromInput, toInput, toSlider))
-    toInput.addEventListener("input",  () => controlToInput(toSlider, fromInput, toInput, toSlider))
-    fromSlider.addEventListener("change", () => filterByValue(fromSlider.value, toSlider.value))
-    toSlider.addEventListener("change", () => filterByValue(fromSlider.value, toSlider.value))
+    toInput.addEventListener("input", () => controlToInput(toSlider, fromInput, toInput, toSlider))
+    fromSlider.addEventListener("change", sliderFilter);
+    fromInput.addEventListener("change", sliderFilter);
+    toSlider.addEventListener("change", sliderFilter);
+    toInput.addEventListener("change", sliderFilter);
+
 })
 
 window.addEventListener("DOMContentLoaded", onLoad)
