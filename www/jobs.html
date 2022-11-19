@@ -35,8 +35,8 @@
 
 <body>
     <section>
-        <button onclick="javascript: onSort('valor')"><span></span>Valor</button>
-        <button onclick="javascript: onSort('validade')"><span></span>Data validade</button>
+        <button onclick="javascript: onSort('valor')">Valor <span id="valorBtn"></span></button>
+        <button onclick="javascript: onSort('validade')">Data validade <span id="validadeBtn"></span></button>
         <div class="range_container">
             <div class="sliders_control">
                 <input id="fromSlider" type="range" value="10" min="0" max="100" />
@@ -54,6 +54,9 @@
                         max="100" />
                 </div>
             </div>
+        </div>
+        <div>
+            
         </div>
     </section>
     <section id="section_jobs">

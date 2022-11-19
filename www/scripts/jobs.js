@@ -21,6 +21,14 @@ var jobsObj = [{
     duracao: 24,
     valor: 1800,
     validade: new Date("2024-10-31")
+},
+{
+    nome: "Closure",
+    descricao: "Fazem tudo",
+    area: Area.SysAdmin,
+    duracao: 45,
+    valor: 2000,
+    validade: new Date("2024-12-31")
 }
 ];
 
@@ -82,12 +90,16 @@ function onSort(type) {
     if (type !== "remove") {
         if (sort.type === type) {
             sort.asc = !sort.asc;
+            document.getElementById(`${sort.type}Btn`).innerText = sort.asc ? "(asc)" : "(desc)";
         } else {
+            if (sort.type) document.getElementById(`${sort.type}Btn`).innerText = "";
+            document.getElementById(`${type}Btn`).innerText = "(desc)";
             sort.type = type;
             sort.asc = false;
         }
         jobsObj.sort((a, b) => sort.asc ? a[sort.type] - b[sort.type] : b[sort.type] - a[sort.type])
     } else {
+        if (sort.type) document.getElementById(`${sort.type}Btn`).innerText = "";
         sort = {
             type: "",
             asc: false
@@ -181,11 +193,16 @@ function setToggleAccessible(currentTarget) {
     }
 }
 
+function filterByValue(from, to) {
+    jobsObj = jobsConst.filter((job) => job.valor >= from && job.valor <= to);
+    onLoad()
+}
+
 window.addEventListener("DOMContentLoaded", function (params) {
-    const fromSlider = document.querySelector('#fromSlider');
-    const toSlider = document.querySelector('#toSlider');
-    const fromInput = document.querySelector('#fromInput');
-    const toInput = document.querySelector('#toInput');
+    const fromSlider = document.getElementById('fromSlider');
+    const toSlider = document.getElementById('toSlider');
+    const fromInput = document.getElementById('fromInput');
+    const toInput = document.getElementById('toInput');
 
     let arr = jobsConst.map(job => job.valor);
     let max = Math.max(...arr);
@@ -214,10 +231,12 @@ window.addEventListener("DOMContentLoaded", function (params) {
     fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
     setToggleAccessible(toSlider);
 
-    fromSlider.oninput = () => controlFromSlider(fromSlider, toSlider, fromInput);
-    toSlider.oninput = () => controlToSlider(fromSlider, toSlider, toInput);
-    fromInput.oninput = () => controlFromInput(fromSlider, fromInput, toInput, toSlider);
-    toInput.oninput = () => controlToInput(toSlider, fromInput, toInput, toSlider);
+    fromSlider.addEventListener("input", () => controlFromSlider(fromSlider, toSlider, fromInput))
+    toSlider.addEventListener("input", () => controlToSlider(fromSlider, toSlider, toInput))
+    fromInput.addEventListener("input", () => controlFromInput(fromSlider, fromInput, toInput, toSlider))
+    toInput.addEventListener("input",  () => controlToInput(toSlider, fromInput, toInput, toSlider))
+    fromSlider.addEventListener("change", () => filterByValue(fromSlider.value, toSlider.value))
+    toSlider.addEventListener("change", () => filterByValue(fromSlider.value, toSlider.value))
 })
 
 window.addEventListener("DOMContentLoaded", onLoad)
