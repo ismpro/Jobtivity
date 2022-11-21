@@ -1,4 +1,4 @@
-let DB = require('../app/db')
+let DB = require('../config/connection')
 
 class User {
 

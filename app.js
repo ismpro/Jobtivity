@@ -5,8 +5,8 @@ const bodyParser = require('body-parser')
 require('dotenv').config()
 const path = require('path')
 const chalk = require('chalk');
-const logger = require('./app/logger')
-let DB = require('./app/db')
+const logger = require('./config/logger')
+let DB = require('./config/connection')
 
 console.clear()
 console.log(chalk.green('\n  Starting server'));

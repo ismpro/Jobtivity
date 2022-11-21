@@ -37,28 +37,16 @@
     <section>
         <button onclick="javascript: onSort('valor')">Valor <span id="valorBtn"></span></button>
         <button onclick="javascript: onSort('validade')">Data validade <span id="validadeBtn"></span></button>
-        <div class="range_container">
-            <div class="sliders_control">
-                <input id="fromSlider" type="range" value="10" min="0" max="100" />
-                <input id="toSlider" type="range" value="40" min="0" max="100" />
+        <div style="width: 300px; margin-top: 100px">
+            <div>
+                <input id="sliderValor" type="range" value="10" min="0" max="100" />
             </div>
-            <div class="form_control">
-                <div class="form_control_container">
-                    <div class="form_control_container__time">Min</div>
-                    <input class="form_control_container__time__input" type="number" id="fromInput" value="10" min="0"
-                        max="100" />
-                </div>
-                <div class="form_control_container">
-                    <div class="form_control_container__time">Max</div>
-                    <input class="form_control_container__time__input" type="number" id="toInput" value="40" min="0"
-                        max="100" />
-                </div>
+            <div>
+                <p>Max</p>
+                <input type="number" id="inputValor" value="10" min="0" max="100" />
             </div>
         </div>
-        <div>
-            <ul id="areaDiv">
-            </ul>
-        </div>
+        <div id="filterDiv" style="margin-top: 100px"></div>
     </section>
     <section id="section_jobs">
 
