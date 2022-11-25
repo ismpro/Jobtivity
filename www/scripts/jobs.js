@@ -57,8 +57,51 @@ function onLoad() {
 
     jobsObj.forEach(element => {
 
-        const cardContainer = document.createElement("section");
-        cardContainer.className = "cardContainer";
+        const div = document.createElement("div");
+        div.style = "border-style: none;";
+        div.className = "row g-0";
+        div.innerHTML =
+            `
+        <div class="col" style="border-style: none;">
+        <div class="card"
+            style="box-shadow: 0px 0px;border-style: solid;border-radius: 20px;">
+            <div class="card-body" style="border-style: none;">
+                <div class="row" style="border-style: none;height: 30px;">
+                    <div class="col">
+                        <h1 style="width: 100%;">${element.nome}</h1>
+                    </div>
+                    <div class="col">
+                        <h3 style="text-align: right;">${element.area}</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-10">
+                        <p
+                            style="width: 100%;min-width: 100px;text-align: left;overflow: scroll;overflow-y: auto;overflow-x: visible;max-height: 150px;">
+                            <br><span style="color: rgb(0, 0, 0);">${element.descricao}</span><br><br></p>
+                    </div>
+                    <div class="col" style="width: 141.5px;">
+                        <p class="d-xl-flex justify-content-xl-center align-items-xl-center"
+                            style="text-align: right;margin: 0px;height: 100%;">${element.valor}€
+                        </p>
+                    </div>
+                </div>
+                <div class="row" style="height: 50px;">
+                    <div class="col">
+                        <p><br><strong><span style="color: rgb(0, 0, 0);">Contract for
+                        ${element.duracao} months</span></strong><br><br></p>
+                    </div>
+                    <div class="col">
+                        <p style="text-align: right;"><br><strong><span
+                                    style="color: rgb(0, 0, 0);">Offer available until
+                                    ${element.validade.toLocaleString().split(',')[0]}</span></strong><br><br></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        `
+        /* cardContainer.className = "cardContainer";
 
         const titleHeading = document.createElement("h3");
         const area = document.createElement("p");
@@ -86,9 +129,9 @@ function onLoad() {
         duration.appendChild(document.createTextNode("Contract for " + element.duracao + " months"));
         area.appendChild(document.createTextNode(element.area));
         money.appendChild(document.createTextNode(element.valor + "€"));
-        available.appendChild(document.createTextNode("Offer available until " + element.validade.toLocaleString().split(',')[0]));
+        available.appendChild(document.createTextNode("Offer available until " + element.validade.toLocaleString().split(',')[0])); */
 
-        mainSection.appendChild(cardContainer);
+        mainSection.appendChild(div);
 
     });
 }
@@ -155,26 +198,60 @@ const filterController = (function () {
     }
 }())
 
-function createFilterButtons(id, key) {
-    const div = document.getElementById(id);
-    let ul = document.createElement("ul");
+function createFilterButtons(id, key, title) {
+
+    const parent = document.getElementById(id);
+    const parentCollapse = document.getElementById(id + "Collapse");
+    parent.innerHTML = `<h3>${title}</h3>`;
+    parentCollapse.innerHTML = `<h3>${title}</h3>`;
+
     let arrControl = [];
     const datas = new Set(jobsConst.map(e => e[key]));
 
     for (const data of datas) {
 
-        let li = document.createElement("li");
-        let btn = document.createElement("button");
+        console.log(data)
 
-        btn.innerHTML = `${data} <span id="span${data}"></span>`;
-        btn.addEventListener("click", () => {
-            let index = arrControl.findIndex(ele => data === ele);
-            if (index === -1) {
-                document.getElementById(`span${data}`).innerText = "(X)";
-                arrControl.push(data)
+        let div = document.createElement("div");
+        let input = document.createElement("input");
+        let label = document.createElement("label");
+
+        div.className = "form-check";
+
+        input.className = "form-check-input";
+        input.type = "checkbox";
+        input.id = "formCheck-" + data;
+
+        label.className = "form-check-label";
+        label.htmlFor = "formCheck-" + data;
+        label.appendChild(document.createTextNode(data));
+
+        let divCollapse = document.createElement("div");
+        let inputCollapse = document.createElement("input");
+        let labelCollapse = document.createElement("label");
+
+        divCollapse.className = "form-check";
+
+        inputCollapse.className = "form-check-input";
+        inputCollapse.type = "checkbox";
+        inputCollapse.id = "formCheck-" + data;
+
+        labelCollapse.className = "form-check-label";
+        labelCollapse.htmlFor = "formCheck-" + data;
+        labelCollapse.appendChild(document.createTextNode(data));
+
+        /* 
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="formCheck-5">
+            <label class="form-check-label" for="formCheck-5">Samsung</label>
+        </div>
+        */
+
+        const eventClicker = (bool) => {
+            if (bool) {
+                arrControl.push(data);
             } else {
-                document.getElementById(`span${data}`).innerText = "";
-                arrControl.splice(index, 1)
+                arrControl.splice(arrControl.findIndex(ele => data === ele), 1);
             }
 
             if (!arrControl.length) {
@@ -185,17 +262,33 @@ function createFilterButtons(id, key) {
                     fn: (job) => arrControl.includes(job[key])
                 });
             }
+        }
+
+        input.addEventListener("click", (e) => {
+            inputCollapse.checked = input.checked;
+            eventClicker(input.checked);
+        })
+        inputCollapse.addEventListener("click", (e) => {
+            input.checked = inputCollapse.checked;
+            eventClicker(inputCollapse.checked);
         })
 
-        li.appendChild(btn)
-        ul.appendChild(li)
+        divCollapse.appendChild(labelCollapse);
+        divCollapse.appendChild(inputCollapse);
+        parentCollapse.appendChild(divCollapse);
+
+        div.appendChild(label);
+        div.appendChild(input);
+        parent.appendChild(div);
     }
-    div.appendChild(ul)
+    
 }
 
 window.addEventListener("DOMContentLoaded", function () {
     const sliderValor = document.getElementById('sliderValor');
     const inputValor = document.getElementById('inputValor');
+    const sliderValorCollapse = document.getElementById('sliderValorCollapse');
+    const inputValorCollapse = document.getElementById('inputValor');
 
     let arr = jobsConst.map(job => job.valor);
     let max = Math.max(...arr);
@@ -209,24 +302,50 @@ window.addEventListener("DOMContentLoaded", function () {
     inputValor.max = max;
     inputValor.value = min;
 
-    createFilterButtons("filterDiv", "area");
-    createFilterButtons("filterDiv", "nome");
+    sliderValorCollapse.max = max;
+    sliderValorCollapse.min = min;
+    sliderValorCollapse.value = min;
+
+    inputValorCollapse.min = min;
+    inputValorCollapse.max = max;
+    inputValorCollapse.value = min;
+
+    createFilterButtons("areaFilter", "area", "Area");
+    createFilterButtons("empresaFilter", "nome", "Empresas");
 
     function sliderFilter() {
         filterController.add({
             type: "valor",
             fn: (job) => job.valor >= sliderValor.value || job.valor >= inputValor.value
+                || job.valor >= sliderValorCollapse.value || job.valor >= inputValorCollapse.value
         });
     }
 
     sliderValor.addEventListener("input", () => {
         inputValor.value = sliderValor.value;
+        sliderValorCollapse.value = sliderValor.value;
+        inputValorCollapse.value = sliderValor.value;
     })
     inputValor.addEventListener("input", () => {
         sliderValor.value = inputValor.value;
+        sliderValorCollapse.value = inputValor.value;
+        inputValorCollapse.value = inputValor.value;
     })
+    sliderValorCollapse.addEventListener("input", () => {
+        sliderValor.value = sliderValorCollapse.value;
+        inputValor.value = sliderValorCollapse.value;
+        inputValorCollapse.value = sliderValorCollapse.value;
+    })
+    inputValorCollapse.addEventListener("input", () => {
+        sliderValor.value = inputValorCollapse.value;
+        inputValor.value = inputValorCollapse.value;
+        sliderValorCollapse.value = inputValorCollapse.value;
+    })
+
     sliderValor.addEventListener("change", sliderFilter);
     inputValor.addEventListener("change", sliderFilter);
+    sliderValorCollapse.addEventListener("change", sliderFilter);
+    inputValorCollapse.addEventListener("change", sliderFilter);
 
 })
 
