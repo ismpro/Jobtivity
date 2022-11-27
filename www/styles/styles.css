@@ -1,0 +1,15 @@
+body {
+    min-height: 100vh;
+    margin: 0;
+}
+
+main {
+    background-image: url(bg.svg);
+    background-repeat: no-repeat;
+    min-height: calc(100vh - 90px);
+    margin: 0;
+}
+
+.white-text {
+    color: white;
+}

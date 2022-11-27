@@ -1,170 +1,216 @@
 "use strict";
 
-const Area = {
-    Dev: "Programação",
-    Database: "Base de Dados",
-    SysAdmin: "Administração de Sistemas"
-}
+const dataController = (function () {
 
-var jobsObj = [{
-    nome: "Deloitte",
-    descricao: "Procuramos programador de React que seja bastante bom a tocar flauta de olhos vendados enquanto descasca uma maçã com os dedos dos pés. Oferecemos  remuneração  simpática. Pena é não terem tempo livre para aproveitar o salário.",
-    area: Area.Dev,
-    duracao: 12,
-    valor: 1500,
-    validade: new Date("2023-12-31")
-},
-{
-    nome: "Siemens",
-    descricao: "Analista de dados",
-    area: Area.Database,
-    duracao: 24,
-    valor: 1800,
-    validade: new Date("2024-10-31")
-},
-{
-    nome: "Closure",
-    descricao: "Fazem tudo",
-    area: Area.SysAdmin,
-    duracao: 45,
-    valor: 2000,
-    validade: new Date("2024-12-31")
-},
-{
-    nome: "Closure",
-    descricao: "Fazem tudo so que ao contrario",
-    area: Area.Dev,
-    duracao: 45,
-    valor: 1540,
-    validade: new Date("2023-02-23")
-}];
+    const maxPerPage = 10;
 
-const jobsConst = jobsObj.slice()
-Object.freeze(jobsConst)
+    let data = [];
+    let dataOriginal = [];
 
-var sort = {
-    type: "",
-    asc: false
-};
+    let pageIndex = 0;
 
-function onLoad() {
+    let add = function (obj) {
+        if (!dataOriginal.length) {
+            data = obj;
+            dataOriginal = JSON.parse(JSON.stringify(obj));
+            Object.freeze(dataOriginal);
 
-    const mainSection = document.getElementById("section_jobs");
-
-    while (mainSection.hasChildNodes()) {
-        mainSection.firstChild.remove();
+            let sort = JSON.parse(window.sessionStorage.getItem("sort"));
+            if(sort) {
+                document.getElementById(`${sort.type}Icon`).innerText = sort.asc ? "keyboard_arrow_up" : "keyboard_arrow_down";
+                data.sort((a, b) => sort.asc ? a[sort.type] - b[sort.type] : b[sort.type] - a[sort.type])
+            }
+            
+            buildDom();
+        }
     }
 
-    jobsObj.forEach(element => {
+    let filter = function (fn) {
+        data = dataOriginal.filter(fn);
+        buildDom();
+    }
 
-        const div = document.createElement("div");
-        div.style = "border-style: none;";
-        div.className = "row g-0";
-        div.innerHTML =
-            `
-        <div class="col" style="border-style: none;">
-        <div class="card"
-            style="box-shadow: 0px 0px;border-style: solid;border-radius: 20px;">
-            <div class="card-body" style="border-style: none;">
-                <div class="row" style="border-style: none;height: 30px;">
-                    <div class="col">
-                        <h1 style="width: 100%;">${element.nome}</h1>
-                    </div>
-                    <div class="col">
-                        <h3 style="text-align: right;">${element.area}</h3>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xl-10">
-                        <p
-                            style="width: 100%;min-width: 100px;text-align: left;overflow: scroll;overflow-y: auto;overflow-x: visible;max-height: 150px;">
-                            <br><span style="color: rgb(0, 0, 0);">${element.descricao}</span><br><br></p>
-                    </div>
-                    <div class="col" style="width: 141.5px;">
-                        <p class="d-xl-flex justify-content-xl-center align-items-xl-center"
-                            style="text-align: right;margin: 0px;height: 100%;">${element.valor}€
-                        </p>
-                    </div>
-                </div>
-                <div class="row" style="height: 50px;">
-                    <div class="col">
-                        <p><br><strong><span style="color: rgb(0, 0, 0);">Contract for
-                        ${element.duracao} months</span></strong><br><br></p>
-                    </div>
-                    <div class="col">
-                        <p style="text-align: right;"><br><strong><span
-                                    style="color: rgb(0, 0, 0);">Offer available until
-                                    ${element.validade.toLocaleString().split(',')[0]}</span></strong><br><br></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-        `
-        /* cardContainer.className = "cardContainer";
-
-        const titleHeading = document.createElement("h3");
-        const area = document.createElement("p");
-        const description = document.createElement("p");
-        const duration = document.createElement("p");
-        const money = document.createElement("p");
-        const available = document.createElement("p");
-
-        titleHeading.className = "title";
-        area.className = "area";
-        description.className = "description";
-        duration.className = "duration";
-        money.className = "money";
-        available.className = "available";
-
-        cardContainer.appendChild(titleHeading);
-        cardContainer.appendChild(area);
-        cardContainer.appendChild(description);
-        cardContainer.appendChild(duration);
-        cardContainer.appendChild(money);
-        cardContainer.appendChild(available);
-
-        titleHeading.appendChild(document.createTextNode(element.nome));
-        description.appendChild(document.createTextNode(element.descricao));
-        duration.appendChild(document.createTextNode("Contract for " + element.duracao + " months"));
-        area.appendChild(document.createTextNode(element.area));
-        money.appendChild(document.createTextNode(element.valor + "€"));
-        available.appendChild(document.createTextNode("Offer available until " + element.validade.toLocaleString().split(',')[0])); */
-
-        mainSection.appendChild(div);
-
-    });
-}
-
-function onSort(type) {
-    if (type !== "remove") {
-        if (sort.type === type) {
-            sort.asc = !sort.asc;
-            document.getElementById(`${sort.type}Btn`).innerText = sort.asc ? "(asc)" : "(desc)";
-        } else {
-            if (sort.type) document.getElementById(`${sort.type}Btn`).innerText = "";
-            document.getElementById(`${type}Btn`).innerText = "(desc)";
-            sort.type = type;
-            sort.asc = false;
-        }
-        jobsObj.sort((a, b) => sort.asc ? a[sort.type] - b[sort.type] : b[sort.type] - a[sort.type])
-    } else {
-        if (sort.type) document.getElementById(`${sort.type}Btn`).innerText = "";
-        sort = {
+    let onSort = function (type) {
+        let sort = JSON.parse(window.sessionStorage.getItem("sort"));
+        if (!sort) sort = {
             type: "",
             asc: false
+        };
+        if (type !== "remove") {
+            if (sort.type === type) {
+                sort.asc = !sort.asc;
+                document.getElementById(`${sort.type}Icon`).innerText = sort.asc ? "keyboard_arrow_up" : "keyboard_arrow_down";
+            } else {
+                if (sort.type) document.getElementById(`${sort.type}Icon`).innerText = "";
+                document.getElementById(`${type}Icon`).innerText = "keyboard_arrow_down";
+                sort.type = type;
+                sort.asc = false;
+            }
+            data.sort((a, b) => sort.asc ? a[sort.type] - b[sort.type] : b[sort.type] - a[sort.type])
+        } else {
+            if (sort.type) document.getElementById(`${sort.type}Icon`).innerText = "";
+            sort = {
+                type: "",
+                asc: false
+            }
+            reset();
         }
-        jobsObj = jobsConst;
+        window.sessionStorage.setItem("sort", JSON.stringify(sort));
+        buildDom();
     }
-    onLoad()
-}
+
+    let reset = function (fn) {
+        data = dataOriginal;
+        buildDom();
+    }
+
+    let buildDom = function () {
+
+        const mainSection = document.getElementById("section_jobs");
+        const nextButton = document.getElementById("nextButton");
+        const previousButton = document.getElementById("previousButton");
+
+        let build = function () {
+
+            while (mainSection.hasChildNodes()) {
+                mainSection.firstChild.remove();
+            }
+
+            data.slice(pageIndex * maxPerPage, (pageIndex + 1) * maxPerPage).forEach(element => {
+                const div = document.createElement("div");
+                div.style = "border-style: none;";
+                div.className = "row g-0";
+                div.innerHTML =
+                    `
+                <div class="col" style="border-style: none;">
+                    <div class="card"
+                        style="box-shadow: 0px 0px;border-style: solid;border-radius: 20px;">
+                        <div class="card-body" style="border-style: none;">
+                            <div class="row" style="border-style: none;height: 30px;">
+                                <div class="col">
+                                    <h1 style="width: 100%;">${element.nome}</h1>
+                                </div>
+                                <div class="col">
+                                    <h3 style="text-align: right;">${element.area}</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-10">
+                                    <p
+                                        style="width: 100%;min-width: 100px;text-align: left;overflow: scroll;overflow-y: auto;overflow-x: visible;max-height: 150px;">
+                                        <br><span style="color: rgb(0, 0, 0);">${element.descricao}</span><br><br></p>
+                                </div>
+                                <div class="col" style="width: 141.5px;">
+                                    <p class="d-xl-flex justify-content-xl-center align-items-xl-center"
+                                        style="text-align: right;margin: 0px;height: 100%;">${element.valor}€
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row" style="height: 50px;">
+                                <div class="col">
+                                    <p><br><strong><span style="color: rgb(0, 0, 0);">Contract for
+                                    ${element.duracao} months</span></strong><br><br></p>
+                                </div>
+                                <div class="col">
+                                    <p style="text-align: right;"><br><strong><span
+                                                style="color: rgb(0, 0, 0);">Offer available until
+                                                ${(new Date(element.validade)).toLocaleString().split(',')[0]}</span></strong><br><br></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `
+                mainSection.appendChild(div);
+            });
+        }
+
+        /* <li class="page-item active"><a class="page-link">1</a></li>
+            <li class="page-item"><a class="page-link">2</a></li>
+            <li class="page-item"><a class="page-link">3</a></li>  */
+
+        build();
+
+        while (!previousButton.nextElementSibling.isSameNode(nextButton)) {
+            previousButton.nextElementSibling.remove()
+        }
+        pageIndex = 0;
+
+        let numOfPages = Math.ceil(data.length / maxPerPage);
+
+        for (let num = 0; num < numOfPages; num++) {
+            let li = document.createElement('li');
+            let a = document.createElement('a');
+
+            li.id = "pageindex" + num;
+
+            li.className = "page-item";
+            a.className = "page-link";
+            a.appendChild(document.createTextNode(num + 1));
+
+            a.addEventListener("click", ev => {
+
+                let nextNode = previousButton;
+                while (!nextNode.nextElementSibling.isSameNode(nextButton)) {
+                    nextNode.nextElementSibling.classList.remove("active");
+                    nextNode = nextNode.nextElementSibling;
+                }
+
+                pageIndex = num;
+                li.classList.add("active");
+                build();
+            })
+
+            li.appendChild(a);
+            nextButton.before(li);
+        }
+
+        nextButton.addEventListener("click", ev => {
+            pageIndex = Math.min(pageIndex + 1, numOfPages - 1);
+            let nextNode = previousButton;
+            while (!nextNode.nextElementSibling.isSameNode(nextButton)) {
+                nextNode.nextElementSibling.classList.remove("active");
+                nextNode = nextNode.nextElementSibling;
+            }
+            document.getElementById("pageindex" + pageIndex).classList.toggle("active");
+            build();
+        });
+
+        nextButton.previousElementSibling.addEventListener("click", ev => {
+            nextButton.classList.toggle("disabled");
+        });
+
+        previousButton.addEventListener("click", ev => {
+            pageIndex = Math.max(pageIndex - 1, 0);
+            let nextNode = previousButton;
+            while (!nextNode.nextElementSibling.isSameNode(nextButton)) {
+                nextNode.nextElementSibling.classList.remove("active");
+                nextNode = nextNode.nextElementSibling;
+            }
+            document.getElementById("pageindex" + pageIndex).classList.toggle("active");
+            build();
+        })
+
+        previousButton.nextElementSibling.addEventListener("click", ev => {
+            previousButton.classList.toggle("disabled");
+        });
+
+        previousButton.nextElementSibling.classList.add("active");
+    }
+
+    return {
+        addData: add,
+        filter,
+        onSort,
+        reset
+    }
+}())
 
 const filterController = (function () {
     const filters = [];
 
     let filterDOM = function () {
-        jobsObj = jobsConst.filter((job) => filters.every(filter => filter.fn(job)))
-        onLoad();
+        dataController.filter((job) => filters.every(filter => filter.fn(job)));
     }
 
     /**
@@ -198,7 +244,7 @@ const filterController = (function () {
     }
 }())
 
-function createFilterButtons(id, key, title) {
+function createFilterButtons(id, key, title, jobs) {
 
     const parent = document.getElementById(id);
     const parentCollapse = document.getElementById(id + "Collapse");
@@ -206,11 +252,9 @@ function createFilterButtons(id, key, title) {
     parentCollapse.innerHTML = `<h3>${title}</h3>`;
 
     let arrControl = [];
-    const datas = new Set(jobsConst.map(e => e[key]));
+    const datas = new Set(jobs.map(e => e[key]));
 
     for (const data of datas) {
-
-        console.log(data)
 
         let div = document.createElement("div");
         let input = document.createElement("input");
@@ -281,37 +325,20 @@ function createFilterButtons(id, key, title) {
         div.appendChild(input);
         parent.appendChild(div);
     }
-    
+
 }
 
 window.addEventListener("DOMContentLoaded", function () {
+
+    const api = axios.create({
+        baseURL: window.location.origin,
+        withCredentials: true,
+    });
+
     const sliderValor = document.getElementById('sliderValor');
     const inputValor = document.getElementById('inputValor');
     const sliderValorCollapse = document.getElementById('sliderValorCollapse');
     const inputValorCollapse = document.getElementById('inputValor');
-
-    let arr = jobsConst.map(job => job.valor);
-    let max = Math.max(...arr);
-    let min = Math.min(...arr);
-
-    sliderValor.max = max;
-    sliderValor.min = min;
-    sliderValor.value = min;
-
-    inputValor.min = min;
-    inputValor.max = max;
-    inputValor.value = min;
-
-    sliderValorCollapse.max = max;
-    sliderValorCollapse.min = min;
-    sliderValorCollapse.value = min;
-
-    inputValorCollapse.min = min;
-    inputValorCollapse.max = max;
-    inputValorCollapse.value = min;
-
-    createFilterButtons("areaFilter", "area", "Area");
-    createFilterButtons("empresaFilter", "nome", "Empresas");
 
     function sliderFilter() {
         filterController.add({
@@ -347,6 +374,33 @@ window.addEventListener("DOMContentLoaded", function () {
     sliderValorCollapse.addEventListener("change", sliderFilter);
     inputValorCollapse.addEventListener("change", sliderFilter);
 
+    api.get('/api/jobs').then(res => {
+        if (typeof res.data === 'object') {
+            dataController.addData(res.data);
+
+            let arr = res.data.map(job => job.valor);
+            let max = Math.max(...arr);
+            let min = Math.min(...arr);
+
+            sliderValor.max = max;
+            sliderValor.min = min;
+            sliderValor.value = min;
+
+            inputValor.min = min;
+            inputValor.max = max;
+            inputValor.value = min;
+
+            sliderValorCollapse.max = max;
+            sliderValorCollapse.min = min;
+            sliderValorCollapse.value = min;
+
+            inputValorCollapse.min = min;
+            inputValorCollapse.max = max;
+            inputValorCollapse.value = min;
+
+            createFilterButtons("areaFilter", "area", "Area", res.data);
+            createFilterButtons("empresaFilter", "nome", "Empresas", res.data);
+        }
+    });
 })
 
-window.addEventListener("DOMContentLoaded", onLoad)
