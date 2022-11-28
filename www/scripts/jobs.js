@@ -1,14 +1,31 @@
 "use strict";
 
+/**
+ * Controller of the data of jobs.
+ */
 const dataController = (function () {
 
-    const maxPerPage = 10;
-
+    /**
+     * Const of the max cards per page
+     */
+    const MAXPERPAGE = 10;
+    /**
+     * Data used in the building of the dom
+     */
     let data = [];
+    /**
+     * Copy of the original data without modifications
+     */
     let dataOriginal = [];
-
+    /**
+     * Index of the page
+     */
     let pageIndex = 0;
 
+    /**
+     * Adds data to the controller. Only use this function in the begin.
+     * @param {[{ nome: String, descricao: String, area: String, duracao: Number,  valor: Number, validade: Date }]} obj Array with jobs
+     */
     let add = function (obj) {
         if (!dataOriginal.length) {
             data = obj;
@@ -16,70 +33,91 @@ const dataController = (function () {
             Object.freeze(dataOriginal);
 
             let sort = JSON.parse(window.sessionStorage.getItem("sort"));
-            if(sort) {
-                document.getElementById(`${sort.type}Icon`).innerText = sort.asc ? "keyboard_arrow_up" : "keyboard_arrow_down";
-                data.sort((a, b) => sort.asc ? a[sort.type] - b[sort.type] : b[sort.type] - a[sort.type])
+            if (sort) {
+                document.getElementById(`${sort.key}Icon`).innerText = sort.asc ? "keyboard_arrow_up" : "keyboard_arrow_down";
+                data.sort((a, b) => sort.asc ? a[sort.key] - b[sort.key] : b[sort.key] - a[sort.key])
             }
-            
+
             buildDom();
         }
     }
-
+    /**
+     * Callback for the filter execute
+     * @callback filterCallback
+     * @param {{ nome: String, descricao: String, area: String, duracao: Number,  valor: Number, validade: Date }} job
+     */
+    /**
+     * Filter the content of the jobs.
+     * @param {filterCallback} fn The function for the filter
+     */
     let filter = function (fn) {
         data = dataOriginal.filter(fn);
         buildDom();
     }
 
-    let onSort = function (type) {
+    /**
+     * Sorts the content of the jobs.
+     * @param {String} key Key of the jobs you want to sort by
+     */
+    let onSort = function (key) {
         let sort = JSON.parse(window.sessionStorage.getItem("sort"));
         if (!sort) sort = {
-            type: "",
+            key: "",
             asc: false
         };
-        if (type !== "remove") {
-            if (sort.type === type) {
-                sort.asc = !sort.asc;
-                document.getElementById(`${sort.type}Icon`).innerText = sort.asc ? "keyboard_arrow_up" : "keyboard_arrow_down";
-            } else {
-                if (sort.type) document.getElementById(`${sort.type}Icon`).innerText = "";
-                document.getElementById(`${type}Icon`).innerText = "keyboard_arrow_down";
-                sort.type = type;
-                sort.asc = false;
-            }
-            data.sort((a, b) => sort.asc ? a[sort.type] - b[sort.type] : b[sort.type] - a[sort.type])
+        if (sort.key === key) {
+            sort.asc = !sort.asc;
+            document.getElementById(`${sort.key}Icon`).innerText = sort.asc ? "keyboard_arrow_up" : "keyboard_arrow_down";
         } else {
-            if (sort.type) document.getElementById(`${sort.type}Icon`).innerText = "";
-            sort = {
-                type: "",
-                asc: false
-            }
-            reset();
+            if (sort.key) document.getElementById(`${sort.key}Icon`).innerText = "";
+            document.getElementById(`${key}Icon`).innerText = "keyboard_arrow_down";
+            sort.key = key;
+            sort.asc = false;
         }
+        data.sort((a, b) => sort.asc ? a[sort.key] - b[sort.key] : b[sort.key] - a[sort.key])
+
         window.sessionStorage.setItem("sort", JSON.stringify(sort));
         buildDom();
     }
 
-    let reset = function (fn) {
+    /**
+     * Reset the data of any sort or filter
+     */
+    let reset = function () {
         data = dataOriginal;
+        let sort = JSON.parse(window.sessionStorage.getItem("sort"));
+        if (sort) {
+            document.getElementById(`${sort.key}Icon`).innerText = "";
+        }
+        window.sessionStorage.setItem("sort", JSON.stringify({
+            key: "",
+            asc: false
+        }));
         buildDom();
     }
 
+    /**
+     * Private function to build or rebuild the dom with jobs
+     */
     let buildDom = function () {
 
         const mainSection = document.getElementById("section_jobs");
         const nextButton = document.getElementById("nextButton");
         const previousButton = document.getElementById("previousButton");
+        const pagination = document.querySelector(".pagination");
 
+        /**
+         * Rebuilds the dom content
+         */
         let build = function () {
 
             while (mainSection.hasChildNodes()) {
                 mainSection.firstChild.remove();
             }
 
-            data.slice(pageIndex * maxPerPage, (pageIndex + 1) * maxPerPage).forEach(element => {
+            data.slice(pageIndex * MAXPERPAGE, (pageIndex + 1) * MAXPERPAGE).forEach((element, index) => {
                 const div = document.createElement("div");
-                div.style = "border-style: none;";
-                div.className = "row g-0";
+                div.className = "row g-0 card";
                 div.innerHTML =
                     `
                 <div class="col" style="border-style: none;">
@@ -106,15 +144,24 @@ const dataController = (function () {
                                     </p>
                                 </div>
                             </div>
-                            <div class="row" style="height: 50px;">
+                            <div class="row">
+                            <div class="col">
+                                <p class="d-xl-flex justify-content-xl-start align-items-xl-center" style="height: 100%;">
+                                    <br><strong><span style="color: rgb(0, 0, 0);">Contract for 12 months</span></strong><br><br>
+                                </p>
+                            </div>
+                            <div class="col">
+                                <p class="d-xl-flex justify-content-xl-end align-items-xl-center" style="text-align: right;height: 100%;">
+                                    <br><strong><span style="color: rgb(0, 0, 0);">Offer available until 12/31/2023</span></strong><br><br>
+                                </p>
+                            </div>
+                        </div>
+                            <div class="row">
                                 <div class="col">
-                                    <p><br><strong><span style="color: rgb(0, 0, 0);">Contract for
-                                    ${element.duracao} months</span></strong><br><br></p>
-                                </div>
-                                <div class="col">
-                                    <p style="text-align: right;"><br><strong><span
-                                                style="color: rgb(0, 0, 0);">Offer available until
-                                                ${(new Date(element.validade)).toLocaleString().split(',')[0]}</span></strong><br><br></p>
+                                    <div class="form-check d-flex d-xl-flex justify-content-end justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end justify-content-xxl-end">
+                                        <input class="form-check-input" type="checkbox" id="compararCheck${index}" style="margin-right: 10px;">
+                                        <label class="form-check-label" for="compararCheck${index}">Comparar</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -125,77 +172,81 @@ const dataController = (function () {
             });
         }
 
-        /* <li class="page-item active"><a class="page-link">1</a></li>
-            <li class="page-item"><a class="page-link">2</a></li>
-            <li class="page-item"><a class="page-link">3</a></li>  */
-
         build();
 
-        while (!previousButton.nextElementSibling.isSameNode(nextButton)) {
-            previousButton.nextElementSibling.remove()
-        }
-        pageIndex = 0;
+        if (data.length > MAXPERPAGE) {
 
-        let numOfPages = Math.ceil(data.length / maxPerPage);
+            pagination.style.display = "flex";
 
-        for (let num = 0; num < numOfPages; num++) {
-            let li = document.createElement('li');
-            let a = document.createElement('a');
+            while (!previousButton.nextElementSibling.isSameNode(nextButton)) {
+                previousButton.nextElementSibling.remove()
+            }
+            pageIndex = 0;
 
-            li.id = "pageindex" + num;
+            let numOfPages = Math.ceil(data.length / MAXPERPAGE);
 
-            li.className = "page-item";
-            a.className = "page-link";
-            a.appendChild(document.createTextNode(num + 1));
+            for (let num = 0; num < numOfPages; num++) {
+                let li = document.createElement('li');
+                let a = document.createElement('a');
 
-            a.addEventListener("click", ev => {
+                li.id = "pageindex" + num;
 
+                li.className = "page-item";
+                a.className = "page-link";
+                a.appendChild(document.createTextNode(num + 1));
+
+                a.addEventListener("click", ev => {
+
+                    let nextNode = previousButton;
+                    while (!nextNode.nextElementSibling.isSameNode(nextButton)) {
+                        nextNode.nextElementSibling.classList.remove("active");
+                        nextNode = nextNode.nextElementSibling;
+                    }
+
+                    pageIndex = num;
+                    li.classList.add("active");
+                    build();
+                })
+
+                li.appendChild(a);
+                nextButton.before(li);
+            }
+
+            nextButton.addEventListener("click", ev => {
+                pageIndex = Math.min(pageIndex + 1, numOfPages - 1);
                 let nextNode = previousButton;
                 while (!nextNode.nextElementSibling.isSameNode(nextButton)) {
                     nextNode.nextElementSibling.classList.remove("active");
                     nextNode = nextNode.nextElementSibling;
                 }
+                document.getElementById("pageindex" + pageIndex).classList.toggle("active");
+                build();
+            });
 
-                pageIndex = num;
-                li.classList.add("active");
+            nextButton.previousElementSibling.addEventListener("click", ev => {
+                nextButton.classList.toggle("disabled");
+            });
+
+            previousButton.addEventListener("click", ev => {
+                pageIndex = Math.max(pageIndex - 1, 0);
+                let nextNode = previousButton;
+                while (!nextNode.nextElementSibling.isSameNode(nextButton)) {
+                    nextNode.nextElementSibling.classList.remove("active");
+                    nextNode = nextNode.nextElementSibling;
+                }
+                document.getElementById("pageindex" + pageIndex).classList.toggle("active");
                 build();
             })
 
-            li.appendChild(a);
-            nextButton.before(li);
+            previousButton.nextElementSibling.addEventListener("click", ev => {
+                previousButton.classList.toggle("disabled");
+            });
+
+            previousButton.nextElementSibling.classList.add("active");
+
+        } else {
+            pagination.style.display = "none";
         }
-
-        nextButton.addEventListener("click", ev => {
-            pageIndex = Math.min(pageIndex + 1, numOfPages - 1);
-            let nextNode = previousButton;
-            while (!nextNode.nextElementSibling.isSameNode(nextButton)) {
-                nextNode.nextElementSibling.classList.remove("active");
-                nextNode = nextNode.nextElementSibling;
-            }
-            document.getElementById("pageindex" + pageIndex).classList.toggle("active");
-            build();
-        });
-
-        nextButton.previousElementSibling.addEventListener("click", ev => {
-            nextButton.classList.toggle("disabled");
-        });
-
-        previousButton.addEventListener("click", ev => {
-            pageIndex = Math.max(pageIndex - 1, 0);
-            let nextNode = previousButton;
-            while (!nextNode.nextElementSibling.isSameNode(nextButton)) {
-                nextNode.nextElementSibling.classList.remove("active");
-                nextNode = nextNode.nextElementSibling;
-            }
-            document.getElementById("pageindex" + pageIndex).classList.toggle("active");
-            build();
-        })
-
-        previousButton.nextElementSibling.addEventListener("click", ev => {
-            previousButton.classList.toggle("disabled");
-        });
-
-        previousButton.nextElementSibling.classList.add("active");
     }
 
     return {
@@ -206,16 +257,25 @@ const dataController = (function () {
     }
 }())
 
+/**
+ * Controller of filters
+ */
 const filterController = (function () {
+    /**
+     * Array with the filters
+     */
     const filters = [];
 
+    /**
+     * Comunicates with data controller and passes the filters function
+     */
     let filterDOM = function () {
         dataController.filter((job) => filters.every(filter => filter.fn(job)));
     }
 
     /**
-     * 
-     * @param {{type: String, fn: Function}} obj 
+     * Adds a filter
+     * @param {{type: String, fn: Function}} obj Object with filter information
      */
     let addFilter = function (obj) {
         let filter = filters.find(filter => filter.type === obj.type)
@@ -228,8 +288,8 @@ const filterController = (function () {
     }
 
     /**
-     * 
-     * @param {String} type 
+     * Removes a filter
+     * @param {String} type Key with the type to be remove
      */
     let removeFilter = function (type) {
         let index = filters.findIndex(filter => filter.type === type);
@@ -244,6 +304,13 @@ const filterController = (function () {
     }
 }())
 
+/**
+ * Creates the filters checkboxs
+ * @param {String} id Id of the parent element where the checkbox with be created
+ * @param {String} key Key on the obj pass
+ * @param {String} title Title of the buttons
+ * @param {[{ nome: String, descricao: String, area: String, duracao: Number,  valor: Number, validade: Date }]} jobs Array with jobs
+ */
 function createFilterButtons(id, key, title, jobs) {
 
     const parent = document.getElementById(id);
@@ -284,13 +351,6 @@ function createFilterButtons(id, key, title, jobs) {
         labelCollapse.htmlFor = "formCheck-" + data;
         labelCollapse.appendChild(document.createTextNode(data));
 
-        /* 
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="formCheck-5">
-            <label class="form-check-label" for="formCheck-5">Samsung</label>
-        </div>
-        */
-
         const eventClicker = (bool) => {
             if (bool) {
                 arrControl.push(data);
@@ -330,6 +390,7 @@ function createFilterButtons(id, key, title, jobs) {
 
 window.addEventListener("DOMContentLoaded", function () {
 
+    //Creates a instance of axios
     const api = axios.create({
         baseURL: window.location.origin,
         withCredentials: true,
@@ -340,6 +401,7 @@ window.addEventListener("DOMContentLoaded", function () {
     const sliderValorCollapse = document.getElementById('sliderValorCollapse');
     const inputValorCollapse = document.getElementById('inputValor');
 
+    //Adds a filter on filter controller
     function sliderFilter() {
         filterController.add({
             type: "valor",
@@ -348,27 +410,29 @@ window.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    //if one slider moves update the others
     sliderValor.addEventListener("input", () => {
         inputValor.value = sliderValor.value;
         sliderValorCollapse.value = sliderValor.value;
         inputValorCollapse.value = sliderValor.value;
-    })
+    });
     inputValor.addEventListener("input", () => {
         sliderValor.value = inputValor.value;
         sliderValorCollapse.value = inputValor.value;
         inputValorCollapse.value = inputValor.value;
-    })
+    });
     sliderValorCollapse.addEventListener("input", () => {
         sliderValor.value = sliderValorCollapse.value;
         inputValor.value = sliderValorCollapse.value;
         inputValorCollapse.value = sliderValorCollapse.value;
-    })
+    });
     inputValorCollapse.addEventListener("input", () => {
         sliderValor.value = inputValorCollapse.value;
         inputValor.value = inputValorCollapse.value;
         sliderValorCollapse.value = inputValorCollapse.value;
-    })
+    });
 
+    //Adds events for the filters
     sliderValor.addEventListener("change", sliderFilter);
     inputValor.addEventListener("change", sliderFilter);
     sliderValorCollapse.addEventListener("change", sliderFilter);
@@ -376,8 +440,9 @@ window.addEventListener("DOMContentLoaded", function () {
 
     api.get('/api/jobs').then(res => {
         if (typeof res.data === 'object') {
-            dataController.addData(res.data);
+            dataController.addData(res.data.map(job => ({ ...job, validade: new Date(job.validade) })));
 
+            //Sets the values for the sliders
             let arr = res.data.map(job => job.valor);
             let max = Math.max(...arr);
             let min = Math.min(...arr);
@@ -404,3 +469,17 @@ window.addEventListener("DOMContentLoaded", function () {
     });
 })
 
+/**
+ * Removes and adds the comparar tab on modal
+ * @param {("open"|"close")} type the type of operation
+ */
+function compararButton(type) {
+    let compararContainer = document.getElementById("comparar-container");
+
+    if (type === "close") {
+        compararContainer.style.display = "none";
+        compararContainer.classList.remove("d-inline-flex");
+    } if (type === "open") {
+        compararContainer.classList.add("d-inline-flex");
+    }
+}
