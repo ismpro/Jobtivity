@@ -55,6 +55,7 @@ main {
     text-align: center;
     align-items: center;
     margin-top: 20px;
+    margin-left: 5%;
 }
 
 .homecards-container .home-cards {
@@ -134,4 +135,12 @@ main {
     margin: 0;
     padding: 0;
     color: black;
+}
+
+.starting-text{
+    margin-top: 5%;
+}
+
+.section-about-us{
+    background-color: transparent  !important;
 }
