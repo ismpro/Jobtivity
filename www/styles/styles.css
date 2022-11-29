@@ -136,3 +136,11 @@ main {
     padding: 0;
     color: black;
 }
+
+.starting-text{
+    margin-top: 5%;
+}
+
+.section-about-us{
+    background-color: transparent  !important;
+}
