@@ -21,6 +21,10 @@ const dataController = (function () {
      * Index of the page
      */
     let pageIndex = 0;
+    /**
+     * Array with the jobs for the compare
+     */
+    let compararArray = [];
 
     /**
      * Adds data to the controller. Only use this function in the begin.
@@ -105,6 +109,120 @@ const dataController = (function () {
         const nextButton = document.getElementById("nextButton");
         const previousButton = document.getElementById("previousButton");
         const pagination = document.querySelector(".pagination");
+        const modal = document.querySelector(".modal-body.row");
+        const compararInfo = document.getElementById("comparar-info");
+        const selectedText = document.getElementById("selected-text");
+        const buttonCompare = document.getElementById("button-compare");
+
+        /**
+         * Creates DOM for compare feature and its controles
+         */
+        let buildComparar = function () {
+
+            let compararDivChecks = document.querySelectorAll("div.form-check.d-flex.d-xl-flex.justify-content-end");
+
+            if (compararArray.length === 3) {
+                compararDivChecks.forEach(div => {
+                    if (!div.firstElementChild.checked) {
+                        div.firstElementChild.disabled = true;
+                    }
+                })
+            } else {
+                compararDivChecks.forEach(div => {
+                    div.firstElementChild.disabled = false;
+                })
+            }
+
+            if (compararArray.length > 1) {
+                buttonCompare.style.display = "block";
+            } else {
+                buttonCompare.style.display = "none";
+            }
+
+            compararContainerCloseOrOpen(compararArray.length > 0 ? "open" : "close")
+            selectedText.textContent = `${compararArray.length} Ofertas selecionadas${compararArray.length < 2 ? ", precisas de pelo menos 2" : ""}`
+
+            //Clears the divs for the new DOM
+            while (compararInfo.hasChildNodes()) {
+                compararInfo.firstChild.remove();
+            }
+            while (modal.hasChildNodes()) {
+                modal.firstChild.remove();
+            }
+
+            compararArray.forEach(ele => {
+
+                //Div below the page creation
+                let div = document.createElement("div");
+                let h4 = document.createElement("h4");
+                let p = document.createElement("p");
+
+                div.className = "col";
+
+                h4.appendChild(document.createTextNode(ele.job.nome));
+                p.appendChild(document.createTextNode(`${ele.job.area} - ${ele.job.valor}€`));
+                div.appendChild(h4);
+                div.appendChild(p);
+                compararInfo.appendChild(div);
+
+                //Modal dom creation
+                let divModal = document.createElement("div");
+                let h4Modal = document.createElement("h4");
+                let pModal1 = document.createElement("p");
+                let pModal2 = document.createElement("p");
+                let pModal3 = document.createElement("p");
+                let pModal4 = document.createElement("p");
+
+                divModal.className = "col";
+                h4Modal.appendChild(document.createTextNode(ele.job.nome));
+                pModal1.appendChild(document.createTextNode(`${ele.job.valor}€`));
+                pModal2.appendChild(document.createTextNode(ele.job.area));
+                pModal3.appendChild(document.createTextNode(`For ${ele.job.duracao} months`));
+                pModal4.appendChild(document.createTextNode(`Until ${ele.job.validade.toLocaleString().split(',')[0]}`));
+
+                divModal.appendChild(h4Modal);
+                divModal.appendChild(pModal1);
+                divModal.appendChild(pModal2);
+                divModal.appendChild(pModal3);
+                divModal.appendChild(pModal4);
+                modal.appendChild(divModal);
+            });
+
+            let canvas = document.createElement("canvas");
+            var ctx = canvas.getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                  labels: compararArray.map(ele => ele.job.nome),
+                  datasets: [{
+                    label: 'Salario',
+                    data: compararArray.map(ele => ele.job.valor),
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(54, 162, 235, 0.2)'
+                      ],
+                      borderColor: [
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(54, 162, 235, 0.2)'
+                      ],
+                    borderWidth: 1
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  scales: {
+                    yAxes: [{
+                      ticks: {
+                        beginAtZero: true
+                      }
+                    }]
+                  }
+                }
+              });
+            modal.appendChild(canvas);
+        }
 
         /**
          * Rebuilds the dom content
@@ -117,57 +235,125 @@ const dataController = (function () {
 
             data.slice(pageIndex * MAXPERPAGE, (pageIndex + 1) * MAXPERPAGE).forEach((element, index) => {
                 const div = document.createElement("div");
-                div.className = "row g-0 card";
-                div.innerHTML =
-                    `
-                <div class="col" style="border-style: none;">
-                    <div class="card"
-                        style="box-shadow: 0px 0px;border-style: solid;border-radius: 20px;">
-                        <div class="card-body" style="border-style: none;">
-                            <div class="row" style="border-style: none;height: 30px;">
-                                <div class="col">
-                                    <h1 style="width: 100%;">${element.nome}</h1>
-                                </div>
-                                <div class="col">
-                                    <h3 style="text-align: right;">${element.area}</h3>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xl-10">
-                                    <p
-                                        style="width: 100%;min-width: 100px;text-align: left;overflow: scroll;overflow-y: auto;overflow-x: visible;max-height: 150px;">
-                                        <br><span style="color: rgb(0, 0, 0);">${element.descricao}</span><br><br></p>
-                                </div>
-                                <div class="col" style="width: 141.5px;">
-                                    <p class="d-xl-flex justify-content-xl-center align-items-xl-center"
-                                        style="text-align: right;margin: 0px;height: 100%;">${element.valor}€
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="row">
-                            <div class="col">
-                                <p class="d-xl-flex justify-content-xl-start align-items-xl-center" style="height: 100%;">
-                                    <br><strong><span style="color: rgb(0, 0, 0);">Contract for 12 months</span></strong><br><br>
-                                </p>
-                            </div>
-                            <div class="col">
-                                <p class="d-xl-flex justify-content-xl-end align-items-xl-center" style="text-align: right;height: 100%;">
-                                    <br><strong><span style="color: rgb(0, 0, 0);">Offer available until 12/31/2023</span></strong><br><br>
-                                </p>
-                            </div>
-                        </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-check d-flex d-xl-flex justify-content-end justify-content-sm-end justify-content-md-end justify-content-lg-end justify-content-xl-end justify-content-xxl-end">
-                                        <input class="form-check-input" type="checkbox" id="compararCheck${index}" style="margin-right: 10px;">
-                                        <label class="form-check-label" for="compararCheck${index}">Comparar</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                `
+                div.className = "jobContainer";
+
+                let node_4 = document.createElement('DIV');
+                node_4.setAttribute('class', 'row');
+                div.appendChild(node_4);
+
+                let node_5 = document.createElement('DIV');
+                node_5.setAttribute('class', 'col');
+                node_4.appendChild(node_5);
+
+                let node_6 = document.createElement('H1');
+                node_6.appendChild(document.createTextNode(element.nome));
+                node_5.appendChild(node_6);
+
+                let node_7 = document.createElement('DIV');
+                node_7.setAttribute('class', 'col');
+                node_4.appendChild(node_7);
+
+                let node_8 = document.createElement('H3');
+                node_8.setAttribute('style', 'text-align: right;');
+                node_8.appendChild(document.createTextNode(element.area));
+                node_7.appendChild(node_8);
+
+                let node_9 = document.createElement('DIV');
+                node_9.setAttribute('class', 'row');
+                div.appendChild(node_9);
+
+                let node_10 = document.createElement('DIV');
+                node_10.setAttribute('class', 'col-xl-10');
+                node_9.appendChild(node_10);
+
+                let node_11 = document.createElement('P');
+                node_11.setAttribute('style', 'width: 100%;min-width: 100px;text-align: left;overflow: scroll;overflow-y: auto;overflow-x: visible;max-height: 150px;');
+                node_10.appendChild(node_11);
+
+                let node_13 = document.createElement('SPAN');
+                node_13.setAttribute('style', 'color: rgb(0, 0, 0);');
+                node_13.appendChild(document.createTextNode(element.descricao));
+                node_11.appendChild(node_13);
+
+                let node_16 = document.createElement('DIV');
+                node_16.setAttribute('class', 'col');
+                node_16.setAttribute('style', 'width: 141.5px;');
+                node_9.appendChild(node_16);
+
+                let node_17 = document.createElement('P');
+                node_17.setAttribute('class', 'd-xl-flex justify-content-xl-center align-items-xl-center');
+                node_17.setAttribute('style', 'text-align: right;margin: 0px;height: 100%;');
+                node_17.appendChild(document.createTextNode(element.valor + "€"));
+                node_16.appendChild(node_17);
+
+                let node_18 = document.createElement('DIV');
+                node_18.setAttribute('class', 'row');
+                div.appendChild(node_18);
+
+                let node_19 = document.createElement('DIV');
+                node_19.setAttribute('class', 'col');
+                node_18.appendChild(node_19);
+
+                let node_20 = document.createElement('P');
+                node_20.setAttribute('class', 'd-xl-flex justify-content-xl-start align-items-xl-center');
+                node_20.setAttribute('style', 'height: 100%;');
+                node_19.appendChild(node_20);
+
+                let node_22 = document.createElement('STRONG');
+                node_20.appendChild(node_22);
+                node_22.appendChild(document.createTextNode(`Contract for ${element.duracao} months`));
+
+                let node_27 = document.createElement('DIV');
+                node_27.setAttribute('class', 'col');
+                node_18.appendChild(node_27);
+
+                let node_28 = document.createElement('P');
+                node_28.setAttribute('class', 'd-xl-flex justify-content-xl-end align-items-xl-center');
+                node_28.setAttribute('style', 'text-align: right;height: 100%;');
+                node_27.appendChild(node_28);
+
+                let node_30 = document.createElement('STRONG');
+                node_28.appendChild(node_30);
+                node_30.appendChild(document.createTextNode(`Offer available until ${element.validade.toLocaleString().split(',')[0]}`));
+
+                let node_35 = document.createElement('DIV');
+                node_35.setAttribute('class', 'row');
+                div.appendChild(node_35);
+
+                let node_36 = document.createElement('DIV');
+                node_36.setAttribute('class', 'col');
+                node_35.appendChild(node_36);
+
+                let node_37 = document.createElement('DIV');
+                node_37.setAttribute('class', 'form-check d-flex d-xl-flex justify-content-end');
+                node_36.appendChild(node_37);
+
+                let input = document.createElement('input');
+                input.setAttribute('class', 'form-check-input');
+                input.setAttribute('type', 'checkbox');
+                input.setAttribute('id', `compararCheck${index}`);
+                input.setAttribute('style', 'margin-right: 10px;');
+                node_37.appendChild(input);
+
+                input.addEventListener("click", function (ev) {
+                    if (input.checked && compararArray.length < 3) {
+                        compararArray.push({
+                            id: index,
+                            job: element
+                        })
+                    } else {
+                        let idx = compararArray.find(comp => comp.id === index);
+                        if (idx !== -1) compararArray.splice(idx, 1);
+                    }
+                    buildComparar();
+                })
+
+                let label = document.createElement('label');
+                label.setAttribute('class', 'form-check-label');
+                label.setAttribute('for', `compararCheck${index}`);
+                label.appendChild(document.createTextNode("Comparar"));
+                node_37.appendChild(label);
+
                 mainSection.appendChild(div);
             });
         }
@@ -438,6 +624,8 @@ window.addEventListener("DOMContentLoaded", function () {
     sliderValorCollapse.addEventListener("change", sliderFilter);
     inputValorCollapse.addEventListener("change", sliderFilter);
 
+    compararContainerCloseOrOpen("close");
+
     api.get('/api/jobs').then(res => {
         if (typeof res.data === 'object') {
             dataController.addData(res.data.map(job => ({ ...job, validade: new Date(job.validade) })));
@@ -473,7 +661,7 @@ window.addEventListener("DOMContentLoaded", function () {
  * Removes and adds the comparar tab on modal
  * @param {("open"|"close")} type the type of operation
  */
-function compararButton(type) {
+function compararContainerCloseOrOpen(type) {
     let compararContainer = document.getElementById("comparar-container");
 
     if (type === "close") {
@@ -483,3 +671,4 @@ function compararButton(type) {
         compararContainer.classList.add("d-inline-flex");
     }
 }
+
