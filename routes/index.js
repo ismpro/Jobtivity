@@ -1,5 +1,5 @@
 const path = require("path")
-const User = require('../models/User')
+const User = require('../models/UserModel')
 
 module.exports = function (app) {
 
@@ -147,7 +147,17 @@ module.exports = function (app) {
 
 
     app.get('/test', async function (req, res) {
-        let user = await User.getById(1)
+        /* let body = {
+            this.id = obj.id
+            this.email = obj.email
+            this.password = obj.password
+            this.name = obj.name
+            this.description = obj.description
+            this.admin = obj.admin
+            this.company = obj.company
+            this.profissional = obj.profissional
+        } */
+        let user = await User.getById(parseInt(req.params.id))
         res.send(user)
     })
 }
