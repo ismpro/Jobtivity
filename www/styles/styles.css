@@ -15,9 +15,15 @@ main {
     color: white;
 }
 
-.card {
-    border-style: none;
+.jobContainer {
     margin-bottom: 20px;
+    border-style: outset;
+    border-radius: 20px;
+    padding: 15px;
+}
+
+.vagas { 
+    border-style: none;
 }
 
 .navbar-brand img{
