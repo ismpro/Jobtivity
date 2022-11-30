@@ -11,6 +11,11 @@ module.exports = function (app) {
         res.status(200).sendFile(path.join(global.appRoot, 'www', 'jobs.html'))
     })
 
+    app.post('/register', function (req, res) {
+        console.log(req.body);
+    }) 
+
+
     app.get('/api/jobs', function (req, res) {
         const Area = {
             Dev: "Programação",
