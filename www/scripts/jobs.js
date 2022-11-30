@@ -10,6 +10,10 @@ const dataController = (function () {
      */
     const MAXPERPAGE = 10;
     /**
+     * Const of the max cards per page
+     */
+     const MAXCOMPARATIONS = 3;
+    /**
      * Data used in the building of the dom
      */
     let data = [];
@@ -121,7 +125,7 @@ const dataController = (function () {
 
             let compararDivChecks = document.querySelectorAll("div.form-check.d-flex.d-xl-flex.justify-content-end");
 
-            if (compararArray.length === 3) {
+            if (compararArray.length === MAXCOMPARATIONS) {
                 compararDivChecks.forEach(div => {
                     if (!div.firstElementChild.checked) {
                         div.firstElementChild.disabled = true;
@@ -336,17 +340,17 @@ const dataController = (function () {
                 node_37.appendChild(input);
 
                 input.addEventListener("click", function (ev) {
-                    if (input.checked && compararArray.length < 3) {
+                    if (input.checked && compararArray.length < MAXCOMPARATIONS) {
                         compararArray.push({
                             id: index,
                             job: element
                         })
                     } else {
-                        let idx = compararArray.find(comp => comp.id === index);
+                        let idx = compararArray.findIndex(comp => comp.id === index);
                         if (idx !== -1) compararArray.splice(idx, 1);
                     }
                     buildComparar();
-                })
+                });
 
                 let label = document.createElement('label');
                 label.setAttribute('class', 'form-check-label');
