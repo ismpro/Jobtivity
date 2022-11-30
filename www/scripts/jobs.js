@@ -8,7 +8,7 @@ const dataController = (function () {
     /**
      * Const of the max cards per page
      */
-    const MAXPERPAGE = 10;
+    const MAXPERPAGE = 5;
     /**
      * Data used in the building of the dom
      */
@@ -159,8 +159,8 @@ const dataController = (function () {
 
                 div.className = "col";
 
-                h4.appendChild(document.createTextNode(ele.job.nome));
-                p.appendChild(document.createTextNode(`${ele.job.area} - ${ele.job.valor}€`));
+                h4.appendChild(document.createTextNode(ele.nome));
+                p.appendChild(document.createTextNode(`${ele.area} - ${ele.valor}€`));
                 div.appendChild(h4);
                 div.appendChild(p);
                 compararInfo.appendChild(div);
@@ -174,11 +174,11 @@ const dataController = (function () {
                 let pModal4 = document.createElement("p");
 
                 divModal.className = "col";
-                h4Modal.appendChild(document.createTextNode(ele.job.nome));
-                pModal1.appendChild(document.createTextNode(`${ele.job.valor}€`));
-                pModal2.appendChild(document.createTextNode(ele.job.area));
-                pModal3.appendChild(document.createTextNode(`For ${ele.job.duracao} months`));
-                pModal4.appendChild(document.createTextNode(`Until ${ele.job.validade.toLocaleString().split(',')[0]}`));
+                h4Modal.appendChild(document.createTextNode(ele.nome));
+                pModal1.appendChild(document.createTextNode(`${ele.valor}€`));
+                pModal2.appendChild(document.createTextNode(ele.area));
+                pModal3.appendChild(document.createTextNode(`For ${ele.duracao} months`));
+                pModal4.appendChild(document.createTextNode(`Until ${ele.validade.toLocaleString().split(',')[0]}`));
 
                 divModal.appendChild(h4Modal);
                 divModal.appendChild(pModal1);
@@ -193,10 +193,10 @@ const dataController = (function () {
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                  labels: compararArray.map(ele => ele.job.nome),
+                  labels: compararArray.map(ele => ele.nome),
                   datasets: [{
                     label: 'Salario',
-                    data: compararArray.map(ele => ele.job.valor),
+                    data: compararArray.map(ele => ele.valor),
                     backgroundColor: [
                         'rgba(54, 162, 235, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
@@ -232,8 +232,8 @@ const dataController = (function () {
             while (mainSection.hasChildNodes()) {
                 mainSection.firstChild.remove();
             }
-
-            data.slice(pageIndex * MAXPERPAGE, (pageIndex + 1) * MAXPERPAGE).forEach((element, index) => {
+            
+            data.slice(pageIndex * MAXPERPAGE, (pageIndex + 1) * MAXPERPAGE).forEach((element) => {
                 const div = document.createElement("div");
                 div.className = "jobContainer";
 
@@ -331,26 +331,30 @@ const dataController = (function () {
                 let input = document.createElement('input');
                 input.setAttribute('class', 'form-check-input');
                 input.setAttribute('type', 'checkbox');
-                input.setAttribute('id', `compararCheck${index}`);
+                input.setAttribute('id', `compararCheck${element.id}`);
                 input.setAttribute('style', 'margin-right: 10px;');
                 node_37.appendChild(input);
 
+                compararArray.forEach(cmp => {
+                    if(cmp.id === element.id){
+                        input.checked = true;
+                    }
+                })
+
                 input.addEventListener("click", function (ev) {
                     if (input.checked && compararArray.length < 3) {
-                        compararArray.push({
-                            id: index,
-                            job: element
-                        })
+                        compararArray.push(element)
                     } else {
-                        let idx = compararArray.find(comp => comp.id === index);
+                        let idx = compararArray.findIndex(comp => comp.id === element.id);
                         if (idx !== -1) compararArray.splice(idx, 1);
                     }
                     buildComparar();
                 })
+                
 
                 let label = document.createElement('label');
                 label.setAttribute('class', 'form-check-label');
-                label.setAttribute('for', `compararCheck${index}`);
+                label.setAttribute('for', `compararCheck${element.id}`);
                 label.appendChild(document.createTextNode("Comparar"));
                 node_37.appendChild(label);
 
@@ -628,7 +632,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
     api.get('/api/jobs').then(res => {
         if (typeof res.data === 'object') {
-            dataController.addData(res.data.map(job => ({ ...job, validade: new Date(job.validade) })));
+            dataController.addData(res.data.map((job, index) => ({ ...job, id: index, validade: new Date(job.validade)})));
 
             //Sets the values for the sliders
             let arr = res.data.map(job => job.valor);
