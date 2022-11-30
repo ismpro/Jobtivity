@@ -144,3 +144,8 @@ main {
 .section-about-us{
     background-color: transparent  !important;
 }
+
+.modal-size {
+    max-width: fit-content;
+    width: 700px;
+}
