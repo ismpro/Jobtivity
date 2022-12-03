@@ -345,6 +345,10 @@ const dataController = (function () {
                     }
                 })
 
+                if(compararArray.length == 3 && !input.checked){
+                    input.disabled = true;
+                }
+
                 input.addEventListener("click", function (ev) {
                     if (input.checked && compararArray.length < MAXCOMPARATIONS) {
                         compararArray.push(element)
