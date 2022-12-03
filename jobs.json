@@ -1,0 +1,410 @@
+[
+    {
+        "nome": "Uber Technologies Inc.",
+        "descricao": "Uber Technologies Inc. - Professor - 37 - 1013",
+        "area": "Professor",
+        "duracao": 37,
+        "valor": 1013,
+        "validade": "2025-01-16T04:30:13.398Z"
+    },
+    {
+        "nome": "Apple",
+        "descricao": "Apple - Financial Advisor - 15 - 2816",
+        "area": "Financial Advisor",
+        "duracao": 15,
+        "valor": 2816,
+        "validade": "2024-06-13T10:49:27.809Z"
+    },
+    {
+        "nome": "Uber Technologies Inc.",
+        "descricao": "Uber Technologies Inc. - Financial Advisor - 52 - 2699",
+        "area": "Financial Advisor",
+        "duracao": 52,
+        "valor": 2699,
+        "validade": "2025-06-18T10:55:42.310Z"
+    },
+    {
+        "nome": "Amazon",
+        "descricao": "Amazon - Financial Advisor - 11 - 2084",
+        "area": "Financial Advisor",
+        "duracao": 11,
+        "valor": 2084,
+        "validade": "2023-07-06T14:18:19.691Z"
+    },
+    {
+        "nome": "SAP",
+        "descricao": "SAP - Analyst Programmer - 21 - 1955",
+        "area": "Analyst Programmer",
+        "duracao": 21,
+        "valor": 1955,
+        "validade": "2023-03-26T19:54:27.457Z"
+    },
+    {
+        "nome": "Deloitte",
+        "descricao": "Deloitte - Software Test Engineer - 25 - 1970",
+        "area": "Software Test Engineer",
+        "duracao": 25,
+        "valor": 1970,
+        "validade": "2023-03-01T03:21:09.790Z"
+    },
+    {
+        "nome": "Amazon",
+        "descricao": "Amazon - Systems Administrator - 19 - 1708",
+        "area": "Systems Administrator",
+        "duracao": 19,
+        "valor": 1708,
+        "validade": "2025-03-05T02:09:45.252Z"
+    },
+    {
+        "nome": "Microsoft",
+        "descricao": "Microsoft - Pharmacist - 17 - 2561",
+        "area": "Pharmacist",
+        "duracao": 17,
+        "valor": 2561,
+        "validade": "2025-03-30T08:17:45.268Z"
+    },
+    {
+        "nome": "Oracle",
+        "descricao": "Oracle - Pharmacist - 40 - 2782",
+        "area": "Pharmacist",
+        "duracao": 40,
+        "valor": 2782,
+        "validade": "2025-05-07T10:56:21.878Z"
+    },
+    {
+        "nome": "Deloitte",
+        "descricao": "Deloitte - Pharmacist - 43 - 2338",
+        "area": "Pharmacist",
+        "duracao": 43,
+        "valor": 2338,
+        "validade": "2023-03-18T19:22:57.811Z"
+    },
+    {
+        "nome": "Oracle",
+        "descricao": "Oracle - Software Engineer - 51 - 1837",
+        "area": "Software Engineer",
+        "duracao": 51,
+        "valor": 1837,
+        "validade": "2023-09-29T04:44:44.036Z"
+    },
+    {
+        "nome": "Shopify",
+        "descricao": "Shopify - Professor - 39 - 2667",
+        "area": "Professor",
+        "duracao": 39,
+        "valor": 2667,
+        "validade": "2023-10-07T11:59:42.290Z"
+    },
+    {
+        "nome": "Uber Technologies Inc.",
+        "descricao": "Uber Technologies Inc. - Web Developer - 58 - 2244",
+        "area": "Web Developer",
+        "duracao": 58,
+        "valor": 2244,
+        "validade": "2023-04-02T12:38:41.199Z"
+    },
+    {
+        "nome": "SAP",
+        "descricao": "SAP - Web Developer - 38 - 1094",
+        "area": "Web Developer",
+        "duracao": 38,
+        "valor": 1094,
+        "validade": "2023-06-22T21:23:48.590Z"
+    },
+    {
+        "nome": "Shopify",
+        "descricao": "Shopify - Systems Administrator - 54 - 2172",
+        "area": "Systems Administrator",
+        "duracao": 54,
+        "valor": 2172,
+        "validade": "2025-06-27T12:52:29.885Z"
+    },
+    {
+        "nome": "Uber Technologies Inc.",
+        "descricao": "Uber Technologies Inc. - Pharmacist - 3 - 1674",
+        "area": "Pharmacist",
+        "duracao": 3,
+        "valor": 1674,
+        "validade": "2024-12-03T00:29:29.313Z"
+    },
+    {
+        "nome": "Uber Technologies Inc.",
+        "descricao": "Uber Technologies Inc. - Financial Advisor - 38 - 1163",
+        "area": "Financial Advisor",
+        "duracao": 38,
+        "valor": 1163,
+        "validade": "2024-11-07T05:57:15.428Z"
+    },
+    {
+        "nome": "Shopify",
+        "descricao": "Shopify - Pharmacist - 9 - 2558",
+        "area": "Pharmacist",
+        "duracao": 9,
+        "valor": 2558,
+        "validade": "2023-11-10T06:03:55.802Z"
+    },
+    {
+        "nome": "Uber Technologies Inc.",
+        "descricao": "Uber Technologies Inc. - Software Test Engineer - 34 - 2107",
+        "area": "Software Test Engineer",
+        "duracao": 34,
+        "valor": 2107,
+        "validade": "2024-08-13T18:15:33.006Z"
+    },
+    {
+        "nome": "Amazon",
+        "descricao": "Amazon - Professor - 43 - 1808",
+        "area": "Professor",
+        "duracao": 43,
+        "valor": 1808,
+        "validade": "2024-09-04T05:09:33.174Z"
+    },
+    {
+        "nome": "Oracle",
+        "descricao": "Oracle - Pharmacist - 18 - 1759",
+        "area": "Pharmacist",
+        "duracao": 18,
+        "valor": 1759,
+        "validade": "2024-10-23T12:32:55.437Z"
+    },
+    {
+        "nome": "Amazon",
+        "descricao": "Amazon - Systems Administrator - 23 - 1961",
+        "area": "Systems Administrator",
+        "duracao": 23,
+        "valor": 1961,
+        "validade": "2023-10-17T04:25:21.453Z"
+    },
+    {
+        "nome": "Amazon",
+        "descricao": "Amazon - Professor - 42 - 2951",
+        "area": "Professor",
+        "duracao": 42,
+        "valor": 2951,
+        "validade": "2023-11-26T19:33:31.897Z"
+    },
+    {
+        "nome": "Apple",
+        "descricao": "Apple - Pharmacist - 22 - 2519",
+        "area": "Pharmacist",
+        "duracao": 22,
+        "valor": 2519,
+        "validade": "2024-04-03T15:53:02.292Z"
+    },
+    {
+        "nome": "Uber Technologies Inc.",
+        "descricao": "Uber Technologies Inc. - Software Engineer - 7 - 2863",
+        "area": "Software Engineer",
+        "duracao": 7,
+        "valor": 2863,
+        "validade": "2023-02-19T00:21:40.813Z"
+    },
+    {
+        "nome": "Deloitte",
+        "descricao": "Deloitte - Web Developer - 27 - 2662",
+        "area": "Web Developer",
+        "duracao": 27,
+        "valor": 2662,
+        "validade": "2024-03-29T13:04:04.975Z"
+    },
+    {
+        "nome": "Oracle",
+        "descricao": "Oracle - Pharmacist - 26 - 2168",
+        "area": "Pharmacist",
+        "duracao": 26,
+        "valor": 2168,
+        "validade": "2023-02-17T18:50:03.768Z"
+    },
+    {
+        "nome": "Tencent Holdings",
+        "descricao": "Tencent Holdings - Systems Administrator - 11 - 1424",
+        "area": "Systems Administrator",
+        "duracao": 11,
+        "valor": 1424,
+        "validade": "2023-06-05T11:54:02.426Z"
+    },
+    {
+        "nome": "Amazon",
+        "descricao": "Amazon - Software Test Engineer - 53 - 2562",
+        "area": "Software Test Engineer",
+        "duracao": 53,
+        "valor": 2562,
+        "validade": "2023-05-09T09:27:52.233Z"
+    },
+    {
+        "nome": "Shopify",
+        "descricao": "Shopify - Web Developer - 55 - 2276",
+        "area": "Web Developer",
+        "duracao": 55,
+        "valor": 2276,
+        "validade": "2023-04-16T05:22:47.906Z"
+    },
+    {
+        "nome": "Microsoft",
+        "descricao": "Microsoft - Software Test Engineer - 54 - 2678",
+        "area": "Software Test Engineer",
+        "duracao": 54,
+        "valor": 2678,
+        "validade": "2023-02-14T16:24:20.730Z"
+    },
+    {
+        "nome": "Deloitte",
+        "descricao": "Deloitte - Software Engineer - 38 - 1911",
+        "area": "Software Engineer",
+        "duracao": 38,
+        "valor": 1911,
+        "validade": "2024-09-25T09:18:31.432Z"
+    },
+    {
+        "nome": "Shopify",
+        "descricao": "Shopify - Financial Advisor - 5 - 2478",
+        "area": "Financial Advisor",
+        "duracao": 5,
+        "valor": 2478,
+        "validade": "2025-08-03T10:54:06.287Z"
+    },
+    {
+        "nome": "Uber Technologies Inc.",
+        "descricao": "Uber Technologies Inc. - Analyst Programmer - 7 - 2310",
+        "area": "Analyst Programmer",
+        "duracao": 7,
+        "valor": 2310,
+        "validade": "2025-12-24T21:02:58.868Z"
+    },
+    {
+        "nome": "SAP",
+        "descricao": "SAP - Systems Administrator - 17 - 1071",
+        "area": "Systems Administrator",
+        "duracao": 17,
+        "valor": 1071,
+        "validade": "2025-09-20T22:59:10.414Z"
+    },
+    {
+        "nome": "Deloitte",
+        "descricao": "Deloitte - Professor - 59 - 2737",
+        "area": "Professor",
+        "duracao": 59,
+        "valor": 2737,
+        "validade": "2025-08-18T08:29:31.848Z"
+    },
+    {
+        "nome": "Deloitte",
+        "descricao": "Deloitte - Systems Administrator - 35 - 1556",
+        "area": "Systems Administrator",
+        "duracao": 35,
+        "valor": 1556,
+        "validade": "2024-12-09T03:15:55.835Z"
+    },
+    {
+        "nome": "Apple",
+        "descricao": "Apple - Systems Administrator - 5 - 1558",
+        "area": "Systems Administrator",
+        "duracao": 5,
+        "valor": 1558,
+        "validade": "2025-11-22T13:30:31.245Z"
+    },
+    {
+        "nome": "Uber Technologies Inc.",
+        "descricao": "Uber Technologies Inc. - Professor - 13 - 1629",
+        "area": "Professor",
+        "duracao": 13,
+        "valor": 1629,
+        "validade": "2023-12-11T10:51:52.272Z"
+    },
+    {
+        "nome": "Microsoft",
+        "descricao": "Microsoft - Analyst Programmer - 27 - 2386",
+        "area": "Analyst Programmer",
+        "duracao": 27,
+        "valor": 2386,
+        "validade": "2025-01-13T02:34:00.419Z"
+    },
+    {
+        "nome": "Tencent Holdings",
+        "descricao": "Tencent Holdings - Pharmacist - 50 - 1627",
+        "area": "Pharmacist",
+        "duracao": 50,
+        "valor": 1627,
+        "validade": "2023-11-20T01:00:53.794Z"
+    },
+    {
+        "nome": "Oracle",
+        "descricao": "Oracle - Professor - 14 - 1140",
+        "area": "Professor",
+        "duracao": 14,
+        "valor": 1140,
+        "validade": "2024-05-14T14:07:16.967Z"
+    },
+    {
+        "nome": "Uber Technologies Inc.",
+        "descricao": "Uber Technologies Inc. - Software Test Engineer - 51 - 1134",
+        "area": "Software Test Engineer",
+        "duracao": 51,
+        "valor": 1134,
+        "validade": "2025-03-04T01:04:38.814Z"
+    },
+    {
+        "nome": "Microsoft",
+        "descricao": "Microsoft - Systems Administrator - 51 - 2871",
+        "area": "Systems Administrator",
+        "duracao": 51,
+        "valor": 2871,
+        "validade": "2023-01-27T07:24:17.418Z"
+    },
+    {
+        "nome": "Shopify",
+        "descricao": "Shopify - Web Developer - 38 - 1103",
+        "area": "Web Developer",
+        "duracao": 38,
+        "valor": 1103,
+        "validade": "2024-08-12T09:08:04.126Z"
+    },
+    {
+        "nome": "SAP",
+        "descricao": "SAP - Software Test Engineer - 32 - 2664",
+        "area": "Software Test Engineer",
+        "duracao": 32,
+        "valor": 2664,
+        "validade": "2023-09-01T18:23:44.157Z"
+    },
+    {
+        "nome": "Tencent Holdings",
+        "descricao": "Tencent Holdings - Web Developer - 26 - 1960",
+        "area": "Web Developer",
+        "duracao": 26,
+        "valor": 1960,
+        "validade": "2025-10-25T00:15:07.350Z"
+    },
+    {
+        "nome": "SAP",
+        "descricao": "SAP - Pharmacist - 59 - 1173",
+        "area": "Pharmacist",
+        "duracao": 59,
+        "valor": 1173,
+        "validade": "2025-02-12T23:13:17.532Z"
+    },
+    {
+        "nome": "Amazon",
+        "descricao": "Amazon - Software Test Engineer - 50 - 1253",
+        "area": "Software Test Engineer",
+        "duracao": 50,
+        "valor": 1253,
+        "validade": "2025-03-10T04:53:22.466Z"
+    },
+    {
+        "nome": "Oracle",
+        "descricao": "Oracle - Systems Administrator - 24 - 1039",
+        "area": "Systems Administrator",
+        "duracao": 24,
+        "valor": 1039,
+        "validade": "2024-10-06T12:13:49.186Z"
+    },
+    {
+        "nome": "Shopify",
+        "descricao": "Shopify - Analyst Programmer - 33 - 2330",
+        "area": "Analyst Programmer",
+        "duracao": 33,
+        "valor": 2330,
+        "validade": "2024-12-13T15:46:49.416Z"
+    }
+]

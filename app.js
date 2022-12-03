@@ -22,12 +22,12 @@ global.appRoot = path.resolve(__dirname);
 global.NODE_DEV = Boolean(process.env.NODE_ENV === 'development');
 console.log(chalk.green(`  Node Mode: ${(global.NODE_DEV ? 'DEV' : 'PRD')}`));
 
-let db = new DB({
+/* let db = new DB({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: 'pw'
-})
+}) */
 
 //Logger
 app.use(logger)
@@ -48,12 +48,14 @@ require('./routes/index')(app)
 
 console.log(chalk.green('  Done configurating Server'));
 
-db.connect().then(function () {
-  app.listen(app.get("port"),
-    () => {
-      console.log(chalk.green(`\n  Server Listing on ${app.get("port")}`))
-    })
-})
+/* db.connect().then(function () {
+  
+}) */
+
+app.listen(app.get("port"),
+  () => {
+    console.log(chalk.green(`\n  Server Listing on ${app.get("port")}`))
+  })
 
 
 
