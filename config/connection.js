@@ -1,12 +1,45 @@
 const mysql = require('mysql2');
 const chalk = require('chalk');
 
+/**
+ * Deals the connection of the database
+ * @class Db
+ * @constructor
+ * @public
+ */
 class Db {
+
+    /**
+     * Connection to database
+     * @type {mysql.Pool}
+     * @public
+     * @static
+     */
     static pool;
+    /**
+     * Hostname of the database you trying to connect
+     * @type {String}
+     * @private
+     */
     #host;
+    /**
+     * Username of the database you trying to connect
+     * @type {String}
+     * @private
+     */
     #user;
+    /**
+     * Password of the database you trying to connect
+     * @type {String}
+     * @private
+     */
     #password;
-    #database;
+    /**
+     * Name of schema of the database you trying to connect
+     * @type {String}
+     * @private
+     */
+    #schema;
 
     constructor(obj) {
         if (!obj)
@@ -14,7 +47,7 @@ class Db {
         this.#host = obj.host
         this.#user = obj.user
         this.#password = obj.password
-        this.#database = obj.database
+        this.#schema = obj.schema
     }
 
     connect() {
@@ -24,7 +57,7 @@ class Db {
                 host: this.#host,
                 user: this.#user,
                 password: this.#password,
-                database: this.#database
+                schema: this.#schema
               });
         
               pool.getConnection((err, connection) => {

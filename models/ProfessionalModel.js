@@ -1,24 +1,20 @@
-const Db = require('../config/connection')
 let DB = require('../config/connection')
+const User = require("./UserModel");
 
-class User {
+class Professional extends User {
 
     constructor(obj) {
         if (!obj)
-            return
+            return;
+        super(obj);
         this.id = obj.id
         this.email = obj.email
         this.password = obj.password
         this.name = obj.name
         this.description = obj.description
         this.admin = obj.admin
-    }
-
-    async exists() {
-        const query = await DB.pool.query(`select idUser"id", email, password, name, description, admin FROM User where idUser=${this.id}`);
-        console.log(query);
-
-        return true;
+        this.company = obj.company
+        this.profissional = obj.profissional
     }
 
     async update() {
@@ -29,6 +25,8 @@ class User {
             name = ${this.name},
             description = ${this.description},
             admin = ${this.admin === true ? 1 : 0},
+            companyId = ${this.company ? this.company.id : null},
+            profissionalId = ${this.profissional ? this.profissional.id : null}
             WHERE idUser=${this.id};
         `);
         return;
@@ -37,8 +35,9 @@ class User {
     async create() {
         let user = await DB.pool.query(`
             INSERT INTO User 
-            (email, password, name, description, admin)
-            VALUES (${this.email}, ${this.password}, ${this.name}, ${this.description}, ${this.admin === true ? 1 : 0});
+            (email, password, name, description, admin, companyId, profissionalId)
+            VALUES (${this.email}, ${this.password}, ${this.name}, ${this.description}, ${this.admin === true ? 1 : 0}, 
+            ${this.company ? this.company.id : null},${this.profissional ? this.profissional.id : null});
         `);
         this.id = user.insertId;
         return user.insertId
@@ -47,11 +46,15 @@ class User {
     static async getById(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
-                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin FROM User where idUser=${id}`);
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, companyId, profissionalId FROM User where idUser=${id}`);
                 /* let data = await Promise.all([Company.getOneById(query[0].companyId), Profissional.getOneById(query[0].profissionalId)])
                 let company = data[1]
                 let profissional = data[0] */
-                return new User(query[0]);
+                return new User({
+                    ...query[0],
+                    /* company,
+                    profissional */
+                });
             } catch (err) {
                 console.log(err);
                 return err
@@ -65,7 +68,7 @@ class User {
     static async getAll() {
         let pessoas = [];
         try {
-            const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin FROM User`);
+            const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, companyId, profissionalId FROM User`);
             for (const element of query) {
                 /* let data = await Promise.all([Company.getOneById(element.companyId), Profissional.getOneById(element.profissionalId)])
                 let company = data[1]
@@ -84,4 +87,4 @@ class User {
     }
 }
 
-module.exports = User;
+module.exports = Professional;
