@@ -12,7 +12,7 @@ const dataController = (function () {
     /**
      * Const of the max cards per page
      */
-     const MAXCOMPARATIONS = 3;
+    const MAXCOMPARATIONS = 3;
     /**
      * Data used in the building of the dom
      */
@@ -38,6 +38,8 @@ const dataController = (function () {
         if (!dataOriginal.length) {
             data = obj;
             dataOriginal = JSON.parse(JSON.stringify(obj));
+            data = data.map((job, index) => ({ ...job, id: index, validade: new Date(job.validade) }));
+            dataOriginal = dataOriginal.map((job, index) => ({ ...job, id: index, validade: new Date(job.validade) }));
             Object.freeze(dataOriginal);
 
             let sort = JSON.parse(window.sessionStorage.getItem("sort"));
@@ -60,6 +62,9 @@ const dataController = (function () {
      */
     let filter = function (fn) {
         data = dataOriginal.filter(fn);
+        pageIndex = 0;
+        compararArray = [];
+        compararContainerCloseOrOpen("close");
         buildDom();
     }
 
@@ -68,6 +73,9 @@ const dataController = (function () {
      * @param {String} key Key of the jobs you want to sort by
      */
     let onSort = function (key) {
+        pageIndex = 0;
+        compararArray = [];
+        compararContainerCloseOrOpen("close");
         let sort = JSON.parse(window.sessionStorage.getItem("sort"));
         if (!sort) sort = {
             key: "",
@@ -197,34 +205,34 @@ const dataController = (function () {
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                  labels: compararArray.map(ele => ele.nome),
-                  datasets: [{
-                    label: 'Salario',
-                    data: compararArray.map(ele => ele.valor),
-                    backgroundColor: [
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(54, 162, 235, 0.2)'
-                      ],
-                      borderColor: [
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(54, 162, 235, 0.2)'
-                      ],
-                    borderWidth: 1
-                  }]
+                    labels: compararArray.map(ele => ele.nome),
+                    datasets: [{
+                        label: 'Salario',
+                        data: compararArray.map(ele => ele.valor),
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(54, 162, 235, 0.2)'
+                        ],
+                        borderWidth: 1
+                    }]
                 },
                 options: {
-                  responsive: true,
-                  scales: {
-                    yAxes: [{
-                      ticks: {
-                        beginAtZero: true
-                      }
-                    }]
-                  }
+                    responsive: true,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
                 }
-              });
+            });
             modal.appendChild(canvas);
         }
 
@@ -236,7 +244,7 @@ const dataController = (function () {
             while (mainSection.hasChildNodes()) {
                 mainSection.firstChild.remove();
             }
-            
+
             data.slice(pageIndex * MAXPERPAGE, (pageIndex + 1) * MAXPERPAGE).forEach((element) => {
                 const div = document.createElement("div");
                 div.className = "jobContainer";
@@ -320,51 +328,55 @@ const dataController = (function () {
                 node_28.appendChild(node_30);
                 node_30.appendChild(document.createTextNode(`Offer available until ${element.validade.toLocaleString().split(',')[0]}`));
 
-                let node_35 = document.createElement('DIV');
-                node_35.setAttribute('class', 'row');
-                div.appendChild(node_35);
+                if (data.length > 2) {
 
-                let node_36 = document.createElement('DIV');
-                node_36.setAttribute('class', 'col');
-                node_35.appendChild(node_36);
+                    let node_35 = document.createElement('DIV');
+                    node_35.setAttribute('class', 'row');
+                    div.appendChild(node_35);
 
-                let node_37 = document.createElement('DIV');
-                node_37.setAttribute('class', 'form-check d-flex d-xl-flex justify-content-end');
-                node_36.appendChild(node_37);
+                    let node_36 = document.createElement('DIV');
+                    node_36.setAttribute('class', 'col');
+                    node_35.appendChild(node_36);
 
-                let input = document.createElement('input');
-                input.setAttribute('class', 'form-check-input');
-                input.setAttribute('type', 'checkbox');
-                input.setAttribute('id', `compararCheck${element.id}`);
-                input.setAttribute('style', 'margin-right: 10px;');
-                node_37.appendChild(input);
+                    let node_37 = document.createElement('DIV');
+                    node_37.setAttribute('class', 'form-check d-flex d-xl-flex justify-content-end');
+                    node_36.appendChild(node_37);
 
-                compararArray.forEach(cmp => {
-                    if(cmp.id === element.id){
-                        input.checked = true;
+                    let input = document.createElement('input');
+                    input.setAttribute('class', 'form-check-input');
+                    input.setAttribute('type', 'checkbox');
+                    input.setAttribute('id', `compararCheck${element.id}`);
+                    input.setAttribute('style', 'margin-right: 10px;');
+                    node_37.appendChild(input);
+
+                    compararArray.forEach(cmp => {
+                        if (cmp.id === element.id) {
+                            input.checked = true;
+                        }
+                    })
+
+                    if (compararArray.length == 3 && !input.checked) {
+                        input.disabled = true;
                     }
-                })
 
-                if(compararArray.length == 3 && !input.checked){
-                    input.disabled = true;
+                    input.addEventListener("click", function (ev) {
+                        if (input.checked && compararArray.length < MAXCOMPARATIONS) {
+                            compararArray.push(element)
+                        } else {
+                            let idx = compararArray.findIndex(comp => comp.id === element.id);
+                            if (idx !== -1) compararArray.splice(idx, 1);
+                        }
+                        buildComparar();
+                    });
+
+
+                    let label = document.createElement('label');
+                    label.setAttribute('class', 'form-check-label');
+                    label.setAttribute('for', `compararCheck${element.id}`);
+                    label.appendChild(document.createTextNode("Comparar"));
+                    node_37.appendChild(label);
+
                 }
-
-                input.addEventListener("click", function (ev) {
-                    if (input.checked && compararArray.length < MAXCOMPARATIONS) {
-                        compararArray.push(element)
-                    } else {
-                        let idx = compararArray.findIndex(comp => comp.id === element.id);
-                        if (idx !== -1) compararArray.splice(idx, 1);
-                    }
-                    buildComparar();
-                });
-                
-
-                let label = document.createElement('label');
-                label.setAttribute('class', 'form-check-label');
-                label.setAttribute('for', `compararCheck${element.id}`);
-                label.appendChild(document.createTextNode("Comparar"));
-                node_37.appendChild(label);
 
                 mainSection.appendChild(div);
             });
@@ -640,7 +652,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
     api.get('/api/jobs').then(res => {
         if (typeof res.data === 'object') {
-            dataController.addData(res.data.map((job, index) => ({ ...job, id: index, validade: new Date(job.validade)})));
+            dataController.addData(res.data);
 
             //Sets the values for the sliders
             let arr = res.data.map(job => job.valor);

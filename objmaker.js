@@ -1,4 +1,3 @@
-const { json } = require("body-parser");
 const fs = require("fs");
 const path = require("path");
 const ar = ["Financial Advisor", "Analyst Programmer", "Systems Administrator", "Professor", "Software Test Engineer", "Software Engineer", "Web Developer", "Pharmacist"];

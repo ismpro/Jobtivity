@@ -14,9 +14,8 @@ module.exports = function (app) {
     })
 
     app.get('/api/jobs', function (req, res) {
-        let p = path.resolve('./routes/jobs pw.json');
+        let p = path.resolve('./jobs.json');
         let data = fs.readFileSync(p)
-        console.log(JSON.parse(data))
         res.send(JSON.parse(data))
     })
 }
