@@ -18,20 +18,22 @@ main {
 
 .jobContainer {
     margin-bottom: 20px;
-    border-style: outset;
-    border-radius: 20px;
+    border-style: none;
+    -webkit-box-shadow: 2px 9px 15px 0px rgba(0, 0, 0, 0.30);
+    box-shadow: 2px 9px 15px 0px rgba(0, 0, 0, 0.30);
+    border-radius: 10px;
     padding: 15px;
 }
 
-.vagas { 
+.vagas {
     border-style: none;
 }
 
-.navbar-brand img{
+.navbar-brand img {
     width: 150px;
 }
 
-.nav-item img{
+.nav-item img {
     width: 50px;
 }
 
@@ -137,12 +139,12 @@ main {
     color: black;
 }
 
-.starting-text{
+.starting-text {
     margin-top: 5%;
 }
 
-.section-about-us{
-    background-color: transparent  !important;
+.section-about-us {
+    background-color: transparent !important;
 }
 
 .modal-size {
