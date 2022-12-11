@@ -64,6 +64,10 @@ const dataController = (function () {
         data = dataOriginal.filter(fn);
         pageIndex = 0;
         compararArray = [];
+        let sort = JSON.parse(window.sessionStorage.getItem("sort"));
+        if (sort) {
+            data.sort((a, b) => sort.asc ? a[sort.key] - b[sort.key] : b[sort.key] - a[sort.key])
+        }
         compararContainerCloseOrOpen("close");
         buildDom();
     }
