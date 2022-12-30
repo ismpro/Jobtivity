@@ -10,9 +10,10 @@ const api = axios.create({
  * @param {Event} ev 
  */
 function firstSignUp(ev) {
+    ev.preventDefault();
     document.getElementById('firstform').style.display = "none";
 
-    if (document.getElementById('checkIsComp')) {
+    if (document.getElementById('checkIsComp').checked) {
         document.getElementById('compForm').style.display = "block";
     } else {
         document.getElementById('profForm').style.display = "block";
@@ -30,14 +31,16 @@ function submitRegister(ev) {
 
     let sendObj = {};
 
-    if (data.get("checkIsComp")) {
+    if (data.get("checkIsComp") === null) {
         sendObj = {
             email: data.get("email"),
             password: data.get("pass1"),
+            name: data.get("nameProf"),
+            description: data.get("descriptionProf"),
             birthDate: data.get("birth"),
             gender: data.get("gender"),
-            location: data.get("location"),
-            description: data.get("descriptionProf"),
+            local: data.get("location"),
+            private: data.get("visableTo") !== null,
         }
     } else {
         sendObj = {
@@ -50,14 +53,16 @@ function submitRegister(ev) {
         }
     }
 
+    sendObj.isCompany = data.get("checkIsComp") !== null;
+
+    console.log(sendObj);
+
     api.post('/auth/register', sendObj)
         .then(function (res) {
             let code = res.status
-            /* if (code === 230) {
-                
-            } else {
-                
-            } */
+            if (code === 200) {
+                alert(res.data)
+            }
         })
         .catch(function (err) {
             console.log(err);

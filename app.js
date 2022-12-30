@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
+console.clear()
 const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config();
@@ -29,7 +30,7 @@ let db = new DB({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
-  database: 'pw'
+  schema: 'pw'
 })
 
 //Logger
@@ -67,12 +68,10 @@ db.connect().then(function () {
     })
 
 
-    let User = require("./models/UserModel");
+    /* let User = require("./models/UserModel");
 
     let user = new User({id: 1})
-    user.exists().then((res)=> console.log(res))
-
-
+    user.exists().then((res)=> console.log(res)) */
 
 })
 

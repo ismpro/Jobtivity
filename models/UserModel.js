@@ -16,9 +16,12 @@ class User {
 
     async exists() {
         const query = await DB.pool.query(`select idUser"id", email, password, name, description, admin FROM User where idUser=${this.id}`);
-        console.log(query);
+        return query[0].length !== 0;
+    }
 
-        return true;
+    async existsByEmail() {
+        const query = await DB.pool.query(`select idUser"id", email, password, name, description, admin FROM User where email='${this.email}'`);
+        return query[0].length !== 0;
     }
 
     async update() {
@@ -38,10 +41,10 @@ class User {
         let user = await DB.pool.query(`
             INSERT INTO User 
             (email, password, name, description, admin)
-            VALUES (${this.email}, ${this.password}, ${this.name}, ${this.description}, ${this.admin === true ? 1 : 0});
+            VALUES ('${this.email}', '${this.password}', '${this.name}', '${this.description}', ${this.admin === true ? 1 : 0});
         `);
-        this.id = user.insertId;
-        return user.insertId
+        this.id = user[0].insertId;
+        return user[0].insertId;
     }
 
     static async getById(id) {

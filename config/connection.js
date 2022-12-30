@@ -57,7 +57,7 @@ class Db {
                 host: this.#host,
                 user: this.#user,
                 password: this.#password,
-                schema: this.#schema
+                database: this.#schema
               });
         
               pool.getConnection((err, connection) => {

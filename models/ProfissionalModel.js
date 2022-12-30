@@ -8,13 +8,25 @@ class Professional extends User {
             return;
         super(obj);
         this.id = obj.id
-        this.email = obj.email
-        this.password = obj.password
-        this.name = obj.name
-        this.description = obj.description
-        this.admin = obj.admin
-        this.company = obj.company
-        this.profissional = obj.profissional
+        this.birthday = obj.birthday
+        this.gender = obj.gender
+        this.local = obj.local
+        this.private = obj.private
+        this.user = obj.user
+    }
+
+    async create() {
+        try {
+            let professional = await DB.pool.query(`
+            INSERT INTO Profissional
+            (birthday, gender, local, private, idUser)
+            VALUES (STR_TO_DATE('${this.birthday}', "%Y-%m-%d"), '${this.gender}', '${this.local}', ${this.private === true ? 1 : 0}, ${this.user});
+        `);
+            this.id = professional.insertId;
+            return professional.insertId;
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     async update() {
@@ -30,17 +42,6 @@ class Professional extends User {
             WHERE idUser=${this.id};
         `);
         return;
-    }
-
-    async create() {
-        let user = await DB.pool.query(`
-            INSERT INTO User 
-            (email, password, name, description, admin, companyId, profissionalId)
-            VALUES (${this.email}, ${this.password}, ${this.name}, ${this.description}, ${this.admin === true ? 1 : 0}, 
-            ${this.company ? this.company.id : null},${this.profissional ? this.profissional.id : null});
-        `);
-        this.id = user.insertId;
-        return user.insertId
     }
 
     static async getById(id) {
