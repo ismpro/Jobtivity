@@ -2,8 +2,23 @@ let { Router } = require("express");
 const bcrypt = require('bcrypt');
 let router = Router();
 
-const User = require("../models/UserModel")
-const Profissional = require("../models/ProfissionalModel")
+const User = require("../models/UserModel");
+const Profissional = require("../models/ProfissionalModel");
+const Company = require("../models/CompanyModel");
+
+router.post('/checkemail', async function (req, res) {
+    let data = req.body;
+    console.log(data);
+
+    let user = new User({email: data.email});
+
+    if(!(await user.existsByEmail())) {
+
+        res.status(200).send(true);
+    } else {
+        res.status(210).send("This email is already in use");
+    }
+})
 
 router.post('/register', async function (req, res) {
     let data = req.body;
@@ -13,11 +28,18 @@ router.post('/register', async function (req, res) {
 
     if(!(await user.existsByEmail())) {
 
-        user.password = bcrypt.hashSync(data.password, bcrypt.genSaltSync(9));
+        user.password = bcrypt.hashSync(data.password, bcrypt.genSaltSync(10));
         await user.create();
 
         if(data.isCompany) {
-            //TODO
+            let comp = new Company({
+                urlWebsite: data.urlWeb,
+                urlLogo: data.urlLogo,
+                valid: false,
+                user: user.id
+            });
+
+            await comp.create();
         } else {
             let profissional = new Profissional({
                 birthday: data.birthDate,
@@ -28,8 +50,11 @@ router.post('/register', async function (req, res) {
             });
 
             await profissional.create();
-            res.status(200).send(true);
         }
+
+        res.status(200).send("User created");
+    } else {
+        res.status(210).send("This email is already in use");
     }
 });
 

@@ -1,5 +1,4 @@
-const Db = require('../config/connection')
-let DB = require('../config/connection')
+const DB = require('../config/connection')
 
 class User {
 
@@ -15,12 +14,12 @@ class User {
     }
 
     async exists() {
-        const query = await DB.pool.query(`select idUser"id", email, password, name, description, admin FROM User where idUser=${this.id}`);
+        const query = await DB.pool.query(`select idUser FROM User where idUser=${this.id}`);
         return query[0].length !== 0;
     }
 
     async existsByEmail() {
-        const query = await DB.pool.query(`select idUser"id", email, password, name, description, admin FROM User where email='${this.email}'`);
+        const query = await DB.pool.query(`select email FROM User where email='${this.email}'`);
         return query[0].length !== 0;
     }
 

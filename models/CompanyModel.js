@@ -1,31 +1,30 @@
 let DB = require('../config/connection');
 
-class Professional {
+class Company{
 
     constructor(obj) {
         if (!obj)
             return;
         this.id = obj.id
-        this.birthday = obj.birthday
-        this.gender = obj.gender
-        this.local = obj.local
-        this.private = obj.private
+        this.urlWebsite = obj.urlWebsite
+        this.urlLogo = obj.urlLogo
+        this.valid = obj.valid
         this.user = obj.user
     }
 
     async create() {
         try {
-            let professional = await DB.pool.query(`
-            INSERT INTO Profissional (birthday, gender, local, private, idUser)
-            VALUES (STR_TO_DATE('${this.birthday}', "%Y-%m-%d"), '${this.gender}', '${this.local}', ${this.private === true ? 1 : 0}, ${this.user});`);
-            this.id = professional[0].insertId;
-            return professional[0].insertId;
+            let company = await DB.pool.query(`
+            INSERT INTO Company (urlWebsite, urlLogo, valid, idUser)
+            VALUES ('${this.urlWebsite}', '${this.urlLogo}', ${this.valid === true ? 1 : 0}, ${this.user});`);
+            this.id = company[0].insertId;
+            return company[0].insertId;
         } catch (error) {
             console.log(error)
         }
     }
 
-    async update() {
+    /* async update() {
         await DB.pool.query(`
             UPDATE User SET
             email = ${this.email},
@@ -44,13 +43,8 @@ class Professional {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, companyId, profissionalId FROM User where idUser=${id}`);
-                /* let data = await Promise.all([Company.getOneById(query[0].companyId), Profissional.getOneById(query[0].profissionalId)])
-                let company = data[1]
-                let profissional = data[0] */
                 return new User({
                     ...query[0],
-                    /* company,
-                    profissional */
                 });
             } catch (err) {
                 console.log(err);
@@ -67,13 +61,8 @@ class Professional {
         try {
             const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, companyId, profissionalId FROM User`);
             for (const element of query) {
-                /* let data = await Promise.all([Company.getOneById(element.companyId), Profissional.getOneById(element.profissionalId)])
-                let company = data[1]
-                let profissional = data[0] */
                 pessoas.push(new User({
                     ...element,
-                    /* company,
-                    profissional */
                 }))
             }
             return pessoas
@@ -81,7 +70,7 @@ class Professional {
             console.log(err);
             return err
         }
-    }
+    } */
 }
 
-module.exports = Professional;
+module.exports = Company;

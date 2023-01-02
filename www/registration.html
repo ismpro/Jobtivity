@@ -58,21 +58,22 @@
                     <section id="firstform">
                         <div class="mb-3">
                             <label class="form-label" for="email">Email</label>
-                            <input class="form-control item" type="email" name="email" id="email">
+                            <input class="form-control item" autocomplete="email" type="email" name="email" id="email">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" for="pass">Password</label>
-                            <input class="form-control item" type="password" name="pass1" id="pass1">
+                            <label class="form-label" for="pass1">Password</label>
+                            <input class="form-control item" autocomplete="new-password" type="password" name="pass1" id="pass1">
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="pass2">Confirm Password</label>
-                            <input class="form-control item" type="password" name="pass2" id="pass2">
+                            <input class="form-control item" type="password" autocomplete="new-password" name="pass2" id="pass2">
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="checkIsComp" id="checkIsComp">
                             <label class="form-check-label" for="checkIsComp">Company signup</label>
                         </div>
-                        <button class="btn btn-primary" onclick="javascript:firstSignUp(event)"
+                        <p id="errorTextFirst"></p>
+                        <button id="firstButton" class="btn btn-primary" onclick="javascript:firstSignUp(event)"
                             style="margin-top: 10px;">Next</button>
                     </section>
                     <section id="profForm" style="display: none;">
@@ -80,13 +81,13 @@
                             <div class="col">
                                 <div class="mb-3">
                                     <label class="form-label" for="nameProf">Name</label>
-                                    <input class="form-control item" type="text" id="nameProf" name="nameProf">
+                                    <input class="form-control item" type="text" autocomplete="name" id="nameProf" name="nameProf">
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="mb-3">
                                     <label class="form-label" for="birth">Birth Date</label>
-                                    <input class="form-control" id="birth" name="birth" type="date">
+                                    <input class="form-control" id="birth" autocomplete="bday" name="birth" type="date">
                                 </div>
                             </div>
                         </div>
@@ -120,7 +121,9 @@
                             <textarea class="form-control" id="descriptionProf" name="descriptionProf"
                                 placeholder="Say something about you..."></textarea>
                         </div>
-                        <input class="btn btn-primary" type="submit" style="margin-top: 10px;" value="Sign Up">
+                        <button id="profInputBack" class="btn btn-primary" onclick="javascript:backSignUp(event)"
+                            style="margin-top: 10px;">Back</button>
+                        <input id="profInput" class="btn btn-primary" type="submit" style="margin-top: 10px;" value="Sign Up">
                     </section>
                     <section id="compForm" style="display: none;">
                         <div class="row">
@@ -150,11 +153,17 @@
                             <textarea class="form-control" id="descriptionComp" name="descriptionComp"
                                 placeholder="Say something about you..."></textarea>
                         </div>
-                        <input class="btn btn-primary" type="submit" style="margin-top: 10px;" value="Sign Up">
+                        <button id="compInputBack" class="btn btn-primary" onclick="javascript:backSignUp(event)"
+                            style="margin-top: 10px;">Back</button>
+                        <input id="compInput" class="btn btn-primary" type="submit" style="margin-top: 10px;" value="Sign Up">
                     </section>
                 </form>
             </div>
         </section>
+        <div class="alert alert-dismissible visually-hidden" role="alert">
+            <span id="alertText"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     </main>
     <footer class="text-center py-4">
         <div class="container">
