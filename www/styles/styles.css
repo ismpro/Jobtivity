@@ -207,3 +207,7 @@ main {
     margin-left: 30px;
     position: fixed;
   }
+
+  .errortext {
+    color: red;
+  }
