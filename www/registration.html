@@ -17,7 +17,7 @@
 <body>
     <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
         <div class="container">
-            <a class="navbar-brand logo" href="index.html">
+            <a class="navbar-brand logo" href="/">
                 <img src="images/logo_color.png" style="width: 150px;">
             </a>
             <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
@@ -27,22 +27,22 @@
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="jobs.html">
+                        <a class="nav-link" href="/jobs">
                             <img src="images/Icons/job-icon.png" style="width: 50px;">
                             Jobs
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="about.html">
+                        <a class="nav-link" href="/about">
                             <img src="images/Icons/about-us.png" style="width: 50px;">
                             About Us
                         </a>
                     </li>
                     <li class="nav-item d-xl-flex align-items-xl-center">
-                        <a class="btn" href="login.html">Login</a>
+                        <a class="btn" href="/login">Login</a>
                     </li>
                     <li class="nav-item d-xl-flex align-items-xl-center">
-                        <a class="btn btn-primary" href="registration.html">Register</a>
+                        <a class="btn btn-primary" href="/registration">Register</a>
                     </li>
                 </ul>
             </div>
@@ -73,7 +73,7 @@
                             <label class="form-check-label" for="checkIsComp">Company signup</label>
                         </div>
                         <p id="errorTextFirst"></p>
-                        <button id="firstButton" class="btn btn-primary" onclick="javascript:firstSignUp(event)"
+                        <button id="firstButton" class="btn btn-primary" onclick="javascript: firstSignUp(event)"
                             style="margin-top: 10px;">Next</button>
                     </section>
                     <section id="profForm" style="display: none;">
@@ -121,7 +121,7 @@
                             <textarea class="form-control" id="descriptionProf" name="descriptionProf"
                                 placeholder="Say something about you..."></textarea>
                         </div>
-                        <button id="profInputBack" class="btn btn-primary" onclick="javascript:backSignUp(event)"
+                        <button id="profInputBack" class="btn btn-primary" onclick="javascript: backSignUp(event)"
                             style="margin-top: 10px;">Back</button>
                         <input id="profInput" class="btn btn-primary" type="submit" style="margin-top: 10px;" value="Sign Up">
                     </section>
@@ -153,7 +153,7 @@
                             <textarea class="form-control" id="descriptionComp" name="descriptionComp"
                                 placeholder="Say something about you..."></textarea>
                         </div>
-                        <button id="compInputBack" class="btn btn-primary" onclick="javascript:backSignUp(event)"
+                        <button id="compInputBack" class="btn btn-primary" onclick="javascript: backSignUp(event)"
                             style="margin-top: 10px;">Back</button>
                         <input id="compInput" class="btn btn-primary" type="submit" style="margin-top: 10px;" value="Sign Up">
                     </section>

@@ -1,7 +1,7 @@
 let { Router } = require("express");
 let router = Router();
 
-router.get('/api/jobs', function (req, res) {
+router.get('/jobs', function (req, res) {
     const Area = {
         Dev: "Programação",
         Database: "Base de Dados",

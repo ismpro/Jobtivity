@@ -36,7 +36,7 @@ function firstSignUp(ev) {
             } else if (code === 210) {
                 textEle.appendChild(document.createTextNode(res.data));
             }
-            removeSpinner("firstButton");
+            removeSpinnerFirst();
         })
         .catch(function (err) {
             console.log(err);
@@ -126,7 +126,7 @@ function submitRegister(ev) {
 
 function createSpinner(id) {
     let input = document.getElementById(id);
-    let inputBack = document.getElementById(id+"Back");
+    
     let parent = input.parentElement;
 
     //<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
@@ -145,6 +145,9 @@ function createSpinner(id) {
     parent.appendChild(div1);
 
     input.remove();
+
+    let inputBack = document.getElementById(id+"Back");
+    if(inputBack) inputBack.remove();
 }
 
 function removeSpinner(id) {
@@ -161,6 +164,8 @@ function removeSpinner(id) {
     input.value = "Sign Up";
     input.id = id;
 
+    parent.appendChild(input);
+
     let button = document.createElement("button");
     button.id = id + "Back";
     button.className = "btn btn-primary";
@@ -168,6 +173,26 @@ function removeSpinner(id) {
     button.style = "margin-top: 10px;";
     button.appendChild(document.createTextNode("Back"));
 
+    parent.appendChild(button);
+ 
+    
+    div.remove();
+}
+
+function removeSpinnerFirst() {
+    let div = document.querySelector(".lds-ellipsis");
+    let parent = div.parentElement;
+
+    //<button id="firstButton" class="btn btn-primary" onclick="javascript: firstSignUp(event)" style="margin-top: 10px;">Next</button>
+
+    let input = document.createElement('button');
+    input.className = "btn btn-primary";
+    input.style = "margin-top: 10px;";
+    input.onclick = (event => firstSignUp(event))
+    input.id = "firstButton";
+    input.appendChild(document.createTextNode("Next"))
+
     parent.appendChild(input);
     div.remove();
 }
+

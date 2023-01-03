@@ -11,6 +11,7 @@ class User {
         this.name = obj.name
         this.description = obj.description
         this.admin = obj.admin
+        this.sessionId = obj.sessionId
     }
 
     async exists() {
@@ -36,6 +37,15 @@ class User {
         return;
     }
 
+    async updateSessionId() {
+        await DB.pool.query(`
+            UPDATE User SET
+            sessionId = '${this.sessionId}'
+            WHERE idUser=${this.id};
+        `);
+        return;
+    }
+
     async create() {
         let user = await DB.pool.query(`
             INSERT INTO User 
@@ -46,13 +56,27 @@ class User {
         return user[0].insertId;
     }
 
-    static async getById(id) {
+    static async getByEmail(email) {
+        if (email) {
+            try {
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId FROM User where email='${email}'`);
+                console.log(query)
+                if(query.length === 0) return null;
+                return new User(query[0]);
+            } catch (err) {
+                console.log(err);
+                throw err;
+            }
+        } else {
+            console.log("Invalid email");
+            throw "Invalid email";
+        }
+    }
+
+    /* static async getById(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin FROM User where idUser=${id}`);
-                /* let data = await Promise.all([Company.getOneById(query[0].companyId), Profissional.getOneById(query[0].profissionalId)])
-                let company = data[1]
-                let profissional = data[0] */
                 return new User(query[0]);
             } catch (err) {
                 console.log(err);
@@ -69,13 +93,8 @@ class User {
         try {
             const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin FROM User`);
             for (const element of query) {
-                /* let data = await Promise.all([Company.getOneById(element.companyId), Profissional.getOneById(element.profissionalId)])
-                let company = data[1]
-                let profissional = data[0] */
                 pessoas.push(new User({
                     ...element,
-                    /* company,
-                    profissional */
                 }))
             }
             return pessoas
@@ -83,7 +102,7 @@ class User {
             console.log(err);
             return err
         }
-    }
+    } */
 }
 
 module.exports = User;

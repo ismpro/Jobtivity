@@ -16,20 +16,20 @@
 <body>
     <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
         <div class="container">
-            <a class="navbar-brand logo" href="index.html">
+            <a class="navbar-brand logo" href="/">
                 <img src="images/logo_color.png" style="width: 150px;"></a>
                 <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
                     <span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span>
                 </button>
             <div class="collapse navbar-collapse" id="navcol-1">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="jobs.html"><img src="images/Icons/job-icon.png" style="width: 50px;">Jobs</a></li>
-                    <li class="nav-item"><a class="nav-link" href="about.html"><img src="images/Icons/about-us.png" style="width: 50px;">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/jobs"><img src="images/Icons/job-icon.png" style="width: 50px;">Jobs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/about"><img src="images/Icons/about-us.png" style="width: 50px;">About Us</a></li>
                     <li class="nav-item d-xl-flex align-items-xl-center">
-                        <a class="btn" href="login.html">Login</a>
+                        <a class="btn" href="/login">Login</a>
                     </li>
                     <li class="nav-item d-xl-flex align-items-xl-center">
-                        <a class="btn btn-primary" href="registration.html">Register</a>
+                        <a class="btn btn-primary" href="/registration">Register</a>
                     </li>
                 </ul>
             </div>
@@ -41,17 +41,17 @@
                 <div class="block-heading">
                     <h2 class="text-info">Log In</h2>
                 </div>
-                <form>
+                <form onsubmit="javascript: submitLogin(event)">
                     <div class="mb-3">
                         <label class="form-label" for="email">Email</label>
-                        <input class="form-control item" autocomplete="email" autofocus type="email" id="email">
+                        <input class="form-control item" autocomplete="email" autofocus type="email" name="email" id="email">
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="password">Password</label>
-                        <input class="form-control" autocomplete="current-password" type="password" id="password">
+                        <input class="form-control" autocomplete="current-password" type="password" name="password" id="password">
                     </div>
                     <p class="errortext" id="errorText"></p>
-                    <button class="btn btn-primary" type="submit">Log In</button>
+                    <input id="loginButton" class="btn btn-primary" type="submit" value="Log In">
                 </form>
             </div>
         </section>
