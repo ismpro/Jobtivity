@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-console.clear()
 const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config();
@@ -84,9 +83,6 @@ db.connect().then(function () {
       console.log(chalk.green(`\n  Server Listing on ${app.get("port")}`))
     })
 })
-
-
-
 
 
 

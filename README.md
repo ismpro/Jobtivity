@@ -86,6 +86,7 @@ Below is a list of framework used in the project.
 | chalk | Chalk module in Node. js is used for styling the format of text and allows us to create our own themes in the node. js project. |
 | mysql2 | MySQL client for Node.js. MySQL2 is a continuation of MySQL-Native. |
 | axios | Promise based HTTP client for the browser and node.js |
+| bootstrap |  |
 
 ## Relational model
 

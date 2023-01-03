@@ -53,16 +53,18 @@
     </nav>
     <main class="page catalog-page">
         <div class="modal fade" role="dialog" tabindex="-1" id="modal1">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-size" role="document">
                 <div class="modal-content">
                     <section class="modal-header">
                         <h4 class="modal-title">Comparar Ofertas</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="javascript:compararContainerCloseOrOpen('open')"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                            onclick="javascript:compararContainerCloseOrOpen('open')"></button>
                     </section>
                     <section class="modal-body row" style="text-align: center;max-height: 500px">
                     </section>
                     <section class="modal-footer">
-                        <button class="btn btn-light" type="button" data-bs-dismiss="modal" onclick="javascript:compararContainerCloseOrOpen('open')">Close</button>
+                        <button class="btn btn-light" type="button" data-bs-dismiss="modal"
+                            onclick="javascript:compararContainerCloseOrOpen('open')">Close</button>
                     </section>
                 </div>
             </div>
@@ -70,7 +72,7 @@
         <section class="clean-block clean-catalog">
             <div class="container">
                 <div class="block-heading">
-                    <h2 class="text-info">Vagas</h2>
+                    <h2 style="color: white;">Jobs</h2>
                 </div>
                 <div class="content vagas">
                     <div class="row">
@@ -169,11 +171,13 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6 col-xl-10">
-                        <section id="comparar-info" class="row" style="margin-left: 50px;">  
+                        <section id="comparar-info" class="row" style="margin-left: 50px;">
                         </section>
                     </div>
                     <div class="col-md-6 col-xl-1 d-xl-flex justify-content-xl-center align-items-xl-center">
-                        <button id="button-compare" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#modal1" onclick="javascript:compararContainerCloseOrOpen('close')">Comparar</button>
+                        <button id="button-compare" class="btn btn-primary" type="button" data-bs-toggle="modal"
+                            data-bs-target="#modal1"
+                            onclick="javascript:compararContainerCloseOrOpen('close')">Comparar</button>
                     </div>
                 </div>
             </div>
