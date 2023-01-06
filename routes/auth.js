@@ -30,28 +30,30 @@ router.post('/register', async function (req, res) {
     if (!(await user.existsByEmail())) {
 
         user.password = bcrypt.hashSync(data.password, bcrypt.genSaltSync(10));
-        await user.create();
-
+        
         if (data.isCompany) {
             let comp = new Company({
                 urlWebsite: data.urlWeb,
                 urlLogo: data.urlLogo,
-                valid: false,
-                user: user.id
+                valid: false
             });
 
             await comp.create();
+            user.company = comp.id;
         } else {
             let profissional = new Profissional({
                 birthday: data.birthDate,
                 gender: data.gender,
                 local: data.local,
-                private: data.private,
-                user: user.id
+                private: data.private
             });
 
             await profissional.create();
+            user.profissional = profissional.id;
         }
+
+
+        await user.create();
 
         res.status(200).send("User created");
     } else {
@@ -64,6 +66,16 @@ router.post('/login', async function (req, res) {
     console.log(data);
     try {
         let user = await User.getByEmail(data.email);
+
+        if(user.isCompany()){
+
+            let company = await Company.getById(user.company);
+
+            if(!company.valid) {
+                res.status(225).send('Company not valid');
+                return;
+            }
+        }
 
         if (user && bcrypt.compareSync(data.password, user.password)) {
             let sessionId = createid(64);

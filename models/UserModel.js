@@ -12,6 +12,16 @@ class User {
         this.description = obj.description
         this.admin = obj.admin
         this.sessionId = obj.sessionId
+        this.company = obj.company
+        this.profissional = obj.profissional
+    }
+
+    isCompany() {
+        return !!this.company;
+    }
+
+    isProfissional() {
+        return !!this.profissional;
     }
 
     async exists() {
@@ -24,7 +34,7 @@ class User {
         return query[0].length !== 0;
     }
 
-    async update() {
+    /* async update() {
         await DB.pool.query(`
             UPDATE User SET
             email = ${this.email},
@@ -35,7 +45,7 @@ class User {
             WHERE idUser=${this.id};
         `);
         return;
-    }
+    } */
 
     async updateSessionId() {
         await DB.pool.query(`
@@ -49,8 +59,8 @@ class User {
     async create() {
         let user = await DB.pool.query(`
             INSERT INTO User 
-            (email, password, name, description, admin)
-            VALUES ('${this.email}', '${this.password}', '${this.name}', '${this.description}', ${this.admin === true ? 1 : 0});
+            (email, password, name, description, admin, companyId, profissionalId)
+            VALUES ('${this.email}', '${this.password}', '${this.name}', '${this.description}', ${this.admin === true ? 1 : 0}, ${this.company ? this.company : null}, ${this.profissional ? this.profissional : null});
         `);
         this.id = user[0].insertId;
         return user[0].insertId;
@@ -59,7 +69,7 @@ class User {
     static async getByEmail(email) {
         if (email) {
             try {
-                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId FROM User where email='${email}'`);
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId, profissionalId FROM User where email='${email}'`);
                 if(query.length === 0) return null;
                 return new User(query[0]);
             } catch (err) {
@@ -75,7 +85,7 @@ class User {
     static async getById(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
-                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId FROM User where idUser=${id}`);
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId, profissionalId FROM User where idUser=${id}`);
                 if(query.length === 0) return null;
                 return new User(query[0]);
             } catch (err) {

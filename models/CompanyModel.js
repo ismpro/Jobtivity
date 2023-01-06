@@ -9,18 +9,41 @@ class Company{
         this.urlWebsite = obj.urlWebsite
         this.urlLogo = obj.urlLogo
         this.valid = obj.valid
-        this.user = obj.user
     }
 
     async create() {
         try {
             let company = await DB.pool.query(`
-            INSERT INTO Company (urlWebsite, urlLogo, valid, idUser)
-            VALUES ('${this.urlWebsite}', '${this.urlLogo}', ${this.valid === true ? 1 : 0}, ${this.user});`);
+            INSERT INTO Company (urlWebsite, urlLogo, valid)
+            VALUES ('${this.urlWebsite}', '${this.urlLogo}', ${this.valid === true ? 1 : 0});`);
             this.id = company[0].insertId;
             return company[0].insertId;
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    /**
+     * 
+     * @param {Number} id 
+     * @returns 
+     */
+    static async getById(id) {
+        if (id && !isNaN(id) && Number.isSafeInteger(id)) {
+            try {
+                const [query] = await DB.pool.query(`select idCompany"id", urlWebsite, urlLogo, valid FROM User where idCompany=${id}`);
+                if(query.length === 0) return null;
+                return new Company({
+                    ...query[0],
+                    valid: query[0].valid === 1
+                });
+            } catch (err) {
+                console.log(err);
+                return err
+            }
+        } else {
+            console.log("Invalid id");
+            return "Invalid id"
         }
     }
 
@@ -39,22 +62,7 @@ class Company{
         return;
     }
 
-    static async getById(id) {
-        if (id && !isNaN(id) && Number.isSafeInteger(id)) {
-            try {
-                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, companyId, profissionalId FROM User where idUser=${id}`);
-                return new User({
-                    ...query[0],
-                });
-            } catch (err) {
-                console.log(err);
-                return err
-            }
-        } else {
-            console.log("Invalid id");
-            return "Invalid id"
-        }
-    }
+    
 
     static async getAll() {
         let pessoas = [];
