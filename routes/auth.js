@@ -1,6 +1,6 @@
 let { Router } = require("express");
 const bcrypt = require('bcrypt');
-const {createid} = require('../config/functions');
+const { createid } = require('../config/functions');
 let router = Router();
 
 const User = require("../models/UserModel");
@@ -65,6 +65,34 @@ router.post('/login', async function (req, res) {
     try {
         let user = await User.getByEmail(data.email);
 
+        if (user && bcrypt.compareSync(data.password, user.password)) {
+            let sessionId = createid(64);
+            req.session.userid = user.id;
+            req.session.sessionId = sessionId;
+            user.sessionId = sessionId;
+            let sessionSave = req.session.save();
+            let userSave = user.updateSessionId();
+
+            Promise.all([sessionSave, userSave]).then(() => {
+                res.status(200).send({ id: user.id });
+            }).catch((err) => {
+                console.log(err)
+                res.status(500).send('Error on server! Try again later!')
+            });
+        } else {
+            res.status(211).send('Email or password invalid')
+        }
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+/* router.post('/validate', async function (req, res) {
+    let data = req.body;
+    console.log(data);
+    try {
+        let user = await User.getByEmail(data.email);
+
         console.log(user)
         console.log(bcrypt.hashSync(data.password, bcrypt.genSaltSync(10)));
         console.log(bcrypt.compareSync(data.password, user.password));
@@ -76,19 +104,19 @@ router.post('/login', async function (req, res) {
             user.sessionId = sessionId;
             let sessionSave = req.session.save();
             let userSave = user.updateSessionId();
-    
+
             Promise.all([sessionSave, userSave]).then(() => {
-                res.status(200).send({id: user.id})
+                res.status(200).send({ id: user.id });
             }).catch((err) => {
                 console.log(err)
                 res.status(500).send('Error on server! Try again later!')
             });
         } else {
             res.status(211).send('Email or password invalid')
-        } 
+        }
     } catch (error) {
         console.log(error)
     }
-});
+}); */
 
 module.exports = router;

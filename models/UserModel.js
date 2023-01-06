@@ -60,7 +60,6 @@ class User {
         if (email) {
             try {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId FROM User where email='${email}'`);
-                console.log(query)
                 if(query.length === 0) return null;
                 return new User(query[0]);
             } catch (err) {
@@ -73,10 +72,11 @@ class User {
         }
     }
 
-    /* static async getById(id) {
+    static async getById(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
-                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin FROM User where idUser=${id}`);
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId FROM User where idUser=${id}`);
+                if(query.length === 0) return null;
                 return new User(query[0]);
             } catch (err) {
                 console.log(err);
@@ -87,6 +87,8 @@ class User {
             return "Invalid id"
         }
     }
+    
+    /*
 
     static async getAll() {
         let pessoas = [];

@@ -53,9 +53,6 @@ db.connect().then(function () {
   //Logger
   app.use(logger)
 
-  //Serving statics files
-  app.use(express.static(path.join(__dirname, 'www')))
-
   // parse application/json
   app.use(bodyParser.json())
 
@@ -65,13 +62,10 @@ db.connect().then(function () {
   }))
 
   //Adding Routes
-  app.get('/*', function (req, res, next) {
-    if (fs.existsSync(path.join(global.appRoot, 'www', `${req.path.slice(1)}.html`))) {
-      res.status(200).sendFile(path.join(global.appRoot, 'www', `${req.path.slice(1)}.html`));
-    } else {
-      next();
-    }
-  });
+  app.use('/', require('./routes'));
+  
+  //Serving statics files
+  app.use(express.static(path.join(__dirname, 'www')));
 
   app.use('/api', require('./routes/api'));
   app.use('/auth', require('./routes/auth'));
