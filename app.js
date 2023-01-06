@@ -67,6 +67,7 @@ db.connect().then(function () {
   //Serving statics files
   app.use(express.static(path.join(__dirname, 'www')));
 
+  app.use('/admin', require('./routes/admin'));
   app.use('/api', require('./routes/api'));
   app.use('/auth', require('./routes/auth'));
 

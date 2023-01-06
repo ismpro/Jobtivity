@@ -15,12 +15,23 @@ class Company{
         try {
             let company = await DB.pool.query(`
             INSERT INTO Company (urlWebsite, urlLogo, valid)
-            VALUES ('${this.urlWebsite}', '${this.urlLogo}', ${this.valid === true ? 1 : 0});`);
+            VALUES ('${this.urlWebsite}', '${this.urlLogo}', ${this.valid === void 0 ? null : this.valid === true ? 1 : 0});`);
             this.id = company[0].insertId;
             return company[0].insertId;
         } catch (error) {
             console.log(error)
         }
+    }
+
+    async update() {
+        await DB.pool.query(`
+            UPDATE Company SET
+            urlWebsite = '${this.urlWebsite}',
+            urlLogo = '${this.urlLogo}',
+            valid = ${this.valid ? 1 : 0}
+            WHERE idCompany=${this.id};
+        `);
+        return;
     }
 
     /**
@@ -31,7 +42,7 @@ class Company{
     static async getById(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
-                const [query] = await DB.pool.query(`select idCompany"id", urlWebsite, urlLogo, valid FROM User where idCompany=${id}`);
+                const [query] = await DB.pool.query(`select idCompany"id", urlWebsite, urlLogo, valid FROM Company where idCompany=${id}`);
                 if(query.length === 0) return null;
                 return new Company({
                     ...query[0],
@@ -39,31 +50,35 @@ class Company{
                 });
             } catch (err) {
                 console.log(err);
-                return err
+                throw err
             }
         } else {
             console.log("Invalid id");
-            return "Invalid id"
+            throw "Invalid id"
         }
     }
 
-    /* async update() {
-        await DB.pool.query(`
-            UPDATE User SET
-            email = ${this.email},
-            password = ${this.password}>,
-            name = ${this.name},
-            description = ${this.description},
-            admin = ${this.admin === true ? 1 : 0},
-            companyId = ${this.company ? this.company.id : null},
-            profissionalId = ${this.profissional ? this.profissional.id : null}
-            WHERE idUser=${this.id};
-        `);
-        return;
+    static async getAllByValidNull() {
+        /**
+         * @type {Company[]}
+         */
+        let companies = [];
+        try {
+            const [query] = await DB.pool.query(`select idCompany"id", urlWebsite, urlLogo, valid FROM Company where valid is null`);
+            for (const element of query) {
+                companies.push(new Company({
+                    ...element,
+                    valid: element.valid === null ? null : element.valid === 1
+                }))
+            }
+            return companies;
+        } catch (err) {
+            console.log(err);
+            throw err
+        }
     }
 
-    
-
+    /* 
     static async getAll() {
         let pessoas = [];
         try {
