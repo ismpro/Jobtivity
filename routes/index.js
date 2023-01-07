@@ -52,10 +52,10 @@ router.get('/scripts/admin.js', async function (req, res) {
         if (user && user.sessionId === req.session.sessionId && user.admin) {
             res.status(200).sendFile(path.join(global.appRoot, 'www', 'scripts','admin.js'));
         } else {
-            res.status(401).send('Unauthorized');
+            res.sendStatus(401);
         }
     } else {
-        res.status(401).send('Unauthorized');
+        res.sendStatus(401);
     }
 });
 

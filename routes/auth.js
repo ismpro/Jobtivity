@@ -9,7 +9,7 @@ const Company = require("../models/CompanyModel");
 
 router.post('/checkemail', async function (req, res) {
     let data = req.body;
-    console.log(data);
+    console.log(req.query.key);
 
     let user = new User({ email: data.email });
 
@@ -23,13 +23,11 @@ router.post('/checkemail', async function (req, res) {
 
 router.post('/register', async function (req, res) {
     let data = req.body;
-    console.log(data);
 
-    let user = new User({ email: data.email, name: data.name, description: data.description, admin: false });
+    if (!(await User.existsByEmail(data.email))) {
 
-    if (!(await user.existsByEmail())) {
-
-        user.password = bcrypt.hashSync(data.password, bcrypt.genSaltSync(10));
+        let user = new User({ email: data.email, password: bcrypt.hashSync(data.password, bcrypt.genSaltSync(10)),
+            name: data.name, description: data.description, admin: false });
 
         if (data.isCompany) {
             let comp = new Company({
@@ -51,7 +49,6 @@ router.post('/register', async function (req, res) {
             await profissional.create();
             user.profissional = profissional.id;
         }
-
 
         await user.create();
 

@@ -4,7 +4,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const path = require('path');
-const fs = require('fs');
 const chalk = require('chalk');
 const logger = require('./config/logger');
 let DB = require('./config/connection');
@@ -16,7 +15,6 @@ console.log(chalk.green('\n  Starting server'));
 
 //Config
 const app = express()
-const Router = express.Router
 
 console.log(chalk.green('  Configurating Server'));
 

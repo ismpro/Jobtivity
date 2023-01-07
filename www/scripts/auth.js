@@ -70,10 +70,14 @@ function onLogout(api) {
     return function () {
         api.post('/auth/logout').then(res => {
             if (res.status === 200) {
-                let li = document.getElementById("logoutid");
-                li.parentElement.remove();
-                makeLogin(document.querySelector('ul.navbar-nav'));
+                if (['/admin', '/admin.html'].includes(window.location.pathname)) {
+                    window.location.href = '/';
+                } else {
+                    let li = document.getElementById("logoutid");
+                    li.parentElement.remove();
+                    makeLogin(document.querySelector('ul.navbar-nav'));
+                }
             }
-        })
+        });
     }
 }
