@@ -44,20 +44,6 @@ exports.jsonWriter = function (filePath, object, cb) {
         })
 }
 
-/**
- * Writes a object to a json file
- * @param {string} filePath - The filepath of the json file
- * @param {string} object - Object thats going to be write on the file
- * @param {Function} cb - Callback Function
- */
-exports.asyncForEach = async function (array, callback) {
-    if (array) {
-        for (let index = 0; index < array.length; index++) {
-            await callback(array[index], index, array);
-        }
-    }
-}
-
 exports.createid = function (length) {
     let result = '';
     let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

@@ -2,16 +2,17 @@ let DB = require('../config/connection');
 
 /**
  * A class representing a professional.
+ * @class
  */
 class Professional {
   /**
    * Creates a new Professional instance.
    * @param {Object} obj - The properties of the Professional.
-   * @param {number} obj.id - The ID of the professional.
-   * @param {string} obj.birthday - The birthday of the professional in the format 'YYYY-MM-DD'.
-   * @param {string} obj.gender - The gender of the professional.
-   * @param {string} obj.local - The local of the professional.
-   * @param {boolean} obj.private - Whether the professional is private or not.
+   * @param {Number} obj.id - The ID of the professional.
+   * @param {String} obj.birthday - The birthday of the professional in the format 'YYYY-MM-DD'.
+   * @param {String} obj.gender - The gender of the professional.
+   * @param {String} obj.local - The local of the professional.
+   * @param {Boolean} obj.private - Whether the professional is private or not.
    */
   constructor(obj) {
     if (!obj) return;
@@ -24,7 +25,7 @@ class Professional {
 
   /**
    * Creates a new professional in the database.
-   * @returns {Promise<number>} - The ID of the newly created professional.
+   * @returns {Promise<Number>} - The ID of the newly created professional.
    */
   async create() {
     try {

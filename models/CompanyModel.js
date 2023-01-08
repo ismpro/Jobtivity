@@ -2,15 +2,16 @@ let DB = require('../config/connection');
 
 /**
  * A class representing a company.
+ * @class
  */
 class Company {
     /**
      * Creates a new Company instance.
      * @param {Object} obj - The properties of the Company.
-     * @param {number} obj.id - The ID of the company.
-     * @param {string} obj.urlWebsite - The URL of the company's website.
-     * @param {string} obj.urlLogo - The URL of the company's logo.
-     * @param {boolean} obj.valid - Whether the company is valid or not.
+     * @param {Number} obj.id - The ID of the company.
+     * @param {String} obj.urlWebsite - The URL of the company's website.
+     * @param {String} obj.urlLogo - The URL of the company's logo.
+     * @param {Boolean} obj.valid - Whether the company is valid or not.
      */
     constructor(obj) {
         if (!obj) return;
@@ -22,7 +23,7 @@ class Company {
 
     /**
      * Creates a new company in the database.
-     * @returns {Promise<number>} - The ID of the newly created company.
+     * @returns {Promise<Number>} - The ID of the newly created company.
      */
     async create() {
         try {
@@ -53,8 +54,9 @@ class Company {
 
     /**
      * Gets a company from the database by its ID.
-     * @param {number} id - The ID of the company to retrieve.
+     * @param {Number} id - The ID of the company to retrieve.
      * @returns {Promise<Company|null>} - The company with the specified ID, or null if no such company exists.
+     * @throws {String} - If the id is invalid.
      */
     static async getById(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {

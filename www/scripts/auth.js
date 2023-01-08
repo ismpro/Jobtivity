@@ -50,7 +50,7 @@ function makeLogin(navbar) {
     registerA.className = "btn btn-primary";
 
     loginA.href = "/login";
-    registerA.href = "/reregistrationg";
+    registerA.href = "/registration";
 
     loginA.textContent = "Login";
     registerA.textContent = "Register";
