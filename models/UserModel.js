@@ -2,20 +2,21 @@ const DB = require('../config/connection')
 
 /**
  * A class representing a user.
+ * @class
  */
 class User {
     /**
      * Creates a new User instance.
      * @param {Object} obj - The properties of the User.
-     * @param {number} obj.id - The ID of the user.
-     * @param {string} obj.email - The email of the user.
-     * @param {string} obj.password - The password of the user.
-     * @param {string} obj.name - The name of the user.
-     * @param {string} obj.description - The description of the user.
-     * @param {boolean} obj.admin - Whether the user is an admin or not.
-     * @param {string} obj.sessionId - The session ID of the user.
-     * @param {number} obj.company - The ID of the company associated with the user.
-     * @param {number} obj.profissional - The ID of the professional associated with the user.
+     * @param {Number} obj.id - The ID of the user.
+     * @param {String} obj.email - The email of the user.
+     * @param {String} obj.password - The password of the user.
+     * @param {String} obj.name - The name of the user.
+     * @param {String} obj.description - The description of the user.
+     * @param {Boolean} obj.admin - Whether the user is an admin or not.
+     * @param {String} obj.sessionId - The session ID of the user.
+     * @param {Number} obj.company - The ID of the company associated with the user.
+     * @param {Number} obj.profissional - The ID of the professional associated with the user.
      */
     constructor(obj) {
         if (!obj) return;
@@ -32,7 +33,7 @@ class User {
 
     /**
      * Returns whether the user is a company or not.
-     * @returns {boolean} - `true` if the user is a company, `false` otherwise.
+     * @returns {Boolean} - `true` if the user is a company, `false` otherwise.
      */
     isCompany() {
         return !!this.company;
@@ -40,7 +41,7 @@ class User {
 
     /**
      * Returns whether the user is a professional or not.
-     * @returns {boolean} - `true` if the user is a professional, `false` otherwise.
+     * @returns {Boolean} - `true` if the user is a professional, `false` otherwise.
      */
     isProfissional() {
         return !!this.profissional;
@@ -48,7 +49,7 @@ class User {
 
     /**
      * Creates a new user in the database.
-     * @returns {Promise<number>} - The ID of the newly created user.
+     * @returns {Promise<Number>} - The ID of the newly created user.
      */
     async create() {
         let user = await DB.pool.query(`
@@ -77,8 +78,8 @@ class User {
     /**
     * Check if a user with the specified email exists in the database.
     *
-    * @param {string} email - Email of the user to check for.
-    * @returns {Promise<boolean>} - Promise that resolves with a boolean indicating whether a user with the specified email exists.
+    * @param {String} email - Email of the user to check for.
+    * @returns {Promise<Boolean>} - Promise that resolves with a Boolean indicating whether a user with the specified email exists.
     */
     static async existsByEmail(email) {
         const query = await DB.pool.query(`select email FROM User where email='${email}'`);
@@ -88,14 +89,14 @@ class User {
     /**
     * Get a user from the database with the specified email.
     *
-    * @param {string} email - Email of the user to get.
+    * @param {String} email - Email of the user to get.
     * @returns {Promise<User>} - Promise that resolves with a User object or null if no user was found with the specified email.
-    * @throws {string} - If the email is invalid.
+    * @throws {String} - If the email is invalid.
     */
     static async getByEmail(email) {
         if (email) {
             try {
-                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId, profissionalId FROM User where email='${email}'`);
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", profissionalId"profissional" FROM User where email='${email}'`);
                 if (query.length === 0) return null;
                 return new User(query[0]);
             } catch (err) {
@@ -111,14 +112,14 @@ class User {
     /**
     * Get a user from the database with the specified id.
     *
-    * @param {number} id - ID of the user to get.
+    * @param {Number} id - ID of the user to get.
     * @returns {Promise<User>} - Promise that resolves with a User object or null if no user was found with the specified id.
-    * @throws {string} - If the id is invalid.
+    * @throws {String} - If the id is invalid.
     */
     static async getById(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
-                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId, profissionalId FROM User where idUser=${id}`);
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", profissionalId"profissional" FROM User where idUser=${id}`);
                 if (query.length === 0) return null;
                 return new User(query[0]);
             } catch (err) {
@@ -134,14 +135,14 @@ class User {
     /**
      * Get a user from the database with the specified company id.
      *
-     * @param {number} id - ID of the company the user belongs to.
+     * @param {Number} id - ID of the company the user belongs to.
      * @returns {Promise<User>} - Promise that resolves with a User object or null if no user was found with the specified company id.
-     * @throws {string} - If the id is invalid.
+     * @throws {String} - If the id is invalid.
      */
     static async getByCompanyId(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
-                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId, profissionalId FROM User where companyId=${id}`);
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", profissionalId"profissional" FROM User where companyId=${id}`);
                 if (query.length === 0) return null;
                 return new User(query[0]);
             } catch (err) {

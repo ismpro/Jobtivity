@@ -9,11 +9,8 @@ const Company = require("../models/CompanyModel");
 
 router.post('/checkemail', async function (req, res) {
     let data = req.body;
-    console.log(req.query.key);
 
-    let user = new User({ email: data.email });
-
-    if (!(await user.existsByEmail())) {
+    if (!(await User.existsByEmail(data.email))) {
 
         res.status(200).send(true);
     } else {

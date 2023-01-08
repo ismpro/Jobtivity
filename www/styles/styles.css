@@ -652,3 +652,94 @@ main {
 .col-lg-3.control-label {
   text-align: left;
 }
+
+
+#msg-overlay {
+  height: 0;
+  width: 100%;
+  position: fixed;
+  z-index: 1000;
+  bottom: 0;
+  right: 0;
+  overflow: visible;
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+}
+
+.msg-overlay-list-bubble {
+  display: flex;
+  flex-direction: column;
+  margin-top: 5px;
+  height: calc(100vh - 150px);
+  flex: 0 0 288px;
+  width: 288px;
+  min-width: 0;
+  background: white;
+  border-radius: 0.8rem 0.8rem 0 0;
+  box-shadow: 0px 0px 0px 1px hsla(0, 0%, 100%, 0.12), 0px 4px 4px rgba(0, 0, 0, 0.6);
+  transform: translateY(0);
+  transition-duration: 100ms;
+  animation: fade-in 167ms cubic-bezier(.4, 0, 1, 1);
+  margin-left: 16px !important;
+}
+
+.msg-overlay-list-bubble-minimized {
+  transform: translateY(100%) translateY(-48px);
+}
+
+#msg-overlay .msg-overlay-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 .8rem 0 0;
+  position: relative;
+  margin-left: 10px;
+}
+
+#msg-overlay .msg-overlay-header h3 {
+  margin: 0;
+  font-size: 1.5em;
+  left: 1;
+}
+
+#msg-overlay .buttons {
+  margin-left: auto;
+  flex-shrink: 0;
+  opacity: 1;
+  position: relative;
+  display: flex;
+}
+
+.buttons .add {
+  background-color: transparent;
+  border: none;
+  color: black;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.buttons .close {
+  background-color: transparent;
+  border: none;
+  color: black;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+#msg-overlay .msg-overlay-body {
+  height: 60%;
+  overflow-y: auto;
+  margin: 20px 20px 0 20px;
+  padding-bottom: 20px;
+}
+
+.divider {
+  border-top: 2px solid #bbb;
+  border-radius: 5px;
+}
+
+.clickble {
+  cursor: pointer;
+}
