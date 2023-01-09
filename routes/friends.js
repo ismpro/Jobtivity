@@ -63,9 +63,9 @@ router.get('/', async function (req, res) {
     if (req.session.userid) {
         let user = await User.getById(req.session.userid);
 
-        if (user.isProfissional() || user.admin) {
+        if (user.isProfessional() || user.admin) {
 
-            let [friendsUnpasred, friendsRequestsUnpasred] = await Promise.all([Friend.getAllForProfissional(user.professional), FriendRequest.getAllByProfessional2Id(user.professional)]);
+            let [friendsUnpasred, friendsRequestsUnpasred] = await Promise.all([Friend.getAllForProfessional(user.professional), FriendRequest.getAllByProfessional2Id(user.professional)]);
             let [friends, friendsRequests] = await Promise.all([getFriends(friendsUnpasred, user.profissional), getFriendsRequest(friendsRequestsUnpasred, user.professional)]);
 
             res.status(200).send({
