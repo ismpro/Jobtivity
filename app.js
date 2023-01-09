@@ -69,6 +69,7 @@ db.connect().then(function () {
   app.use('/api', require('./routes/api'));
   app.use('/auth', require('./routes/auth'));
   app.use('/friends', require('./routes/friends'));
+  app.use('/profile', require('./routes/profile'));
 
   console.log(chalk.green('  Done configurating Server'));
 

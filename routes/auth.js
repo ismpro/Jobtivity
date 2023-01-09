@@ -98,9 +98,8 @@ router.post('/validate', async function (req, res) {
     if (req.session.userid) {
         try {
             let user = await User.getById(req.session.userid);
-
             if (user && user.sessionId === req.session.sessionId) {
-                res.status(200).send({ isAuth: true, isAdmin: user.admin })
+                res.status(200).send({ isAuth: true, isAdmin: user.admin, isProfissional: user.isProfissional()})
             } else {
                 res.status(200).send({ isAuth: false })
             }
