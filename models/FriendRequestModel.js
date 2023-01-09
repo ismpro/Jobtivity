@@ -24,7 +24,7 @@ class FriendsRequests {
 
     async delete() {
         try {
-            await DB.pool.query(`DELETE FROM FriendRequest WHERE idFriendsRequests=${this.id};`);
+            await DB.pool.query(`DELETE FROM FriendRequest WHERE idFriendRequest=${this.id};`);
             this.id =  null;
             return;
         } catch (error) {
@@ -35,7 +35,7 @@ class FriendsRequests {
     static async getById(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
-                const [query] = await DB.pool.query(`select idFriendsRequests"id", idProfessional1"professional1", idProfessional2"professional2", timestamp 
+                const [query] = await DB.pool.query(`select idFriendRequest"id", idProfessional1"professional1", idProfessional2"professional2", timestamp 
                                                     FROM FriendRequest where idFriendsRequests=${id}`);
                 if (query.length === 0) return null;
                 return new FriendsRequests({
@@ -56,7 +56,7 @@ class FriendsRequests {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
                 let output = [];
-                const [query] = await DB.pool.query(`select idFriendsRequests"id", idProfessional1"professional1", idProfessional2"professional2", timestamp 
+                const [query] = await DB.pool.query(`select idFriendRequest"id", idProfessional1"professional1", idProfessional2"professional2", timestamp 
                                             FROM FriendRequest where idProfessional2=${id}`);
                 if (query.length === 0) return null;
                 for (const element of query) {

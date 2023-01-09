@@ -13,6 +13,8 @@ window.onload = function () {
     let main = document.querySelector("main");
 
     api.get('/friends').then(res => {
+
+        console.log(res.data)
         if (res.status === 200) {
             const asideElement = document.createElement('aside');
             asideElement.id = 'msg-overlay';
@@ -74,6 +76,10 @@ window.onload = function () {
 
             msgsDiv.appendChild(bodysection);
             main.appendChild(asideElement);
+        }
+    }).catch(res=> {
+        if (res.response.status === 401) {
+            console.log("No Login");
         }
     })
 };

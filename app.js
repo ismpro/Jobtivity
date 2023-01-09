@@ -14,7 +14,7 @@ console.clear()
 console.log(chalk.green('\n  Starting server'));
 
 //Config
-const app = express()
+const app = express();
 
 console.log(chalk.green('  Configurating Server'));
 

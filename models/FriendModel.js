@@ -30,9 +30,9 @@ class Friend {
     async create() {
         try {
             let query = await DB.pool.query(`
-            INSERT INTO FriendRequest (idProfessional1, idProfessional2, timestamp)
+            INSERT INTO Friend (idProfessional1, idProfessional2, since)
             VALUES (${this.professional1}, ${this.professional2}, STR_TO_DATE('${this.since.toISOString().split("T")[0]}', "%Y-%m-%d"));`);
-            
+
             this.id = query[0].insertId;
             return query[0].insertId;
         } catch (error) {
@@ -50,10 +50,10 @@ class Friend {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
                 let output = [];
-                const [query] = await DB.pool.query(`select idFriendsRequests"id", idProfessional1"professional1", idProfessional2"professional2", timestamp 
-                                      FROM FriendRequest where idProfessional1=${id} or idProfessional2=${id}`);
-                if (query.length === 0) return null;
+                const [query] = await DB.pool.query(`select idFriend"id", idProfessional1"professional1", idProfessional2"professional2", since 
+                                      FROM Friend where idProfessional1=${id} or idProfessional2=${id}`);
                 console.log(query)
+                if (query.length === 0) return null;
                 for (const element of query) {
                     output.push(new Friend(element))
                 }
