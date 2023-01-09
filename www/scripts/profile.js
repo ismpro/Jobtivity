@@ -1,9 +1,11 @@
 "use strict";
+if(!api){
+    var api = axios.create({
+        baseURL: window.location.origin,
+        withCredentials: true,
+    });
+}
 
-const api = axios.create({
-    baseURL: window.location.origin,
-    withCredentials: true,
-});
 
 const dataController = (function (){
 
@@ -20,17 +22,25 @@ const dataController = (function (){
         console.log(data); */
         buildDom();
     }
-    
+    /*
+    edit-profile
+    add-experience
+    edit-experience
+    delete-experience
+    add-academic
+    edit-academic
+    delete-academic
+    */
     let buildDom = function(){
-        let iconProfissional = document.getElementsByClassName("material-icons");
-        
         let lblName = document.getElementById("user-name");
         let lblLocation = document.getElementById("user-location");
         let lblDescription = document.getElementById("user-description");
+        let icoEditProfile = document.getElementById("edit-profile");
         
         lblName.textContent = data.name;
         lblLocation.textContent = data.local;
         lblDescription.textContent = data.description;
+        
     }
 
     let hideFields = function(){
@@ -41,19 +51,44 @@ const dataController = (function (){
         buildDom();
     }
 
+    let hideEditFields = function(){
+        [].forEach.call(document.querySelectorAll('.material-icons'), function (el) {
+            
+            el.style.display = 'none';
+          });
+        buildDom();
+    }
+
     return {
         addData: add,
-        hide: hideFields 
+        hide: hideFields,
+        hideEdit: hideEditFields
     }
 
 }());
 
 window.addEventListener("DOMContentLoaded", function () {
-    api.get('/profile/user').then(res => {
-        if (res.status === 200 && typeof res.data === 'object') {
-            console.log(res.data);
-            dataController.addData(res.data);        
-            dataController.hide();  
-        }
-    });
+    const query = new URLSearchParams(window.location.href);
+            if(query.has(window.location.origin + window.location.pathname + "?id")) {
+                let id = query.get(window.location.origin + window.location.pathname + "?id")
+                api.get(`/profile/user?id=${id}`).then(res => {
+                    if (res.status === 200 && typeof res.data === 'object') {
+                        console.log(res.data);
+                        dataController.addData(res.data);        
+                        dataController.hide();
+                        dataController.hideEdit();
+                        dataController.onEdit();
+                    }
+                });
+            }else{
+                api.get('/profile/user').then(res => {
+                    if (res.status === 200 && typeof res.data === 'object') {
+                        console.log(res.data);
+                        dataController.addData(res.data);        
+                        dataController.hide();  
+                    }
+                });
+            }
+
+    
 });

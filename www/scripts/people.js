@@ -1,9 +1,11 @@
 "use strict";
 
-const api = axios.create({
-    baseURL: window.location.origin,
-    withCredentials: true,
-});
+if(!api){
+    var api = axios.create({
+        baseURL: window.location.origin,
+        withCredentials: true,
+    });
+}
 
 const dataController = (function(){
 
@@ -39,32 +41,18 @@ const dataController = (function(){
 
             let iconDiv = document.createElement("div");
             iconDiv.className = "text-center";
-
-            let icon = document.createElement("i");
-            icon.className = "material-icons";
-            icon.textContent = "perm_contact_calendar";
-
             
             nameDiv.appendChild(name);
             imgDiv.appendChild(img);
-            iconDiv.appendChild(icon);
             
             professionalDiv.appendChild(imgDiv);
             professionalDiv.appendChild(nameDiv);
-            professionalDiv.appendChild(iconDiv);
             
             mainDiv.appendChild(professionalDiv);
             row.appendChild(mainDiv);
 
             professionalDiv.addEventListener("click", ev => {
-                api.post('/profile/userid', {id : dados.idUser})
-                        .then(async res =>{
-                            if(res.status === 200){
-                                let selected = dados;
-                                alert(dados.idUser);
-                                console.log(selected);
-                            }
-                        })
+                window.location.href = `/profile?id=${dados.idUser}`;
             }) 
             
             console.log(dados);
