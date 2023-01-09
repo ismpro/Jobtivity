@@ -10,6 +10,8 @@ window.addEventListener("DOMContentLoaded", function () {
         if (res.status === 200) {
             if (res.data.isAuth) {
 
+                if (onChatMake) onChatMake();
+
                 let logout = document.createElement("a");
                 logout.className = "btn";
                 logout.href = "javascript:void(0)";
@@ -18,7 +20,7 @@ window.addEventListener("DOMContentLoaded", function () {
                 logout.onclick = onLogout(api);
 
                 //Criar botão perfil caso seja profissional
-                if(res.data.isProfessional){
+                if (res.data.isProfessional) {
                     let profile = document.createElement("a");
                     profile.className = "nav-link";
                     profile.href = "/profile";
@@ -32,7 +34,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
                     navbar.appendChild(createLI(profile, "nav-item"));
                 }
-                
+
 
                 if (res.data.isAdmin) {
                     let adminA = document.createElement("a");
@@ -93,6 +95,7 @@ function onLogout(api) {
                     let li = document.getElementById("logoutid");
                     li.parentElement.remove();
                     makeLogin(document.querySelector('ul.navbar-nav'));
+                    deleteChat();
                 }
             }
         });

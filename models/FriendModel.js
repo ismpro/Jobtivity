@@ -52,7 +52,6 @@ class Friend {
                 let output = [];
                 const [query] = await DB.pool.query(`select idFriend"id", idProfessional1"professional1", idProfessional2"professional2", since 
                                       FROM Friend where idProfessional1=${id} or idProfessional2=${id}`);
-                console.log(query)
                 if (query.length === 0) return null;
                 for (const element of query) {
                     output.push(new Friend(element))

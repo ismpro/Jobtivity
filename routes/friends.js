@@ -24,7 +24,9 @@ async function getFriends(friends, sameUserId) {
     let secondPromise = await Promise.all(promises);
     return secondPromise.map((userFriend) => {
         let friend = friends.find(friend => friend.professional1 === userFriend.professional
-            || friend.professional2 === userFriend.professional)
+            || friend.professional2 === userFriend.professional);
+
+            console.log(userFriend)
         return {
             id: friend.id,
             userid: userFriend.id,
@@ -66,11 +68,7 @@ router.get('/', async function (req, res) {
         if (user.isProfessional() || user.admin) {
 
             let [friendsUnpasred, friendsRequestsUnpasred] = await Promise.all([Friend.getAllForProfessional(user.professional), FriendRequest.getAllByProfessional2Id(user.professional)]);
-            
-            console.log(friendsUnpasred)
-            console.log(friendsRequestsUnpasred)
-            
-            let [friends, friendsRequests] = await Promise.all([getFriends(friendsUnpasred, user.profissional), getFriendsRequest(friendsRequestsUnpasred, user.professional)]);
+            let [friends, friendsRequests] = await Promise.all([getFriends(friendsUnpasred, user.professional), getFriendsRequest(friendsRequestsUnpasred)]);
 
             res.status(200).send({
                 friends,
