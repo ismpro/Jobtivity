@@ -4,7 +4,7 @@ const { createid } = require('../config/functions');
 let router = Router();
 
 const User = require("../models/UserModel");
-const Profissional = require("../models/ProfissionalModel");
+const Professional = require("../models/ProfessionalModel");
 const Company = require("../models/CompanyModel");
 
 router.post('/checkemail', async function (req, res) {
@@ -36,15 +36,15 @@ router.post('/register', async function (req, res) {
             await comp.create();
             user.company = comp.id;
         } else {
-            let profissional = new Profissional({
+            let professional = new Professional({
                 birthday: data.birthDate,
                 gender: data.gender,
                 local: data.local,
                 private: data.private
             });
 
-            await profissional.create();
-            user.profissional = profissional.id;
+            await professional.create();
+            user.professional = professional.id;
         }
 
         await user.create();
@@ -99,7 +99,7 @@ router.post('/validate', async function (req, res) {
         try {
             let user = await User.getById(req.session.userid);
             if (user && user.sessionId === req.session.sessionId) {
-                res.status(200).send({ isAuth: true, isAdmin: user.admin, isProfissional: user.isProfissional()})
+                res.status(200).send({ isAuth: true, isAdmin: user.admin, isProfessional: user.isProfessional()})
             } else {
                 res.status(200).send({ isAuth: false })
             }
