@@ -18,7 +18,7 @@ window.addEventListener("DOMContentLoaded", function () {
                 logout.onclick = onLogout(api);
 
                 //Criar botão perfil caso seja profissional
-                if(res.data.isProfissional){
+                if(res.data.isProfessional){
                     let profile = document.createElement("a");
                     profile.className = "nav-link";
                     profile.href = "/profile";

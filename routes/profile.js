@@ -4,14 +4,15 @@ const { createid } = require('../config/functions');
 let router = Router();
 
 const User = require("../models/UserModel");
-const Profissional = require("../models/ProfessionalModel");
+const Professional = require("../models/ProfessionalModel");
 
 // All Users
 router.get('/user', async function (req, res) {
     try {
         let user = await User.getById(req.session.userid);
-        if (user && user.sessionId === req.session.sessionId && user.isProfissional()) {
-            let professional = await Profissional.getProfessionalById(user.professional);
+        console.log(user);
+        if (user && user.sessionId === req.session.sessionId && user.isProfessional()) {
+            let professional = await Professional.getProfessionalById(user.professional);
             console.log(professional);
             res.status(200).send(
                 {
