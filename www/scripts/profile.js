@@ -38,11 +38,12 @@ const dataController = (function (){
         let btnRemove = document.getElementById("remove-friend");
         btnMessage.style.visibility = 'hidden';
         btnRemove.style.visibility = 'hidden';
+        buildDom();
     }
 
     return {
         addData: add,
-      //  hide: hideFields 
+        hide: hideFields 
     }
 
 }());
@@ -51,8 +52,8 @@ window.addEventListener("DOMContentLoaded", function () {
     api.get('/profile/user').then(res => {
         if (res.status === 200 && typeof res.data === 'object') {
             console.log(res.data);
-            dataController.addData(res.data);
-            
+            dataController.addData(res.data);        
+            dataController.hide();  
         }
     });
 });

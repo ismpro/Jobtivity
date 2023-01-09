@@ -9122,7 +9122,7 @@ fieldset:disabled .btn {
 
 .text-info {
     --bs-text-opacity: 1;
-    color: rgba(var(--bs-info-rgb), var(--bs-text-opacity)) !important
+    color: white !important
 }
 
 .text-warning {
@@ -13566,9 +13566,8 @@ body {
 
 .clean-product-item {
     padding: 20px;
-    border-right: none;
-    border-bottom: 1px solid #e8e6e6;
-    height: 100%
+    border: 1px solid #e8e6e6;
+    height: 100%;
 }
 
 .clean-product-item .image {
@@ -14469,4 +14468,8 @@ body {
         top: 13px;
         transform: rotate(45deg)
     }
+}
+
+#main-row{
+    justify-content: space-around;
 }

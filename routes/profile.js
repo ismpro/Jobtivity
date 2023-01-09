@@ -31,4 +31,18 @@ router.get('/user', async function (req, res) {
     }
 })
 
+//User by ID
+
+router.post('/userid', async function(req, res){
+    let data = req.body;
+
+    try{
+        let professional = await User.getByProfessionalId(data.id);
+        res.status(200).send(professional);
+    }catch (error){
+        res.status(500).send(error);
+    }
+
+})
+
 module.exports = router;

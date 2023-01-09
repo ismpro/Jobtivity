@@ -171,6 +171,21 @@ class User {
             throw "Invalid id"
         }
     }
+
+    static async getAllProfessionalsUsers() {
+        let professionals = [];
+            try {
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" FROM User where professionalId is not null`);
+                for(const element of query){
+                    console.log("Elemento: " + element);
+                    professionals.push(new User(element));
+                }
+                return professionals;
+            } catch (err) {
+                console.log(err);
+                throw err
+            }
+    }
 }
 
 module.exports = User;

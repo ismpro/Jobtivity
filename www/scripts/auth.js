@@ -17,6 +17,19 @@ window.addEventListener("DOMContentLoaded", function () {
                 logout.id = "logoutid";
                 logout.onclick = onLogout(api);
 
+                let people = document.createElement("a");
+                people.className = "nav-link";
+                people.href = "/people";
+
+                let img = document.createElement("img");
+                img.src = "images/Icons/job-icon.png";
+                img.style.width = '50px';
+
+                people.appendChild(img);
+                people.appendChild(document.createTextNode("People"));
+                
+                navbar.appendChild(createLI(people, "nav-item"));
+
                 //Criar botão perfil caso seja profissional
                 if(res.data.isProfessional){
                     let profile = document.createElement("a");
