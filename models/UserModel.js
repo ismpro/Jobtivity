@@ -155,6 +155,22 @@ class User {
         }
     }
 
+    static async getByProfessionalId(id) {
+        if (id && !isNaN(id) && Number.isSafeInteger(id)) {
+            try {
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", profissionalId"profissional" FROM User where profissionalId=${id}`);
+                if (query.length === 0) return null;
+                return new User(query[0]);
+            } catch (err) {
+                console.log(err);
+                throw err
+            }
+        } else {
+            console.log("Invalid id");
+            throw "Invalid id"
+        }
+    }
+
 }
 
 module.exports = User;

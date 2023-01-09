@@ -17,6 +17,23 @@ window.addEventListener("DOMContentLoaded", function () {
                 logout.id = "logoutid";
                 logout.onclick = onLogout(api);
 
+                //Criar botão perfil caso seja profissional
+                if(res.data.isProfissional){
+                    let profile = document.createElement("a");
+                    profile.className = "nav-link";
+                    profile.href = "/profile";
+
+                    let img = document.createElement("img");
+                    img.src = "images/Icons/job-icon.png";
+                    img.style.width = '50px';
+
+                    profile.appendChild(img);
+                    profile.appendChild(document.createTextNode("Profile"));
+
+                    navbar.appendChild(createLI(profile, "nav-item"));
+                }
+                
+
                 if (res.data.isAdmin) {
                     let adminA = document.createElement("a");
                     adminA.className = "nav-link";

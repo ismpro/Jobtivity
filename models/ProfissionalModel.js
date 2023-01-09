@@ -38,6 +38,36 @@ class Professional {
       console.log(error)
     }
   }
+
+  static async getAllProfessionals(){
+    let professionals = [];
+    try{
+      const [query] = await DB.pool.query(`select idProfissional"id", birthday, gender, local, private from Profissional`);
+      for(const element of query){
+        professionals.push(new Professional (element));
+      }
+      return professionals;
+    } catch(err){
+      console.log(err);
+      throw err;
+    }
+  }
+
+  static async getProfessionalById(id){
+    if(id && !isNaN(id) && Number.isSafeInteger(id)){
+      try{
+        const [query] = await DB.pool.query(`select idProfissional"id", birthday, gender, local, private from Profissional where idProfissional=${id}`);
+        if(query.length === 0) return null;
+        return new Professional(query[0]);
+      } catch(err){
+        console.log(err);
+        throw err;
+      }
+    }else{
+      console.log("Invalid id");
+      throw "Invalid id"
+    }
+}
 }
 
 module.exports = Professional;
