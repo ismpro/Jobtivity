@@ -20,14 +20,44 @@ class FriendsRequests {
         } catch (error) {
             console.log(error)
         }
+    }/* */
+
+    async delete() {
+        try {
+            await DB.pool.query(`DELETE FROM FriendsRequests WHERE idFriendsRequests=${this.id};`);
+            this.id =  null;
+            return;
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    async getAllForUser(id) {
+    static async getById(id) {
+        if (id && !isNaN(id) && Number.isSafeInteger(id)) {
+            try {
+                const [query] = await DB.pool.query(`select idFriendsRequests"id", idProfissional1"profissional1", idProfissional2"profissional2", timestamp 
+                                                    FROM FriendsRequests where idFriendsRequests=${id}`);
+                if (query.length === 0) return null;
+                return new FriendsRequests({
+                    ...query[0],
+                    timestamp: new Date(query[0].timestamp)
+                });
+            } catch (err) {
+                console.log(err);
+                throw err
+            }
+        } else {
+            console.log("Invalid id");
+            throw "Invalid id"
+        }
+    }
+
+    static async getAllByProfessional2Id(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
                 let output = [];
-                const query = await DB.pool.query(`select idFriendsRequests"id", idProfissional1"profissional1", idProfissional2"profissional2", timestamp 
-                                            FROM FriendsRequests where idProfissional1=${id} or idProfissional2=${id}`);
+                const [query] = await DB.pool.query(`select idFriendsRequests"id", idProfissional1"profissional1", idProfissional2"profissional2", timestamp 
+                                            FROM FriendsRequests where idProfissional2=${id}`);
                 if (query.length === 0) return null;
                 for (const element of query) {
                     output.push(new FriendsRequests({

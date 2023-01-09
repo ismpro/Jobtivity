@@ -1,25 +1,25 @@
 let DB = require('../config/connection');
 
 /**
- * Friends represents a friend request or relationship between two professionals
+ * Friend represents a friend request or relationship between two professionals
  * @class
  */
-class Friends {
+class Friend {
 
     /**
      * Creates a new Friends object
      * @constructor
      * @param {Object} obj - The object with which to create the Friends object
      * @param {Number} obj.id - The id of the Friends object
-     * @param {Number} obj.profissional1 - The id of the first professional in the friend relationship
-     * @param {Number} obj.profissional2 - The id of the second professional in the friend relationship
-     * @param {String} obj.since - The date the friend relationship was created
+     * @param {Number} obj.professional1 - The id of the first professional in the friend relationship
+     * @param {Number} obj.professional2 - The id of the second professional in the friend relationship
+     * @param {Date} obj.since - The date the friend relationship was created
      */
     constructor(obj) {
         if (!obj) return;
         this.id = obj.id
-        this.profissional1 = obj.profissional1
-        this.profissional2 = obj.profissional2
+        this.professional1 = obj.professional1
+        this.professional2 = obj.professional2
         this.since = obj.since
     }
 
@@ -30,8 +30,8 @@ class Friends {
     async create() {
         try {
             let query = await DB.pool.query(`
-            INSERT INTO Friends (idProfissional1, idProfissional2, since)
-            VALUES (${this.profissional1}, ${this.profissional2}, STR_TO_DATE('${this.since}', "%Y-%m-%d"));`);
+            INSERT INTO Friends (idProfessional1, idProfessional2, since)
+            VALUES (${this.professional1}, ${this.professional2}, STR_TO_DATE('${this.since.toISOString().split("T")[0]}', "%Y-%m-%d"));`);
             
             this.id = query[0].insertId;
             return query[0].insertId;
@@ -43,19 +43,19 @@ class Friends {
     /**
      * Gets all friend relationships for a given user
      * @param {number} id - The id of the user
-     * @returns {Promise<Array<Friends>>} - An array of Friends objects representing the friend relationships
+     * @returns {Promise<Array<Friend>>} - An array of Friends objects representing the friend relationships
      * @throws {String} - If the id is invalid.
      */
-    static async getAllForUser(id) {
+    static async getAllForProfessional(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
                 let output = [];
-                const [query] = await DB.pool.query(`select idFriends"id", idProfissional1"profissional1", idProfissional2"profissional2", since 
-                                      FROM Friends where idProfissional1=${id} or idProfissional2=${id}`);
+                const [query] = await DB.pool.query(`select idFriends"id", idProfessional1"professional1", idProfessional2"professional2", since 
+                                      FROM Friends where idProfessional1=${id} or idProfessional2=${id}`);
                 if (query.length === 0) return null;
                 console.log(query)
                 for (const element of query) {
-                    output.push(new Friends(element))
+                    output.push(new Friend(element))
                 }
                 return output;
             } catch (err) {
@@ -69,4 +69,4 @@ class Friends {
     }
 }
 
-module.exports = Friends;
+module.exports = Friend;

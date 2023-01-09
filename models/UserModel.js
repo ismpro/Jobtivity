@@ -16,7 +16,7 @@ class User {
      * @param {Boolean} obj.admin - Whether the user is an admin or not.
      * @param {String} obj.sessionId - The session ID of the user.
      * @param {Number} obj.company - The ID of the company associated with the user.
-     * @param {Number} obj.profissional - The ID of the professional associated with the user.
+     * @param {Number} obj.professional - The ID of the professional associated with the user.
      */
     constructor(obj) {
         if (!obj) return;
@@ -28,7 +28,7 @@ class User {
         this.admin = obj.admin
         this.sessionId = obj.sessionId
         this.company = obj.company
-        this.profissional = obj.profissional
+        this.professional = obj.professional
     }
 
     /**
@@ -43,8 +43,8 @@ class User {
      * Returns whether the user is a professional or not.
      * @returns {Boolean} - `true` if the user is a professional, `false` otherwise.
      */
-    isProfissional() {
-        return !!this.profissional;
+    isProfessional() {
+        return !!this.professional;
     }
 
     /**
@@ -54,8 +54,8 @@ class User {
     async create() {
         let user = await DB.pool.query(`
             INSERT INTO User 
-            (email, password, name, description, admin, companyId, profissionalId)
-            VALUES ('${this.email}', '${this.password}', '${this.name}', '${this.description}', ${this.admin === true ? 1 : 0}, ${this.company ? this.company : null}, ${this.profissional ? this.profissional : null});
+            (email, password, name, description, admin, companyId, professionalId)
+            VALUES ('${this.email}', '${this.password}', '${this.name}', '${this.description}', ${this.admin === true ? 1 : 0}, ${this.company ? this.company : null}, ${this.professional ? this.professional : null});
         `);
         this.id = user[0].insertId;
         return user[0].insertId;
@@ -96,7 +96,7 @@ class User {
     static async getByEmail(email) {
         if (email) {
             try {
-                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", profissionalId"profissional" FROM User where email='${email}'`);
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" FROM User where email='${email}'`);
                 if (query.length === 0) return null;
                 return new User(query[0]);
             } catch (err) {
@@ -119,7 +119,7 @@ class User {
     static async getById(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
-                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", profissionalId"profissional" FROM User where idUser=${id}`);
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" FROM User where idUser=${id}`);
                 if (query.length === 0) return null;
                 return new User(query[0]);
             } catch (err) {
@@ -142,7 +142,7 @@ class User {
     static async getByCompanyId(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
-                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", profissionalId"profissional" FROM User where companyId=${id}`);
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" FROM User where companyId=${id}`);
                 if (query.length === 0) return null;
                 return new User(query[0]);
             } catch (err) {
@@ -155,6 +155,21 @@ class User {
         }
     }
 
+    static async getByProfessionalId(id) {
+        if (id && !isNaN(id) && Number.isSafeInteger(id)) {
+            try {
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" FROM User where professionalId=${id}`);
+                if (query.length === 0) return null;
+                return new User(query[0]);
+            } catch (err) {
+                console.log(err);
+                throw err
+            }
+        } else {
+            console.log("Invalid id");
+            throw "Invalid id"
+        }
+    }
 }
 
 module.exports = User;
