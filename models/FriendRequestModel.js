@@ -13,7 +13,7 @@ class FriendsRequests {
     async create() {
         try {
             let query = await DB.pool.query(`
-            INSERT INTO FriendsRequests (idProfissional1, idProfissional2, timestamp)
+            INSERT INTO FriendRequest (idProfessional1, idProfessional2, timestamp)
                 VALUES (${this.profissional1}, ${this.profissional2}, STR_TO_DATE('${this.timestamp.toISOString().slice(0, 19).replace('T', ' ')}', '%Y-%m-%d  %H:%i:%s'));`);
             this.id = query[0].insertId;
             return query[0].insertId;
@@ -24,7 +24,7 @@ class FriendsRequests {
 
     async delete() {
         try {
-            await DB.pool.query(`DELETE FROM FriendsRequests WHERE idFriendsRequests=${this.id};`);
+            await DB.pool.query(`DELETE FROM FriendRequest WHERE idFriendRequest=${this.id};`);
             this.id =  null;
             return;
         } catch (error) {
@@ -35,8 +35,8 @@ class FriendsRequests {
     static async getById(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
-                const [query] = await DB.pool.query(`select idFriendsRequests"id", idProfissional1"profissional1", idProfissional2"profissional2", timestamp 
-                                                    FROM FriendsRequests where idFriendsRequests=${id}`);
+                const [query] = await DB.pool.query(`select idFriendRequest"id", idProfessional1"professional1", idProfessional2"professional2", timestamp 
+                                                    FROM FriendRequest where idFriendsRequests=${id}`);
                 if (query.length === 0) return null;
                 return new FriendsRequests({
                     ...query[0],
@@ -56,8 +56,8 @@ class FriendsRequests {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
                 let output = [];
-                const [query] = await DB.pool.query(`select idFriendsRequests"id", idProfissional1"profissional1", idProfissional2"profissional2", timestamp 
-                                            FROM FriendsRequests where idProfissional2=${id}`);
+                const [query] = await DB.pool.query(`select idFriendRequest"id", idProfessional1"professional1", idProfessional2"professional2", timestamp 
+                                            FROM FriendRequest where idProfessional2=${id}`);
                 if (query.length === 0) return null;
                 for (const element of query) {
                     output.push(new FriendsRequests({

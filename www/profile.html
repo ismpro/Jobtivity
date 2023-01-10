@@ -12,6 +12,7 @@
     <script src="scripts/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="scripts/auth.js"></script>
+    <script src="scripts/chat.js"></script>
     <script src="scripts/profile.js"></script>
 </head>
 
@@ -56,11 +57,11 @@
                                 </div>
                             </div>
                             <div class="col" style="text-align: right;">
-                                <div style="text-align: right;"></div><i class="material-icons" style="/*text-align: right;*/border-color: var(--bs-blue);">edit</i>
+                                <div style="text-align: right;"></div><a href="#"><i id="edit-profile" class="material-icons" style="/*text-align: right;*/border-color: var(--bs-blue);">edit</i></a>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body text-center shadow"><img class="rounded-circle mb-3 mt-4" src="assets/img/dogs/image2.jpeg" width="160" height="160">
+                    <div id="info-profile" class="card-body text-center shadow"><img class="rounded-circle mb-3 mt-4" src="./images/avatar.png" width="160" height="160">
                         <div class="mb-3"><label id="user-name" class="form-label">John Bro</label></div>
                         <div class="mb-3" style="margin-bottom: 16px;"><label id="user-location" class="form-label">Location</label></div>
                         <div class="mb-3"><label id="user-description" class="form-label">Description</label></div>
@@ -80,7 +81,7 @@
                         </div>
                     </div>
                     <div class="col" style="text-align: right;">
-                        <div style="text-align: right;"></div><i class="material-icons" style="text-align: right;">add</i>
+                        <div style="text-align: right;"></div><i id="add-experience" class="material-icons" style="text-align: right;">add</i>
                     </div>
                 </div>
             </div>
@@ -93,18 +94,7 @@
                         <div><label class="form-label">Label</label></div>
                     </div>
                     <div class="col">
-                        <div style="text-align: right;"><i class="material-icons">edit</i><i class="material-icons">close</i></div>
-                    </div>
-                </div>
-                <div class="row" style="display: flex;">
-                    <div class="col">
-                        <div><label class="form-label">Company A</label></div>
-                    </div>
-                    <div class="col">
-                        <div><label class="form-label">Label</label></div>
-                    </div>
-                    <div class="col">
-                        <div style="text-align: right;"><i class="material-icons">edit</i><i class="material-icons">close</i></div>
+                        <div style="text-align: right;"><i id="edit-experience" class="material-icons">edit</i><i id="delete-experience" class="material-icons">close</i></div>
                     </div>
                 </div>
             </div>
@@ -118,7 +108,7 @@
                         </div>
                     </div>
                     <div class="col" style="text-align: right;">
-                        <div style="text-align: right;"></div><i class="material-icons" style="text-align: right;">add</i>
+                        <div style="text-align: right;"></div><i id="add-academic" class="material-icons" style="text-align: right;">add</i>
                     </div>
                 </div>
             </div>
@@ -131,18 +121,7 @@
                         <div><label class="form-label">Label</label></div>
                     </div>
                     <div class="col">
-                        <div style="text-align: right;"><i class="material-icons">edit</i><i class="material-icons">close</i></div>
-                    </div>
-                </div>
-                <div class="row" style="display: flex;">
-                    <div class="col">
-                        <div><label class="form-label">Company A</label></div>
-                    </div>
-                    <div class="col">
-                        <div><label class="form-label">Label</label></div>
-                    </div>
-                    <div class="col">
-                        <div style="text-align: right;"><i class="material-icons">edit</i><i class="material-icons">close</i></div>
+                        <div style="text-align: right;"><i id="edit-academic" class="material-icons">edit</i><i id="delete-academic" class="material-icons">close</i></div>
                     </div>
                 </div>
             </div>

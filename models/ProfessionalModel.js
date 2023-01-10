@@ -30,7 +30,7 @@ class Professional {
   async create() {
     try {
       let professional = await DB.pool.query(`
-      INSERT INTO Profissional (birthday, gender, local, private)
+      INSERT INTO Professional (birthday, gender, local, private)
       VALUES (STR_TO_DATE('${this.birthday}', "%Y-%m-%d"), '${this.gender}', '${this.local}', ${this.private === true ? 1 : 0});`);
       this.id = professional[0].insertId;
       return professional[0].insertId;
@@ -42,7 +42,7 @@ class Professional {
   static async getAllProfessionals(){
     let professionals = [];
     try{
-      const [query] = await DB.pool.query(`select idProfissional"id", birthday, gender, local, private from Profissional`);
+      const [query] = await DB.pool.query(`select idProfessional"id", birthday, gender, local, private from Professional`);
       for(const element of query){
         professionals.push(new Professional (element));
       }
@@ -56,7 +56,7 @@ class Professional {
   static async getProfessionalById(id){
     if(id && !isNaN(id) && Number.isSafeInteger(id)){
       try{
-        const [query] = await DB.pool.query(`select idProfissional"id", birthday, gender, local, private from Profissional where idProfissional=${id}`);
+        const [query] = await DB.pool.query(`select idProfessional"id", birthday, gender, local, private from Professional where idProfessional=${id}`);
         if(query.length === 0) return null;
         return new Professional(query[0]);
       } catch(err){

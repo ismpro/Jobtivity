@@ -1,11 +1,14 @@
 "use strict";
-window.onload = function () {
+
+function onChatMake() {
 
     let add = false;
 
     let main = document.querySelector("main");
 
     api.get('/friends').then(res => {
+
+        console.log(res.data)
         if (res.status === 200) {
             const asideElement = document.createElement('aside');
             asideElement.id = 'msg-overlay';
@@ -68,6 +71,11 @@ window.onload = function () {
             msgsDiv.appendChild(bodysection);
             main.appendChild(asideElement);
         }
+    }).catch(res => {
+        console.log(res)
+        if (res.response.status === 401) {
+            console.log("No Login");
+        }
     })
 };
 
@@ -77,11 +85,24 @@ function makeFriendList(body, data, api) {
             const msgDiv = document.createElement('div');
             msgDiv.classList.add('d-flex');
 
-            const imgElement = document.createElement('img');
+            /* const imgElement = document.createElement('img');
             imgElement.classList.add('rounded-circle', 'flex-shrink-0', 'me-3', 'fit-cover');
             imgElement.width = 50;
             imgElement.height = 50;
-            imgElement.src = 'https://cdn.bootstrapstudio.io/placeholders/1400x800.png';
+            imgElement.src = 'https://cdn.bootstrapstudio.io/placeholders/1400x800.png'; 
+            
+            msgDiv.appendChild(imgElement);
+            */
+
+            {/* <div id="profileImage"></div> */ }
+
+
+            let divImage = document.createElement("div");
+            divImage.id = "profileImage";
+            divImage.classList.add('rounded-circle', 'flex-shrink-0', 'me-3', 'fit-cover');
+            divImage.textContent = friend.name.toLocaleUpperCase().charAt(0);
+
+            msgDiv.appendChild(divImage);
 
             const innerDiv = document.createElement('div');
 
@@ -95,7 +116,7 @@ function makeFriendList(body, data, api) {
 
             innerDiv.appendChild(pElement1);
             innerDiv.appendChild(pElement2);
-            msgDiv.appendChild(imgElement);
+
             msgDiv.appendChild(innerDiv);
 
             body.appendChild(msgDiv);
@@ -199,4 +220,9 @@ function makeAdd(body, data, api) {
     } else {
         body.appendChild(document.createTextNode("No friends requests"));
     }
+}
+
+function deleteChat() {
+    let aside = document.querySelector("msg-overlay");
+    if (aside) aside.remove();
 }

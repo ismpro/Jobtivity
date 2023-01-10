@@ -7,6 +7,8 @@ window.addEventListener("DOMContentLoaded", function () {
         if (res.status === 200) {
             if (res.data.isAuth) {
 
+                if (onChatMake) onChatMake();
+
                 let logout = document.createElement("a");
                 logout.className = "btn";
                 logout.href = "javascript:void(0)";
@@ -14,8 +16,21 @@ window.addEventListener("DOMContentLoaded", function () {
                 logout.id = "logoutid";
                 logout.onclick = onLogout(api);
 
+                let people = document.createElement("a");
+                people.className = "nav-link";
+                people.href = "/people";
+
+                let img = document.createElement("img");
+                img.src = "images/Icons/job-icon.png";
+                img.style.width = '50px';
+
+                people.appendChild(img);
+                people.appendChild(document.createTextNode("People"));
+                
+                navbar.appendChild(createLI(people, "nav-item"));
+
                 //Criar botão perfil caso seja profissional
-                if (res.data.isProfissional) {
+                if (res.data.isProfessional) {
                     let profile = document.createElement("a");
                     profile.className = "nav-link";
                     profile.href = "/profile";
@@ -90,6 +105,7 @@ function onLogout(api) {
                     let li = document.getElementById("logoutid");
                     li.parentElement.remove();
                     makeLogin(document.querySelector('ul.navbar-nav'));
+                    deleteChat();
                 }
             }
         });

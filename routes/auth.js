@@ -105,6 +105,7 @@ router.post('/validate', async function (req, res) {
             if (user && user.sessionId === req.session.sessionId) {
                 res.status(200).send({ isAuth: true, isAdmin: user.admin, isProfessional: user.isProfessional()})
             } else {
+                await req.session.destroy();
                 res.status(200).send({ isAuth: false })
             }
         } catch (error) {
