@@ -1,9 +1,4 @@
-if (!api) {
-    var api = axios.create({
-        baseURL: window.location.origin,
-        withCredentials: true,
-    });
-}
+"use strict";
 
 function onChatMake() {
 
@@ -84,7 +79,7 @@ function onChatMake() {
     })
 };
 
-function makeFriendList(body, data) {
+function makeFriendList(body, data, api) {
     if (data.length !== 0) {
         for (const friend of data) {
             const msgDiv = document.createElement('div');
@@ -139,7 +134,7 @@ function makeFriendList(body, data) {
     }
 }
 
-function makeAdd(body, data) {
+function makeAdd(body, data, api) {
 
     let input = document.createElement("input");
     let br = document.createElement("br");

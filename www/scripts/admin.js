@@ -1,9 +1,3 @@
-//Creates a instance of axios
-const api = axios.create({
-    baseURL: window.location.origin,
-    withCredentials: true,
-});
-
 const dataController = (function () {
     /**
      * Const of the max cards per page

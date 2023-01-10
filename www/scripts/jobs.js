@@ -604,12 +604,6 @@ function createFilterButtons(id, key, title, jobs) {
 
 window.addEventListener("DOMContentLoaded", function () {
 
-    //Creates a instance of axios
-    const api = axios.create({
-        baseURL: window.location.origin,
-        withCredentials: true,
-    });
-
     const sliderValor = document.getElementById('sliderValor');
     const inputValor = document.getElementById('inputValor');
     const sliderValorCollapse = document.getElementById('sliderValorCollapse');

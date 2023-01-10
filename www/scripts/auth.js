@@ -1,9 +1,6 @@
-window.addEventListener("DOMContentLoaded", function () {
-    const api = axios.create({
-        baseURL: window.location.origin,
-        withCredentials: true,
-    });
+"use strict";
 
+window.addEventListener("DOMContentLoaded", function () {
     const navbar = document.querySelector('ul.navbar-nav');
 
     api.post('/auth/validate').then((res) => {
