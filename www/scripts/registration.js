@@ -1,10 +1,5 @@
 "use strict";
 
-const api = axios.create({
-    baseURL: window.location.origin,
-    withCredentials: true,
-});
-
 //TODO: Validacoes dos inputs
 
 //TODO: Browser está a dar submit no form quando eu tenho um preventDefault ??????????????

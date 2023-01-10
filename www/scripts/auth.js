@@ -1,9 +1,6 @@
-window.addEventListener("DOMContentLoaded", function () {
-    const api = axios.create({
-        baseURL: window.location.origin,
-        withCredentials: true,
-    });
+"use strict";
 
+window.addEventListener("DOMContentLoaded", function () {
     const navbar = document.querySelector('ul.navbar-nav');
 
     api.post('/auth/validate').then((res) => {
@@ -18,7 +15,7 @@ window.addEventListener("DOMContentLoaded", function () {
                 logout.onclick = onLogout(api);
 
                 //Criar botão perfil caso seja profissional
-                if(res.data.isProfissional){
+                if (res.data.isProfissional) {
                     let profile = document.createElement("a");
                     profile.className = "nav-link";
                     profile.href = "/profile";
@@ -32,7 +29,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
                     navbar.appendChild(createLI(profile, "nav-item"));
                 }
-                
+
 
                 if (res.data.isAdmin) {
                     let adminA = document.createElement("a");

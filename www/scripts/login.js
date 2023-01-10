@@ -1,10 +1,5 @@
 "use strict";
 
-const api = axios.create({
-    baseURL: window.location.origin,
-    withCredentials: true,
-});
-
 /**
  * 
  * @param {SubmitEvent} ev 

@@ -1,11 +1,4 @@
-if (!api) {
-    var api = axios.create({
-        baseURL: window.location.origin,
-        withCredentials: true,
-    });
-}
-
-
+"use strict";
 window.onload = function () {
 
     let add = false;
@@ -78,7 +71,7 @@ window.onload = function () {
     })
 };
 
-function makeFriendList(body, data) {
+function makeFriendList(body, data, api) {
     if (data.length !== 0) {
         for (const friend of data) {
             const msgDiv = document.createElement('div');
@@ -120,7 +113,7 @@ function makeFriendList(body, data) {
     }
 }
 
-function makeAdd(body, data) {
+function makeAdd(body, data, api) {
 
     let input = document.createElement("input");
     let br = document.createElement("br");
@@ -187,13 +180,13 @@ function makeAdd(body, data) {
             iReject.textContent = "clear";
 
             iAccept.onclick = (evt) => {
-                api.post('friends/request/accept', { id: friendsRequest.id }).then(res=>{
+                api.post('friends/request/accept', { id: friendsRequest.id }).then(res => {
                     console.log(res.data)
                 })
             }
 
             iReject.onclick = (evt) => {
-                api.post('friends/request/reject', { id: friendsRequest.id }).then(res=>{
+                api.post('friends/request/reject', { id: friendsRequest.id }).then(res => {
                     console.log(res.data)
                 })
             }
