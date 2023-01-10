@@ -46,4 +46,16 @@ router.get('/user', async function (req, res) {
     }
 })
 
+router.post('/user', async function(req, res){
+    let data = req.body;
+    let id = data.id;
+    try{
+        let updatedUser = await User.update(id, data);
+        res.status(200);
+    }catch(error){
+        console.log(error);
+        res.status(500);
+    }
+})
+
 module.exports = router;

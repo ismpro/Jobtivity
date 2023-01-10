@@ -1,4 +1,5 @@
 const DB = require('../config/connection')
+const Professional = require('../models/ProfessionalModel');
 
 /**
  * A class representing a user.
@@ -59,6 +60,16 @@ class User {
         `);
         this.id = user[0].insertId;
         return user[0].insertId;
+    }
+
+    static async update(id, data){
+        let query = `UPDATE User SET name = ?, Description = ? WHERE professionalId = ?`;
+        let values = [data.name, data.description, id];
+        let query2 = `UPDATE Professional SET local = ? WHERE idProfessional = ?`;
+        let values2 = [data.local, id];
+        let results = await DB.pool.query(query, values) && await DB.pool.query(query2, values2);  
+        return results;
+        console.log(results);
     }
 
     /**
