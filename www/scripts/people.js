@@ -1,12 +1,5 @@
 "use strict";
 
-if(!api){
-    var api = axios.create({
-        baseURL: window.location.origin,
-        withCredentials: true,
-    });
-}
-
 const dataController = (function(){
 
     let data = [];
