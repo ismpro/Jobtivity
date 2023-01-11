@@ -75,7 +75,7 @@ router.get('/list', checkAdmin, async function (req, res) {
         let companies = await Company.getAllByValidNull();
 
         for (const company of companies) {
-            let user = await User.getCompanyById(company.id);
+            let user = await User.getByCompanyId(company.id);
             output.push({
                 idCompany: company.id,
                 name: user.name,
@@ -87,6 +87,7 @@ router.get('/list', checkAdmin, async function (req, res) {
         res.status(200).send(output);
 
     } catch (error) {
+        console.log(error)
         res.status(500).send(error);
     }
 })

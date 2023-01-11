@@ -6,7 +6,7 @@ const User = require("../models/UserModel");
 
 async function getFriends(friends, sameUserId) {
 
-    if(!friends) {
+    if (!friends) {
         return [];
     }
 
@@ -26,11 +26,12 @@ async function getFriends(friends, sameUserId) {
         let friend = friends.find(friend => friend.professional1 === userFriend.professional
             || friend.professional2 === userFriend.professional);
 
-            console.log(userFriend)
+        console.log(userFriend)
         return {
             id: friend.id,
             userid: userFriend.id,
             name: userFriend.name,
+            email: userFriend.email,
             since: friend.since,
         }
     })
@@ -38,7 +39,7 @@ async function getFriends(friends, sameUserId) {
 
 async function getFriendsRequest(friendsRequests) {
 
-    if(!friendsRequests) {
+    if (!friendsRequests) {
         return [];
     }
 
@@ -98,10 +99,10 @@ router.put('/add', async function (req, res) {
 
 router.post('/request/:type', async function (req, res) {
     let friendRequest = await FriendRequest.getById(req.body.id);
-    
-    if(req.params.type === 'accept') {
 
-        let friend = new Friend({professional1: friendRequest.professional1, professional2: friendRequest.professional2, since: new Date()});
+    if (req.params.type === 'accept') {
+
+        let friend = new Friend({ professional1: friendRequest.professional1, professional2: friendRequest.professional2, since: new Date() });
         await friend.create();
     }
 
@@ -109,5 +110,17 @@ router.post('/request/:type', async function (req, res) {
 
     res.status(200).send(true);
 });
+
+router.get('/search', async function (req, res) {
+    let text = req.query.s;
+
+    if (text) {
+        let users = await User.getProfessionalsBySearchEmail(text);
+        if (!users) users = [];
+        res.status(200).send(users.map(user => user.email).filter(user => user !== req.session.email));
+    } else {
+        res.sendStatus(400);
+    }
+})
 
 module.exports = router;

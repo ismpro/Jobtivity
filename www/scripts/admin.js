@@ -99,9 +99,7 @@ let dataController = tableMaker("companies", (element) => {
 
 window.addEventListener("DOMContentLoaded", function () {
     api.get('/admin/list').then(res => {
-        console.log(res.data);
         if (res.status === 200 && typeof res.data === 'object') {
-            console.log(res.data)
             dataController.addData(res.data);
         }
     });

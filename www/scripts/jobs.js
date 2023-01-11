@@ -226,10 +226,11 @@ let dataController = tableMaker("section_jobs", (element) => {
     // Create the second row element, and it's cols
     const row2 = createRow();
     const col3 = createCol('col-xl-10');
-    const p1 = createParagraph('', '', ['width: 100%;min-width: 100px;text-align: left;overflow: scroll;overflow-y: auto;overflow-x: visible;max-height: 150px;']);
-    const span1 = createSpan(element.descricao, 'rgb(0, 0, 0)');
 
-    p1.appendChild(span1);
+    const p1 = document.createElement('p');
+    p1.style = 'width: 100%;min-width: 100px;text-align: left;overflow: scroll;overflow-y: auto;overflow-x: visible;max-height: 150px;color: rgb(0, 0, 0);'
+    p1.appendChild(document.createTextNode(element.descricao));
+
     col3.appendChild(p1);
     const col4 = createCol();
     col4.style.width = '141.5px';
@@ -256,7 +257,7 @@ let dataController = tableMaker("section_jobs", (element) => {
     // Create the forth row element, and it's cols
     const row4 = createRow();
     const col7 = createCol();
-    const checkbox = createCheckbox('compararCheck33'(input => {
+    const checkbox = createCheckbox('compararCheck33', (input => {
         compararController.check(input, element.id);
 
         input.addEventListener("click", function (ev) {

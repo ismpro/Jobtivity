@@ -104,9 +104,9 @@ function createFilterSliders(id, nome, min, max, sliderFn) {
 /**
  * This function creates checkboxes and appends them to elements in the DOM with specified ids
  * @function
- * @param {string} id - The id of the DOM element to which the checkboxes will be appended
- * @param {string} key - The property of the objects in the "jobs" parameter to use as the label for the checkboxes
- * @param {string} title - The title to be displayed above the checkboxes
+ * @param {String} id - The id of the DOM element to which the checkboxes will be appended
+ * @param {String} key - The property of the objects in the "jobs" parameter to use as the label for the checkboxes
+ * @param {String} title - The title to be displayed above the checkboxes
  * @param {{ nome: String, descricao: String, area: String, duracao: Number,  valor: Number, validade: Date }[]} jobs - An array of objects containing data to be used to create the checkboxes
  */
 function createFilterCheckboxes(id, key, title, jobs) {
@@ -233,13 +233,13 @@ function compararContainerCloseOrOpen(type) {
 
 /**
  * createContainer function creates an HTML element of type `type` and adds a class of `className`
- * @param {string} type - The type of element to be created (i.e. 'div', 'h1', 'p')
- * @param {string} className - The class name to be added to the element
+ * @param {String} type - The type of element to be created (i.e. 'div', 'h1', 'p')
+ * @param {String} className - The class name to be added to the element
  * @returns {HTMLElement} - The created container element
  */
 function createContainer(type, className) {
     const container = document.createElement(type);
-    container.classList.add(className);
+    container.className = className;
     return container;
 }
 
@@ -254,7 +254,7 @@ function createRow() {
 /**
  * createCol function creates an HTML div element with class 'col' or 
  * the class passed in colType parameter
- * @param {string} colType - The class name to be added to the col element, default is 'col'
+ * @param {String} colType - The class name to be added to the col element, default is 'col'
  * @returns {HTMLElement} - The created col element
  */
 function createCol(colType = 'col') {
@@ -264,9 +264,9 @@ function createCol(colType = 'col') {
 /**
  * createHeading function creates an HTML heading element of level `level` and with text content `text` 
  * if align is passed align text to this value
- * @param {number} level - The heading level (i.e. 1, 2, 3)
- * @param {string} text - The text content of the heading
- * @param {string} align - The align of the text , default is empty string
+ * @param {Number} level - The heading level (i.e. 1, 2, 3)
+ * @param {String} text - The text content of the heading
+ * @param {String} align - The align of the text , default is empty string
  * @returns {HTMLElement} - The created heading element
  */
 function createHeading(level, text, align = '') {
@@ -279,9 +279,9 @@ function createHeading(level, text, align = '') {
 /**
  * createHeading function creates an HTML heading element of level `level` and with text content `text` 
  * if align is passed align text to this value
- * @param {number} level - The heading level (i.e. 1, 2, 3)
- * @param {string} text - The text content of the heading
- * @param {string} align - The align of the text , default is empty string
+ * @param {Number} level - The heading level (i.e. 1, 2, 3)
+ * @param {String} text - The text content of the heading
+ * @param {String} align - The align of the text , default is empty string
  * @returns {HTMLElement} - The created heading element
  */
 function createParagraph(text, align = '', classes = []) {
@@ -295,8 +295,8 @@ function createParagraph(text, align = '', classes = []) {
 /**
  * createSpan function creates an HTML span element with text content text
  * if color is passed set the text color to this value
- * @param {string} text - The text content of the span
- * @param {string} color - The text color of the span , default is empty string
+ * @param {String} text - The text content of the span
+ * @param {String} color - The text color of the span , default is empty string
  * @returns {HTMLElement} - The created span element
  */
 function createSpan(text, color = '') {
@@ -308,7 +308,7 @@ function createSpan(text, color = '') {
 
 /**
  * createStrong function creates an HTML strong element with text content text
- * @param {string} text - The text content of the strong
+ * @param {String} text - The text content of the strong
  * @returns {HTMLElement} - The created strong element
  */
 function createStrong(text) {
@@ -320,7 +320,7 @@ function createStrong(text) {
 /**
  * createCheckbox function creates an input checkbox and it's associated label
  * the id parameter passed is used as the id of both input and label
- * @param {string} id - The id of the input checkbox and it's label
+ * @param {String} id - The id of the input checkbox and it's label
  * @returns {HTMLElement} - The created div element containing the checkbox and it's label
  */
 function createCheckbox(id, fn) {

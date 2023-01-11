@@ -36,9 +36,9 @@ function tableMaker(main, domMaker) {
             dataOriginal = JSON.parse(JSON.stringify(obj));
             data = data.map((job, index) => ({ ...job, id: index, validade: new Date(job.validade) }));
             dataOriginal = dataOriginal.map((job, index) => ({ ...job, id: index, validade: new Date(job.validade) }));
-            Object.freeze(dataOriginal);
+            //Object.freeze(dataOriginal);
 
-            let sort = JSON.parse(window.sessionStorage.getItem("sort"));
+            let sort = JSON.parse(window.sessionStorage.getItem("sort" + main));
             if (sort) {
                 document.getElementById(`${sort.key}Icon`).innerText = sort.asc ? "keyboard_arrow_up" : "keyboard_arrow_down";
                 data.sort((a, b) => sort.asc ? a[sort.key] - b[sort.key] : b[sort.key] - a[sort.key])
@@ -53,7 +53,7 @@ function tableMaker(main, domMaker) {
     */
     let filter = function (fn) {
         data = dataOriginal.filter(fn);
-        let sort = JSON.parse(window.sessionStorage.getItem("sort"));
+        let sort = JSON.parse(window.sessionStorage.getItem("sort" + main));
         if (sort) {
             data.sort((a, b) => sort.asc ? a[sort.key] - b[sort.key] : b[sort.key] - a[sort.key])
         }
@@ -66,7 +66,7 @@ function tableMaker(main, domMaker) {
      * @param {string} key Key of the data you want to sort by
     */
     let onSort = function (key) {
-        let sort = JSON.parse(window.sessionStorage.getItem("sort"));
+        let sort = JSON.parse(window.sessionStorage.getItem("sort" + main));
         if (!sort) sort = {
             key: "",
             asc: false
@@ -83,17 +83,17 @@ function tableMaker(main, domMaker) {
         data.sort((a, b) => sort.asc ? a[sort.key] - b[sort.key] : b[sort.key] - a[sort.key])
 
         pageIndex = 0;
-        window.sessionStorage.setItem("sort", JSON.stringify(sort));
+        window.sessionStorage.setItem("sort" + main, JSON.stringify(sort));
         buildDom();
     }
 
     let reset = function () {
         data = dataOriginal;
-        let sort = JSON.parse(window.sessionStorage.getItem("sort"));
+        let sort = JSON.parse(window.sessionStorage.getItem("sort" + main));
         if (sort) {
             document.getElementById(`${sort.key}Icon`).innerText = "";
         }
-        window.sessionStorage.setItem("sort", JSON.stringify({
+        window.sessionStorage.setItem("sort" + main, JSON.stringify({
             key: "",
             asc: false
         }));

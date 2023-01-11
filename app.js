@@ -61,9 +61,12 @@ db.connect().then(function () {
 
   //Adding Routes
   app.use('/', require('./routes'));
-  
+
   //Serving statics files
-  app.use(express.static(path.join(__dirname, 'www')));
+  //app.use(express.static(path.join(__dirname, 'www')));
+  app.use('/images', express.static(path.join(__dirname, 'www', 'images')));
+  app.use('/styles', express.static(path.join(__dirname, 'www', 'styles')));
+  app.use('/scripts', express.static(path.join(__dirname, 'www', 'scripts')));
 
   app.use('/admin', require('./routes/admin'));
   app.use('/api', require('./routes/api'));

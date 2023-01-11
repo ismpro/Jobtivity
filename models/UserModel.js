@@ -62,21 +62,21 @@ class User {
         return user[0].insertId;
     }
 
-    static async update(id, data){
+    static async update(id, data) {
         let query = `UPDATE User SET name = ?, Description = ? WHERE professionalId = ?`;
         let values = [data.name, data.description, id];
         let query2 = `UPDATE Professional SET local = ? WHERE idProfessional = ?`;
         let values2 = [data.local, id];
-        let results = await DB.pool.query(query, values) && await DB.pool.query(query2, values2);  
-        return results;
+        let results = await DB.pool.query(query, values) && await DB.pool.query(query2, values2);
         console.log(results);
+        return results;
     }
 
     /**
- * Updates the sessionId of the user in the database.
- *
- * @returns {Promise} - Promise that resolves when the update is complete.
- */
+     * Updates the sessionId of the user in the database.
+     *
+     * @returns {Promise} - Promise that resolves when the update is complete.
+     */
     async updateSessionId() {
         await DB.pool.query(`
         UPDATE User SET
@@ -107,9 +107,31 @@ class User {
     static async getByEmail(email) {
         if (email) {
             try {
-                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" FROM User where email='${email}'`);
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
+                                                        FROM User where email='${email}'`);
                 if (query.length === 0) return null;
-                return new User(query[0]);
+                return new User({...query[0], valid: query[0].admin === 1});
+            } catch (err) {
+                console.log(err);
+                throw err;
+            }
+        } else {
+            console.log("Invalid email");
+            throw "Invalid email";
+        }
+    }
+
+    static async getProfessionalsBySearchEmail(text) {
+        if (text) {
+            let users = [];
+            try {
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
+                                                        FROM User where email like '%${text}%' and professionalId is not null`);
+                if (query.length === 0) return null;
+                for (const element of query) {
+                    users.push(new User({...element, valid: element.admin === 1}));
+                }
+                return users;
             } catch (err) {
                 console.log(err);
                 throw err;
@@ -133,7 +155,7 @@ class User {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
                                                         FROM User where idUser=${id}`);
                 if (query.length === 0) return null;
-                return new User(query[0]);
+                return new User({...query[0], valid: query[0].admin === 1});
             } catch (err) {
                 console.log(err);
                 throw err
@@ -154,9 +176,10 @@ class User {
     static async getByCompanyId(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
-                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" FROM User where companyId=${id}`);
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
+                                                        FROM User where companyId=${id}`);
                 if (query.length === 0) return null;
-                return new User(query[0]);
+                return new User({...query[0], valid: query[0].admin === 1});
             } catch (err) {
                 console.log(err);
                 throw err
@@ -170,9 +193,10 @@ class User {
     static async getByProfessionalId(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
-                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" FROM User where professionalId=${id}`);
+                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
+                                                FROM User where professionalId=${id}`);
                 if (query.length === 0) return null;
-                return new User(query[0]);
+                return new User({...query[0], valid: query[0].admin === 1});
             } catch (err) {
                 console.log(err);
                 throw err
@@ -185,17 +209,18 @@ class User {
 
     static async getAllProfessionalsUsers() {
         let professionals = [];
-            try {
-                const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" FROM User where professionalId is not null`);
-                for(const element of query){
-                    console.log("Elemento: " + element);
-                    professionals.push(new User(element));
-                }
-                return professionals;
-            } catch (err) {
-                console.log(err);
-                throw err
+        try {
+            const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
+                                                    FROM User where professionalId is not null`);
+            for (const element of query) {
+                console.log("Elemento: " + element);
+                professionals.push(new User({...element, valid: element.admin === 1}));
             }
+            return professionals;
+        } catch (err) {
+            console.log(err);
+            throw err
+        }
     }
 }
 

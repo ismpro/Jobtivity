@@ -7,8 +7,6 @@ window.addEventListener("DOMContentLoaded", function () {
         if (res.status === 200) {
             if (res.data.isAuth) {
 
-                if (onChatMake) onChatMake();
-
                 let logout = document.createElement("a");
                 logout.className = "btn";
                 logout.href = "javascript:void(0)";
@@ -43,6 +41,8 @@ window.addEventListener("DOMContentLoaded", function () {
                     profile.appendChild(document.createTextNode("Profile"));
 
                     navbar.appendChild(createLI(profile, "nav-item"));
+
+                    if (typeof onReadyToMakeChat === 'function') onReadyToMakeChat();
                 }
 
 
@@ -105,7 +105,7 @@ function onLogout(api) {
                     let li = document.getElementById("logoutid");
                     li.parentElement.remove();
                     makeLogin(document.querySelector('ul.navbar-nav'));
-                    deleteChat();
+                    if (typeof deleteChat === 'function') deleteChat();
                 }
             }
         });

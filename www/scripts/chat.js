@@ -1,6 +1,6 @@
 "use strict";
 
-function onChatMake() {
+function onReadyToMakeChat() {
 
     let add = false;
 
@@ -30,17 +30,26 @@ function onChatMake() {
 
             const buttonAddElement = document.createElement('button');
             buttonAddElement.classList.add('add');
-            buttonAddElement.textContent = 'Add';
+            buttonAddElement.style.display = 'none';
+            const buttonAddI = document.createElement("i");
+
+            buttonAddI.classList.add("material-icons");
+            buttonAddI.textContent = "add";/* patient_list */
+
+            buttonAddElement.appendChild(buttonAddI)
 
             const buttonCloseElement = document.createElement('button');
-            buttonCloseElement.classList.add('close');
-            buttonCloseElement.textContent = 'X';
-            buttonCloseElement.onclick = function () {
-                msgsDiv.classList.toggle("msg-overlay-list-bubble-minimized");
-            }
+            const buttonI = document.createElement("i");
 
-            controlsDiv.appendChild(buttonAddElement)
-            controlsDiv.appendChild(buttonCloseElement)
+            buttonI.classList.add("material-icons");
+            buttonI.textContent = "keyboard_arrow_up";
+
+            buttonCloseElement.appendChild(buttonI);
+
+            buttonCloseElement.classList.add('close');
+
+            controlsDiv.appendChild(buttonAddElement);
+            controlsDiv.appendChild(buttonCloseElement);
 
             headerDiv.appendChild(h3Element);
             headerDiv.appendChild(controlsDiv);
@@ -56,17 +65,22 @@ function onChatMake() {
 
                 if (add) {
                     makeFriendList(bodysection, res.data.friends);
-                    buttonAddElement.textContent = "Add";
+                    buttonAddI.textContent = "add";
                 } else {
-                    makeAdd(bodysection, res.data.friendsRequests);
-                    buttonAddElement.textContent = "List";
+                    makeAdd(bodysection, res.data);
+                    buttonAddI.textContent = "list";
                 }
 
                 add = !add;
             }
 
+            buttonCloseElement.onclick = function () {
+                msgsDiv.classList.toggle("msg-overlay-list-bubble-minimized");
+                buttonI.textContent = (buttonI.textContent === "keyboard_arrow_up" ? "keyboard_arrow_down" : "keyboard_arrow_up");
+                buttonAddElement.style.display = (buttonI.textContent === "keyboard_arrow_up" ? "none" : "block");
+            }
+
             makeFriendList(bodysection, res.data.friends);
-            //makeAdd(bodysection);
 
             msgsDiv.appendChild(bodysection);
             main.appendChild(asideElement);
@@ -134,11 +148,40 @@ function makeFriendList(body, data, api) {
     }
 }
 
+function autoComplete(inputValue, data) {
+    return new Promise((resolve, reject) => {
+        api.get(`/friends/search?s=${inputValue}`)
+            .then(res => {
+                if (res.status === 200) {
+                    resolve(res.data.filter(email => !data.includes(email)));
+                }
+            })
+            .catch(err => reject(err));
+    });
+}
+
 function makeAdd(body, data, api) {
 
     let input = document.createElement("input");
     let br = document.createElement("br");
     let button = document.createElement("button");
+
+    let ul = document.createElement("ul");
+
+    input.addEventListener('input', async ({ target }) => {
+        let dataValue = target.value;
+        ul.innerHTML = ``;
+        if (dataValue.length) {
+            let autoCompleteValues = await autoComplete(dataValue, data.friends.map(friend => friend.email));
+            autoCompleteValues.forEach(value => { ul.innerHTML = ul.innerHTML + `<li>${value}</li>` });
+        }
+    });
+    ul.addEventListener('click', ({ target }) => {
+        if (target.tagName === 'LI') {
+            input.value = target.textContent;
+            ul.innerHTML = ``;
+        }
+    });
 
     button.textContent = "Add Friend";
 
@@ -153,11 +196,12 @@ function makeAdd(body, data, api) {
 
     body.appendChild(input);
     body.appendChild(br);
+    body.appendChild(ul);
     body.appendChild(button);
     body.appendChild(divider);
 
-    if (data.length !== 0) {
-        for (const friendsRequest of data) {
+    if (data.friendsRequests.length !== 0) {
+        for (const friendsRequest of data.friendsRequests) {
 
             const msgDiv = document.createElement('div');
             msgDiv.classList.add('d-flex');
@@ -223,6 +267,6 @@ function makeAdd(body, data, api) {
 }
 
 function deleteChat() {
-    let aside = document.querySelector("msg-overlay");
+    let aside = document.querySelector("#msg-overlay");
     if (aside) aside.remove();
 }

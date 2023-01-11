@@ -720,6 +720,11 @@ main {
   cursor: pointer;
 }
 
+.add i{
+  width: 24px;
+  height: 24px;
+}
+
 .buttons .close {
   background-color: transparent;
   border: none;

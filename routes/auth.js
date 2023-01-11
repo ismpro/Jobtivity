@@ -73,6 +73,7 @@ router.post('/login', async function (req, res) {
         if (user && bcrypt.compareSync(data.password, user.password)) {
             let sessionId = createid(64);
             req.session.userid = user.id;
+            req.session.email = user.email;
             req.session.sessionId = sessionId;
             user.sessionId = sessionId;
             let sessionSave = req.session.save();
