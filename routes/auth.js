@@ -9,11 +9,6 @@ const Company = require("../models/CompanyModel");
 
 router.post('/checkemail', async function (req, res) {
     let data = req.body;
-
-    if(errors){
-        res.status(210).send(error.message);
-    }
-
     if (!(await User.existsByEmail(data.email))) {
 
         res.sendStatus(200);

@@ -15,6 +15,8 @@
     <script src="scripts/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
     <script src="scripts/auth.js"></script>
+    <script src="scripts/table.js"></script>
+    <script src="scripts/jobshelpers.js"></script>
     <script src="scripts/jobs.js"></script>
     <script src="scripts/chat.js"></script>
 </head>
@@ -75,11 +77,11 @@
                         <div class="col-md-3">
                             <div class="d-none d-md-block" style="padding: 0px;">
                                 <div class="filters" style="padding-left: 20px;padding-right: 20px;">
-                                    <div class="filter-item">
-                                        <h3>Valor minimo</h3>
-                                        <input class="form-range" type="range" id="sliderValor">
-                                        <input class="border rounded form-control-sm" type="number" id="inputValor"
-                                            style="width: 100%;">
+                                    <div id="duracaoFilter" class="filter-item">
+                                        
+                                    </div>
+                                    <div id="valorFilter" class="filter-item">
+                                        
                                     </div>
                                     <div id="areaFilter" class="filter-item"
                                         style="max-height: 498px;overflow-y: auto;">
@@ -98,11 +100,11 @@
                                 </a>
                                 <div class="collapse" id="filters">
                                     <div class="filters" style="padding-left: 20px;padding-right: 20px;">
-                                        <div class="filter-item">
-                                            <h3>Valor minimo</h3>
-                                            <input class="form-range" type="range" id="sliderValorCollapse">
-                                            <input class="border rounded form-control-sm" type="number"
-                                                id="inputValorCollapse" style="width: 100%;">
+                                        <div id="duracaoFilterCollapse" class="filter-item">
+                                        
+                                        </div>
+                                        <div id="valorFilterCollapse" class="filter-item">
+                                            
                                         </div>
                                         <div id="areaFilterCollapse" class="filter-item"
                                             style="max-height: 498px;overflow-y: auto;">
@@ -119,14 +121,14 @@
                                     data-bs-toggle="dropdown" type="button"
                                     style="background: rgb(255,255,255);color: rgb(0,0,0);">Sort</button>
                                 <div class="dropdown-menu">
-                                    <a onclick="javascript:dataController.onSort('validade')"
+                                    <a onclick="javascript:onSort('validade')"
                                         class="dropdown-item d-xl-flex justify-content-xl-center align-items-xl-center"
                                         style="height: 30px;" role="button">
                                         <p class="text-center d-xl-flex align-items-xl-center"
                                             style="margin-bottom: 0px;">Data de Validade</p>
                                         <i id="validadeIcon" class="material-icons"></i>
                                     </a>
-                                    <a onclick="javascript:dataController.onSort('valor')"
+                                    <a onclick="javascript:onSort('valor')"
                                         class="dropdown-item d-xl-flex justify-content-xl-center align-items-xl-center"
                                         style="height: 30px;" role="button">
                                         <p class="text-center d-xl-flex align-items-xl-center"
