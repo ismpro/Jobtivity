@@ -43,6 +43,23 @@ class PastJob {
     }
   }
 
+  static async getPastJobById(id) {
+    let pastjob = [];
+    try {
+      const [query] = await DB.pool.query(
+        `SELECT idPastJob"id", name, url, beginDate, endDate, description, idProfissional"professional" FROM PastJob WHERE idProfissional=${id};`
+      );
+      for (const element of query) {
+        console.log("Elemento: " + element);
+        pastjob.push(new PastJob(element));
+      }
+      return pastjob;
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
 }
 
 module.exports = PastJob;

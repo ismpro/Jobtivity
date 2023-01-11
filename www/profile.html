@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Blog - Brand</title>
+    <title>Profile</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i&amp;display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css">
     <link rel="stylesheet" href="styles/styles.css">
@@ -45,6 +45,21 @@
         </div>
     </nav>
     <main class="page blog-post-list">
+        <div class="modal fade" role="dialog" tabindex="-1" id="modal1">
+            <div id="modal-dialog" class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <section class="modal-header">
+                        <h4 class="modal-title">Add Qualification</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </section>
+                    <section class="modal-body row" style="text-align: center;max-height: 500px">
+                    </section>
+                    <section class="modal-footer">
+                        <button class="btn btn-light" type="button" data-bs-dismiss="modal">Close</button>
+                    </section>
+                </div>
+            </div>
+        </div>
     <div class="container-fluid" style="margin-top: 3%;padding-top: 10px;padding-right: 10px;padding-bottom: 10px;padding-left: 10px;">
         <div class="row">
             <div class="col">
@@ -57,8 +72,8 @@
                                 </div>
                             </div>
                             <div class="col" style="text-align: right;">
-                                <div style="text-align: right;"></div><a href="#"><i id="edit-profile" class="material-icons" style="/*text-align: right;*/border-color: var(--bs-blue);">edit</i></a>
-                                <div style="text-align: right;"></div><a href="#"><i id="save-profile" class="material-icons" style="/*text-align: right;*/border-color: var(--bs-blue); display: none;">save</i></a>
+                                <a href="#"><i id="edit-profile" class="material-icons" style="/*text-align: right;*/border-color: var(--bs-blue);">edit</i></a>
+                                <a href="#"><i id="save-profile" class="material-icons" style="/*text-align: right;*/border-color: var(--bs-blue); display: none;">save</i></a>
                             </div>
                         </div>
                     </div>
@@ -82,22 +97,14 @@
                         </div>
                     </div>
                     <div class="col" style="text-align: right;">
-                        <div style="text-align: right;"></div><i id="add-experience" class="material-icons" style="text-align: right;">add</i>
+                        <a href="#"><i id="add-experience" class="material-icons" style="text-align: right;">add</i></a>
+                        <a href="#"><i id="edit-experience" class="material-icons" style="text-align: right;">edit</i></a>
                     </div>
                 </div>
             </div>
             <div class="card-body">
-                <div class="row" style="display: flex;">
-                    <div class="col">
-                        <div><label class="form-label">Company A</label></div>
-                    </div>
-                    <div class="col">
-                        <div><label class="form-label">Label</label></div>
-                    </div>
-                    <div class="col">
-                        <div style="text-align: right;"><i id="edit-experience" class="material-icons">edit</i><i id="delete-experience" class="material-icons">close</i></div>
-                    </div>
-                </div>
+                <ul id="experience">
+                </ul>
             </div>
         </div>
         <div class="card shadow mb-5" style="margin-top: 3%;margin-right: auto;margin-left: auto;width: 65rem;">
@@ -109,24 +116,20 @@
                         </div>
                     </div>
                     <div class="col" style="text-align: right;">
-                        <div style="text-align: right;"></div><i id="add-academic" class="material-icons" style="text-align: right;">add</i>
+                        <a href="#"><i data-bs-toggle="modal" data-bs-target="#modal1" id="add-academic" class="material-icons" style="text-align: right;">add</i></a>
+                        <a href="#"><i id="edit-academic" class="material-icons" style="text-align: right;">edit</i></a>
                     </div>
                 </div>
             </div>
             <div class="card-body">
-                <div class="row" style="display: flex;">
-                    <div class="col">
-                        <div><label class="form-label">Company A</label></div>
-                    </div>
-                    <div class="col">
-                        <div><label class="form-label">Label</label></div>
-                    </div>
-                    <div class="col">
-                        <div style="text-align: right;"><i id="edit-academic" class="material-icons">edit</i><i id="delete-academic" class="material-icons">close</i></div>
-                    </div>
-                </div>
+                <ul id="academic">
+                </ul>
             </div>
         </div>
+    </div>
+    <div class="alert alert-dismissible visually-hidden" role="alert">
+        <span id="alertText"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 </main>
 <footer class="text-center py-4">
