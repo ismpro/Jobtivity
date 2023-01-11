@@ -69,7 +69,6 @@ class User {
         let values2 = [data.local, id];
         let results = await DB.pool.query(query, values) && await DB.pool.query(query2, values2);  
         return results;
-        console.log(results);
     }
 
     /**
