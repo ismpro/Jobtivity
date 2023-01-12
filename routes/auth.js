@@ -1,29 +1,86 @@
 let { Router } = require("express");
 const bcrypt = require('bcrypt');
 const { createid } = require('../config/functions');
+const { checkSchema, validationResult } = require('express-validator');
 let router = Router();
 
 const User = require("../models/UserModel");
 const Professional = require("../models/ProfessionalModel");
 const Company = require("../models/CompanyModel");
 
-router.post('/checkemail', async function (req, res) {
-    let data = req.body;
-    if (!(await User.existsByEmail(data.email))) {
-
-        res.sendStatus(200);
+function checkForErrors(req, res, next) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
     } else {
-        res.status(210).send("This email is already in use");
+        next();
     }
-})
+}
+
+router.post('/checkemail',
+    check('email').isEmail().withMessage('Please enter a valid email address').normalizeEmail(),
+    check('password')
+        .isLength({ min: 8, max: 16 })
+        .withMessage('Password must be between 8 and 16 characters')
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])/)
+        .withMessage('Password must contain at least one uppercase and one lowercase letter'),
+    checkForErrors,
+    async function (req, res) {
+
+
+
+        let data = req.body;
+        if (!(await User.existsByEmail(data.email))) {
+
+            res.sendStatus(200);
+        } else {
+            res.status(210).send("This email is already in use");
+        }
+    })
 
 router.post('/register', async function (req, res) {
+    let fields = [];
+    if (req.body.checkIsComp === null) {
+        fields = [
+            check('email').isEmail().withMessage('Please enter a valid email address'),
+            check('password')
+                .isLength({ min: 8, max: 16 })
+                .withMessage('Password must be between 8 and 16 characters')
+                .matches(/^(?=.*[a-z])(?=.*[A-Z])/)
+                .withMessage('Password must contain at least one uppercase and one lowercase letter'),
+            check('name').isLength({ min: 2 }).withMessage('Name must be at least 2 characters'),
+            check('description').isLength({ min: 5 }).withMessage('Description must be at least 5 characters'),
+            check('birthDate').isLength({ min: 8 }).withMessage('Birthdate must be provided').toDate(),
+            check('gender').isLength({ min: 4 }).withMessage('Gender must be provided'),
+            check('local').isLength({ min: 5 }).withMessage('Location must be provided')
+        ]
+    } else {
+        fields = [
+            check('email').isEmail().withMessage('Please enter a valid email address'),
+            check('password')
+                .isLength({ min: 8, max: 16 })
+                .withMessage('Password must be between 8 and 16 characters')
+                .matches(/^(?=.*[a-z])(?=.*[A-Z])/)
+                .withMessage('Password must contain at least one uppercase and one lowercase letter'),
+            check('name').isLength({ min: 2 }).withMessage('Name must be at least 2 characters'),
+            check('urlWeb').isURL().withMessage('Please enter a valid url'),
+            check('urlLogo').isURL().withMessage('Please enter a valid url'),
+            check('description').isLength({ min: 5 }).withMessage('Description must be at least 5 characters')
+        ]
+    }
+    const errors = validationResult(req); 1111111111111111
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
     let data = req.body;
 
     if (!(await User.existsByEmail(data.email))) {
 
-        let user = new User({ email: data.email, password: bcrypt.hashSync(data.password, bcrypt.genSaltSync(10)),
-            name: data.name, description: data.description, admin: false });
+        let user = new User({
+            email: data.email, password: bcrypt.hashSync(data.password, bcrypt.genSaltSync(10)),
+            name: data.name, description: data.description, admin: false
+        });
 
         if (data.isCompany) {
             let comp = new Company({
@@ -56,7 +113,6 @@ router.post('/register', async function (req, res) {
 
 router.post('/login', async function (req, res) {
     let data = req.body;
-    console.log(data);
     try {
         let user = await User.getByEmail(data.email);
 
@@ -98,8 +154,8 @@ router.post('/validate', async function (req, res) {
     if (req.session.userid) {
         try {
             let user = await User.getById(req.session.userid);
-            if (user && user.sessionId === req.session.sessionId) {
-                res.status(200).send({ isAuth: true, isAdmin: user.admin, isProfessional: user.isProfessional()})
+            if (user && user.sessionId === req.session.sessionId && user.email === req.session.email) {
+                res.status(200).send({ isAuth: true, isAdmin: user.admin, isProfessional: user.isProfessional() })
             } else {
                 await req.session.destroy();
                 res.status(200).send({ isAuth: false })

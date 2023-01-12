@@ -67,7 +67,7 @@ class User {
         let values = [data.name, data.description, id];
         let query2 = `UPDATE Professional SET local = ? WHERE idProfessional = ?`;
         let values2 = [data.local, id];
-        let results = await DB.pool.query(query, values) && await DB.pool.query(query2, values2);  
+        let results = await Promise.all([DB.pool.query(query, values), DB.pool.query(query2, values2)]); 
         return results;
     }
 
@@ -212,7 +212,6 @@ class User {
             const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
                                                     FROM User where professionalId is not null`);
             for (const element of query) {
-                console.log("Elemento: " + element);
                 professionals.push(new User({...element, valid: element.admin === 1}));
             }
             return professionals;

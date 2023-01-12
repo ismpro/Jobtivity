@@ -17,7 +17,11 @@ function firstSignUp(ev) {
 
     let textEle = document.getElementById("errorTextFirst");
 
-    api.post('/auth/checkemail', { email: data.get("email") })
+    if(data.get("pass1") !== '' && data.get("pass2") !== '' && data.get("pass1") !== data.get("pass2")) {
+        textEle.appendChild(document.createTextNode("As palavras passe tem de ser iguais!!!"));
+    }
+
+    api.post('/auth/checkemail', { email: data.get("email"), password: data.get("pass1")})
         .then(function (res) {
             let code = res.status
             if (code === 200) {
