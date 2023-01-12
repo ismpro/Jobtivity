@@ -16,6 +16,8 @@ const dataController = (function () {
     let inputDescription = document.getElementById("description");
     let inputLocal = document.getElementById("local");
     let modal = document.querySelector(".modal-body.row");
+    let msgDiv = document.getElementById("info-profile");
+    let divImage = document.createElement("div");
 
     lblName.textContent = data.name;
     lblLocation.textContent = data.local;
@@ -23,6 +25,20 @@ const dataController = (function () {
     inputName.style.display = "none";
     inputDescription.style.display = "none";
     inputLocal.style.display = "none";
+    divImage.id = "profileImage";
+    divImage.classList.add('rounded-circle', 'mb-3', 'mt-4');
+    
+
+    divImage.style.margin = "auto";
+    divImage.style.textAlign = "center";
+    divImage.style.width = "100px";
+    divImage.style.height = "100px";
+    divImage.style.fontSize = "45px";
+    divImage.style.lineHeight = "100px";
+    
+    divImage.textContent = data.name.toLocaleUpperCase().charAt(0);
+    
+    lblName.parentElement.before(divImage);        
 
     // Construir DOM para Academic
     let ulAcademic = document.getElementById("academic");
@@ -191,13 +207,6 @@ const dataController = (function () {
     });
   };
 
-  let hideFields = function () {
-    let btnMessage = document.getElementById("direct-message");
-    let btnRemove = document.getElementById("remove-friend");
-    btnMessage.style.visibility = "hidden";
-    btnRemove.style.visibility = "hidden";
-  };
-
   let hideEditFields = function () {
     [].forEach.call(
       document.querySelectorAll(".material-icons"),
@@ -266,7 +275,6 @@ const dataController = (function () {
 
   return {
     addData: add,
-    hide: hideFields,
     hideEdit: hideEditFields,
     edit: onEdit,
   };
@@ -283,7 +291,6 @@ window.addEventListener("DOMContentLoaded", function () {
       if (res.status === 200 && typeof res.data === "object") {
         console.log(res.data);
         dataController.addData(res.data);
-        dataController.hide();
         dataController.hideEdit();
       }
     });
@@ -292,7 +299,6 @@ window.addEventListener("DOMContentLoaded", function () {
       if (res.status === 200 && typeof res.data === "object") {
         console.log(res.data);
         dataController.addData(res.data);
-        dataController.hide();
         icoEditProfile.addEventListener("click", (evt) => {
           dataController.edit();
         });

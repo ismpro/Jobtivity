@@ -8,8 +8,20 @@ const Professional = require("../models/ProfessionalModel");
 const Qualification = require("../models/QualificationModel");
 const PastJob = require("../models/PastJobModel");
 
+//Middleware
+
+const checkLoggedIn = async function (req, res, next) {
+    console.log("Session");
+    console.log(req.session.userid);
+    if (req.session.userid) {
+        next();
+    } else {
+        res.sendStatus(401);
+    }
+}
+
 // All Users
-router.get('/user', async function (req, res) {
+router.get('/user', checkLoggedIn,  async function (req, res) {
     let data = req.query;
     try {
         if (data.id) {
