@@ -67,7 +67,7 @@ class User {
         let values = [data.name, data.description, id];
         let query2 = `UPDATE Professional SET local = ? WHERE idProfessional = ?`;
         let values2 = [data.local, id];
-        let results = await Promise.all([DB.pool.query(query, values), DB.pool.query(query2, values2)]); 
+        let results = await Promise.all([DB.pool.query(query, values), DB.pool.query(query2, values2)]);
         return results;
     }
 

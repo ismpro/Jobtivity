@@ -72,9 +72,8 @@
                             <input class="form-check-input" type="checkbox" name="checkIsComp" id="checkIsComp">
                             <label class="form-check-label" for="checkIsComp">Company signup</label>
                         </div>
-                        <p id="errorTextFirst"></p>
-                        <button id="firstButton" class="btn btn-primary" onclick="javascript: firstSignUp(event)"
-                            style="margin-top: 10px;">Next</button>
+                        <p style="margin-top: 10px;" id="errorTextFirst"></p>
+                        <button id="firstButton" class="btn btn-primary" onclick="javascript: firstSignUp(event)">Next</button>
                     </section>
                     <section id="profForm" style="display: none;">
                         <div class="row">
@@ -121,9 +120,9 @@
                             <textarea class="form-control" id="descriptionProf" name="descriptionProf"
                                 placeholder="Say something about you..."></textarea>
                         </div>
-                        <button id="profInputBack" class="btn btn-primary" onclick="javascript: backSignUp(event)"
-                            style="margin-top: 10px;">Back</button>
-                        <input id="profInput" class="btn btn-primary" type="submit" style="margin-top: 10px;" value="Sign Up">
+                        <p style="margin-top: 10px;" id="errorTextProf"></p>
+                        <button id="profInputBack" class="btn btn-primary" onclick="javascript: backSignUp(event)">Back</button>
+                        <input id="profInput" class="btn btn-primary" type="submit" value="Sign Up">
                     </section>
                     <section id="compForm" style="display: none;">
                         <div class="row">
@@ -153,9 +152,9 @@
                             <textarea class="form-control" id="descriptionComp" name="descriptionComp"
                                 placeholder="Say something about you..."></textarea>
                         </div>
-                        <button id="compInputBack" class="btn btn-primary" onclick="javascript: backSignUp(event)"
-                            style="margin-top: 10px;">Back</button>
-                        <input id="compInput" class="btn btn-primary" type="submit" style="margin-top: 10px;" value="Sign Up">
+                        <p style="margin-top: 10px;" id="errorTextComp"></p>
+                        <button id="compInputBack" class="btn btn-primary" onclick="javascript: backSignUp(event)">Back</button>
+                        <input id="compInput" class="btn btn-primary" type="submit" value="Sign Up">
                     </section>
                 </form>
             </div>

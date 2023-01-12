@@ -29,6 +29,10 @@ router.get('/', function (req, res) {
     res.status(200).sendFile(path.join(global.appRoot, 'www', `index.html`));
 });
 
+router.get('/favicon.ico', function (req, res) {
+    res.status(200).sendFile(path.join(global.appRoot, 'www', `favicon.ico`));
+});
+
 router.get('/login', redirectHome);
 router.get('/registration', redirectHome);
 

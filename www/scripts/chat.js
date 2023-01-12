@@ -7,8 +7,6 @@ function onReadyToMakeChat() {
     let main = document.querySelector("main");
 
     api.get('/friends').then(res => {
-
-        console.log(res.data)
         if (res.status === 200) {
             const asideElement = document.createElement('aside');
             asideElement.id = 'msg-overlay';
@@ -93,7 +91,7 @@ function onReadyToMakeChat() {
     })
 };
 
-function makeFriendList(body, data, api) {
+function makeFriendList(body, data) {
     if (data.length !== 0) {
         for (const friend of data) {
             const msgDiv = document.createElement('div');
@@ -160,7 +158,7 @@ function autoComplete(inputValue, data) {
     });
 }
 
-function makeAdd(body, data, api) {
+function makeAdd(body, data) {
 
     let input = document.createElement("input");
     let br = document.createElement("br");
@@ -186,6 +184,7 @@ function makeAdd(body, data, api) {
     button.textContent = "Add Friend";
 
     button.onclick = ev => {
+        console.log(api)
         api.put("/friends/add", { email: input.value }).then(res => {
             console.log(res)
         })

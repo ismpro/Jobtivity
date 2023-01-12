@@ -5,8 +5,8 @@ class FriendsRequests {
     constructor(obj) {
         if (!obj) return;
         this.id = obj.id
-        this.profissional1 = obj.profissional1
-        this.profissional2 = obj.profissional2
+        this.professional1 = obj.professional1
+        this.professional2 = obj.professional2
         this.timestamp = obj.timestamp
     }
 
@@ -14,7 +14,7 @@ class FriendsRequests {
         try {
             let query = await DB.pool.query(`
             INSERT INTO FriendRequest (idProfessional1, idProfessional2, timestamp)
-                VALUES (${this.profissional1}, ${this.profissional2}, STR_TO_DATE('${this.timestamp.toISOString().slice(0, 19).replace('T', ' ')}', '%Y-%m-%d  %H:%i:%s'));`);
+                VALUES (${this.professional1}, ${this.professional2}, STR_TO_DATE('${this.timestamp.toISOString().slice(0, 19).replace('T', ' ')}', '%Y-%m-%d  %H:%i:%s'));`);
             this.id = query[0].insertId;
             return query[0].insertId;
         } catch (error) {
@@ -36,7 +36,7 @@ class FriendsRequests {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
                 const [query] = await DB.pool.query(`select idFriendRequest"id", idProfessional1"professional1", idProfessional2"professional2", timestamp 
-                                                    FROM FriendRequest where idFriendsRequests=${id}`);
+                                                    FROM FriendRequest where idFriendRequest=${id}`);
                 if (query.length === 0) return null;
                 return new FriendsRequests({
                     ...query[0],

@@ -24,7 +24,8 @@ router.get('/all', async function (req, res) {
         }
         res.status(200).send(output);
     } catch (error) {
-        res.status(500).send(error);
+        console.log(error);
+        res.sendStatus(500);
     }
 })
 

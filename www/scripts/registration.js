@@ -1,7 +1,5 @@
 "use strict";
 
-//TODO: Validacoes dos inputs
-
 //TODO: Browser está a dar submit no form quando eu tenho um preventDefault ??????????????
 let canSend = false;
 
@@ -16,12 +14,10 @@ function firstSignUp(ev) {
     const data = new FormData(document.querySelector("form"));
 
     let textEle = document.getElementById("errorTextFirst");
+    textEle.textContent = "";
+    textEle.style.color = "red";
 
-    if(data.get("pass1") !== '' && data.get("pass2") !== '' && data.get("pass1") !== data.get("pass2")) {
-        textEle.appendChild(document.createTextNode("As palavras passe tem de ser iguais!!!"));
-    }
-
-    api.post('/auth/checkemail', { email: data.get("email"), password: data.get("pass1")})
+    api.post('/auth/checkemail', { email: data.get("email"), password: data.get("pass1"), confirmPassword: data.get("pass2") })
         .then(function (res) {
             let code = res.status
             if (code === 200) {
@@ -34,11 +30,21 @@ function firstSignUp(ev) {
                 canSend = true;
             } else if (code === 210) {
                 textEle.appendChild(document.createTextNode(res.data));
+            } else if (code === 215) {
+                let errors = res.data.errors;
+
+                if (errors.length > 0) {
+                    textEle.appendChild(document.createTextNode(errors[0].msg));
+                } else {
+                    textEle.appendChild(document.createTextNode("ERROR"));
+                }
             }
             removeSpinnerFirst();
         })
         .catch(function (err) {
-            console.log(err);
+            console.error(err);
+            textEle.appendChild(document.createTextNode("ERROR"));
+            removeSpinnerFirst();
         });
 }
 
@@ -63,10 +69,13 @@ function submitRegister(ev) {
         let sendObj = {};
         let id = "";
 
+        let errorText;
+
         if (data.get("checkIsComp") === null) {
             sendObj = {
                 email: data.get("email"),
                 password: data.get("pass1"),
+                confirmPassword: data.get("pass2"),
                 name: data.get("nameProf"),
                 description: data.get("descriptionProf"),
                 birthDate: data.get("birth"),
@@ -74,17 +83,20 @@ function submitRegister(ev) {
                 local: data.get("location"),
                 private: data.get("visableTo") !== null,
             }
-            id = 'profInput'
+            id = 'profInput';
+            errorText = document.getElementById("errorTextProf");
         } else {
             sendObj = {
                 email: data.get("email"),
                 password: data.get("pass1"),
+                confirmPassword: data.get("pass2"),
                 name: data.get("nameComp"),
                 urlWeb: data.get("urlWeb"),
                 urlLogo: data.get("urlLogo"),
                 description: data.get("descriptionComp")
             }
             id = 'compInput';
+            errorText = document.getElementById("errorTextComp");
         }
 
         createSpinner(id);
@@ -96,36 +108,43 @@ function submitRegister(ev) {
 
         alert.innerHTML = "";
 
-        //TODO: Remover Timeout depois de testes
-        setTimeout(() => {
-            api.post('/auth/register', sendObj)
-                .then(function (res) {
-                    let code = res.status
-                    if (code === 200) {
-                        alert.appendChild(document.createTextNode("Registed Successful"));
-                        alert.parentElement.classList.add("alert-success");
-                        alert.parentElement.classList.remove("visually-hidden");
-                        setTimeout(() => {
-                            //bsAlert.close();
-                            window.location.href = '/login.html';
-                        }, 1000);
-                    } else if (code === 210) {
-                        alert.appendChild(document.createTextNode(res.data));
-                        alert.parentElement.classList.add("alert-danger");
-                        alert.parentElement.classList.remove("visually-hidden");
-                        removeSpinner(id);
+        api.post('/auth/register', sendObj)
+            .then(function (res) {
+                let code = res.status
+                if (code === 200) {
+                    alert.appendChild(document.createTextNode("Registed Successful"));
+                    alert.parentElement.classList.add("alert-success");
+                    alert.parentElement.classList.remove("visually-hidden");
+                    setTimeout(() => {
+                        window.location.href = '/login.html';
+                    }, 1000);
+                } else if (code === 210) {
+                    alert.appendChild(document.createTextNode(res.data));
+                    alert.parentElement.classList.add("alert-danger");
+                    alert.parentElement.classList.remove("visually-hidden");
+                } else if (code === 215) {
+                    let errors = res.data.errors;
+
+                    if (errors.length > 0) {
+                        errorText.appendChild(document.createTextNode(errors[0].msg));
+                    } else {
+                        errorText.appendChild(document.createTextNode("ERROR"));
                     }
-                })
-                .catch(function (err) {
-                    console.log(err);
-                });
-        }, 2000);
+                }
+
+                removeSpinner(id);
+            })
+            .catch(function (err) {
+                console.log(err);
+                errorText.appendChild(document.createTextNode("ERROR"));
+                removeSpinner(id);
+            });
     }
 }
 
 function createSpinner(id) {
     let input = document.getElementById(id);
-    
+
     let parent = input.parentElement;
 
     //<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
@@ -145,8 +164,8 @@ function createSpinner(id) {
 
     input.remove();
 
-    let inputBack = document.getElementById(id+"Back");
-    if(inputBack) inputBack.remove();
+    let inputBack = document.getElementById(id + "Back");
+    if (inputBack) inputBack.remove();
 }
 
 function removeSpinner(id) {
@@ -173,8 +192,8 @@ function removeSpinner(id) {
     button.appendChild(document.createTextNode("Back"));
 
     parent.appendChild(button);
- 
-    
+
+
     div.remove();
 }
 

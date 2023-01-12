@@ -1,5 +1,7 @@
 const router = require("express").Router();
 
+const { body } = require('express-validator');
+
 const Friend = require("../models/FriendModel");
 const FriendRequest = require("../models/FriendRequestModel");
 const User = require("../models/UserModel");
@@ -83,33 +85,38 @@ router.get('/', async function (req, res) {
     }
 });
 
-router.put('/add', async function (req, res) {
-    console.log(req.body)
-    if (req.body.email && await User.existsByEmail(req.body.email)) {
+router.put('/add',
+    body('email').isEmail().withMessage('Please enter a valid email address'),
+    global.checkForErrors,
+    async function (req, res) {
+        if (await User.existsByEmail(req.body.email)) {
+            
+            let [user1, user2] = await Promise.all([User.getById(req.session.userid), User.getByEmail(req.body.email)]);     
+            let request = new FriendRequest({ professional1: user1.professional, professional2: user2.professional, timestamp: new Date() });
+            await request.create();
 
-        let [user1, user2] = await Promise.all([User.getById(req.session.userid), User.getByEmail(req.body.email)]);
-        let request = new FriendRequest({ professional1: user1.professional, professional2: user2.professional, timestamp: new Date() });
-        await request.create();
+            res.status(200).send("Friend Request created");
+        } else {
+            res.status(210).send("This email doenst exists.");
+        }
+    });
 
-        res.status(200).send("Friend Request created");
-    } else {
-        res.status(210).send("This email doenst exists.");
-    }
-});
+router.post('/request/:type',
+    body('id').isInt().withMessage('Please enter a valid id').toInt(),
+    global.checkForErrors,
+    async function (req, res) {
+        let friendRequest = await FriendRequest.getById(req.body.id);
 
-router.post('/request/:type', async function (req, res) {
-    let friendRequest = await FriendRequest.getById(req.body.id);
+        if (req.params.type === 'accept') {
 
-    if (req.params.type === 'accept') {
+            let friend = new Friend({ professional1: friendRequest.professional1, professional2: friendRequest.professional2, since: new Date() });
+            await friend.create();
+        }
 
-        let friend = new Friend({ professional1: friendRequest.professional1, professional2: friendRequest.professional2, since: new Date() });
-        await friend.create();
-    }
+        await friendRequest.delete();
 
-    await friendRequest.delete();
-
-    res.status(200).send(true);
-});
+        res.status(200).send(true);
+    });
 
 router.get('/search', async function (req, res) {
     let text = req.query.s;
