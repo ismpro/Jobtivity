@@ -94,7 +94,4 @@ db.connect().then(function () {
     () => {
       console.log(chalk.green(`\n  Server Listing on ${app.get("port")}`))
     })
-})
-
-
-
+});

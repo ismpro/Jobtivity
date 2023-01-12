@@ -95,19 +95,11 @@ function makeFriendList(body, data) {
     if (data.length !== 0) {
         for (const friend of data) {
             const msgDiv = document.createElement('div');
-            msgDiv.classList.add('d-flex');
-
-            /* const imgElement = document.createElement('img');
-            imgElement.classList.add('rounded-circle', 'flex-shrink-0', 'me-3', 'fit-cover');
-            imgElement.width = 50;
-            imgElement.height = 50;
-            imgElement.src = 'https://cdn.bootstrapstudio.io/placeholders/1400x800.png'; 
+            msgDiv.classList.add('d-flex', "clickble");
             
-            msgDiv.appendChild(imgElement);
-            */
-
-            {/* <div id="profileImage"></div> */ }
-
+            msgDiv.onclick = (evt)=> {
+                window.location.href = `/profile?id=${friend.userid}`
+            } 
 
             let divImage = document.createElement("div");
             divImage.id = "profileImage";

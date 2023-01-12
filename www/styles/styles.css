@@ -228,6 +228,7 @@ main {
 
 .errortext {
   color: red;
+  margin-top: 10px;
 }
 
 .section-about-us {

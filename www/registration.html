@@ -58,35 +58,41 @@
                     <section id="firstform">
                         <div class="mb-3">
                             <label class="form-label" for="email">Email</label>
-                            <input class="form-control item" autocomplete="email" type="email" name="email" id="email">
+                            <input class="form-control item" required autocomplete="email" type="email" name="email"
+                                id="email">
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="pass1">Password</label>
-                            <input class="form-control item" autocomplete="new-password" type="password" name="pass1" id="pass1">
+                            <input class="form-control item" required autocomplete="new-password" type="password"
+                                name="pass1" id="pass1">
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="pass2">Confirm Password</label>
-                            <input class="form-control item" type="password" autocomplete="new-password" name="pass2" id="pass2">
+                            <input class="form-control item" required type="password" autocomplete="new-password"
+                                name="pass2" id="pass2">
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="checkIsComp" id="checkIsComp">
                             <label class="form-check-label" for="checkIsComp">Company signup</label>
                         </div>
-                        <p style="margin-top: 10px;" id="errorTextFirst"></p>
-                        <button id="firstButton" class="btn btn-primary" onclick="javascript: firstSignUp(event)">Next</button>
+                        <p class="errortext" id="errorTextFirst"></p>
+                        <button id="firstButton" class="btn btn-primary"
+                            onclick="javascript: firstSignUp(event)">Next</button>
                     </section>
                     <section id="profForm" style="display: none;">
                         <div class="row">
                             <div class="col">
                                 <div class="mb-3">
                                     <label class="form-label" for="nameProf">Name</label>
-                                    <input class="form-control item" type="text" autocomplete="name" id="nameProf" name="nameProf">
+                                    <input class="form-control item" required type="text" autocomplete="name"
+                                        id="nameProf" name="nameProf">
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="mb-3">
                                     <label class="form-label" for="birth">Birth Date</label>
-                                    <input class="form-control" id="birth" autocomplete="bday" name="birth" type="date">
+                                    <input class="form-control" required id="birth" autocomplete="bday" name="birth"
+                                        type="date">
                                 </div>
                             </div>
                         </div>
@@ -94,17 +100,15 @@
                             <div class="col">
                                 <div class="mb-3">
                                     <label class="form-label" for="gender">Gender</label>
-                                    <select name="gender" id="gender">
-                                        <option value="F">Female</option>
+                                    <select required name="gender" id="gender">
                                         <option value="M">Male</option>
-                                        <option value="D">d</option>
-                                        <option value="O">Outro</option>
+                                        <option value="F">Female</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="mb-3">
-                                    <label class="form-label" for="location">Location</label>
+                                    <label class="form-label" required for="location">Location</label>
                                     <input class="form-control item" type="text" name="location" id="location">
                                 </div>
                             </div>
@@ -117,11 +121,12 @@
                         </div>
                         <div class="mb-3" style="margin-top: 20px;">
                             <label class="form-label" for="descriptionProf">Description</label>
-                            <textarea class="form-control" id="descriptionProf" name="descriptionProf"
+                            <textarea class="form-control" required id="descriptionProf" name="descriptionProf"
                                 placeholder="Say something about you..."></textarea>
                         </div>
-                        <p style="margin-top: 10px;" id="errorTextProf"></p>
-                        <button id="profInputBack" class="btn btn-primary" onclick="javascript: backSignUp(event)">Back</button>
+                        <p class="errortext" id="errorTextProf"></p>
+                        <button id="profInputBack" class="btn btn-primary"
+                            onclick="javascript: backSignUp(event)">Back</button>
                         <input id="profInput" class="btn btn-primary" type="submit" value="Sign Up">
                     </section>
                     <section id="compForm" style="display: none;">
@@ -137,23 +142,24 @@
                             <div class="col">
                                 <div class="mb-3">
                                     <label class="form-label" for="urlWeb">Url Website</label>
-                                    <input class="form-control item" type="url" name="urlWeb" id="urlWeb">
+                                    <input class="form-control item" required type="url" name="urlWeb" id="urlWeb">
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="mb-3">
                                     <label class="form-label" for="urlLogo">Url do Logo</label>
-                                    <input class="form-control item" type="url" name="urlLogo" id="urlLogo">
+                                    <input class="form-control item" required type="url" name="urlLogo" id="urlLogo">
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3" style="margin-top: 20px;">
                             <label class="form-label" for="descriptionComp">Description</label>
-                            <textarea class="form-control" id="descriptionComp" name="descriptionComp"
+                            <textarea class="form-control" required id="descriptionComp" name="descriptionComp"
                                 placeholder="Say something about you..."></textarea>
                         </div>
-                        <p style="margin-top: 10px;" id="errorTextComp"></p>
-                        <button id="compInputBack" class="btn btn-primary" onclick="javascript: backSignUp(event)">Back</button>
+                        <p class="errortext" id="errorTextComp"></p>
+                        <button id="compInputBack" class="btn btn-primary"
+                            onclick="javascript: backSignUp(event)">Back</button>
                         <input id="compInput" class="btn btn-primary" type="submit" value="Sign Up">
                     </section>
                 </form>
@@ -171,8 +177,7 @@
                     <p class="text-muted my-2">Copyright&nbsp;© 2022 Jobtivity</p>
                 </div>
                 <div class="col-xl-5 text-center d-xl-flex justify-content-xl-center">
-                    <p class="d-xl-flex justify-content-xl-center align-items-xl-center mb-0">Ismael Lourenço e Bruno
-                        Russo</p>
+                    <p class="d-xl-flex justify-content-xl-center align-items-xl-center mb-0">Ismael Lourenço e Bruno Russo</p>
                 </div>
             </div>
         </div>

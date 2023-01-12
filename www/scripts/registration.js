@@ -107,6 +107,7 @@ function submitRegister(ev) {
         var bsAlert = new bootstrap.Alert(alert.parentElement);
 
         alert.innerHTML = "";
+        errorText.textContent = "";
 
         api.post('/auth/register', sendObj)
             .then(function (res) {
