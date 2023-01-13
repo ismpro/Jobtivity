@@ -31,7 +31,8 @@ class Friend {
         try {
             let query = await DB.pool.query(`
             INSERT INTO Friend (idProfessional1, idProfessional2, since)
-            VALUES (${this.professional1}, ${this.professional2}, STR_TO_DATE('${this.since.toISOString().split("T")[0]}', "%Y-%m-%d"));`);
+            VALUES (?, ?, STR_TO_DATE(?, "%Y-%m-%d"));`,
+            [this.professional1, this.professional2, this.since.toISOString().split("T")[0]]);
 
             this.id = query[0].insertId;
             return query[0].insertId;
@@ -42,7 +43,7 @@ class Friend {
 
     /**
      * Gets all friend relationships for a given user
-     * @param {number} id - The id of the user
+     * @param {Number} id - The id of the user
      * @returns {Promise<Array<Friend>>} - An array of Friends objects representing the friend relationships
      * @throws {String} - If the id is invalid.
      */
@@ -51,7 +52,7 @@ class Friend {
             try {
                 let output = [];
                 const [query] = await DB.pool.query(`select idFriend"id", idProfessional1"professional1", idProfessional2"professional2", since 
-                                      FROM Friend where idProfessional1=${id} or idProfessional2=${id}`);
+                                      FROM Friend where idProfessional1=? or idProfessional2=?`, [id, id]);
                 if (query.length === 0) return null;
                 for (const element of query) {
                     output.push(new Friend(element))

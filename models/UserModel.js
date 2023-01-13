@@ -56,8 +56,8 @@ class User {
         let user = await DB.pool.query(`
             INSERT INTO User 
             (email, password, name, description, admin, companyId, professionalId)
-            VALUES ('${this.email}', '${this.password}', '${this.name}', '${this.description}', ${this.admin === true ? 1 : 0}, ${this.company ? this.company : null}, ${this.professional ? this.professional : null});
-        `);
+            VALUES (?, ?, ?, ?, ?, ?, ?);`
+        , [this.email, this.password, this.name, this.description, this.admin === true ? 1 : 0, this.company ? this.company : null, this.professional ? this.professional : null]);
         this.id = user[0].insertId;
         return user[0].insertId;
     }
@@ -79,9 +79,9 @@ class User {
     async updateSessionId() {
         await DB.pool.query(`
         UPDATE User SET
-        sessionId = '${this.sessionId}'
-        WHERE idUser=${this.id};
-    `);
+        sessionId = ?
+        WHERE idUser=?;`
+    , [this.sessionId, this.id]);
         return;
     }
 
@@ -92,7 +92,7 @@ class User {
     * @returns {Promise<Boolean>} - Promise that resolves with a Boolean indicating whether a user with the specified email exists.
     */
     static async existsByEmail(email) {
-        const query = await DB.pool.query(`select email FROM User where email='${email}'`);
+        const query = await DB.pool.query(`select email FROM User where email=?`, [email]);
         return query[0].length !== 0;
     }
 
@@ -107,7 +107,7 @@ class User {
         if (email) {
             try {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
-                                                        FROM User where email='${email}'`);
+                                                        FROM User where email=?`, [email]);
                 if (query.length === 0) return null;
                 return new User({...query[0], valid: query[0].admin === 1});
             } catch (err) {
@@ -125,7 +125,7 @@ class User {
             let users = [];
             try {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
-                                                        FROM User where email like '%${text}%' and professionalId is not null`);
+                                                        FROM User where email like '%?%' and professionalId is not null`, [text]);
                 if (query.length === 0) return null;
                 for (const element of query) {
                     users.push(new User({...element, valid: element.admin === 1}));
@@ -152,7 +152,7 @@ class User {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
-                                                        FROM User where idUser=${id}`);
+                                                        FROM User where idUser=?`, [id]);
                 if (query.length === 0) return null;
                 return new User({...query[0], valid: query[0].admin === 1});
             } catch (err) {
@@ -176,7 +176,7 @@ class User {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
-                                                        FROM User where companyId=${id}`);
+                                                        FROM User where companyId=?`, [id]);
                 if (query.length === 0) return null;
                 return new User({...query[0], valid: query[0].admin === 1});
             } catch (err) {
@@ -193,7 +193,7 @@ class User {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
-                                                FROM User where professionalId=${id}`);
+                                                FROM User where professionalId=?`, id);
                 if (query.length === 0) return null;
                 return new User({...query[0], valid: query[0].admin === 1});
             } catch (err) {

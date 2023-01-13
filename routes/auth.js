@@ -68,7 +68,7 @@ router.post('/register', async function (req, res) {
             check('description').isLength({ min: 5 }).withMessage('Description must be at least 5 characters')
         ]
     }
-    const errors = validationResult(req); 1111111111111111
+    const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.array() });
     }
