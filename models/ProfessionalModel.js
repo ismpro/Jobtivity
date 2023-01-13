@@ -31,7 +31,8 @@ class Professional {
     try {
       let professional = await DB.pool.query(`
       INSERT INTO Professional (birthday, gender, local, private)
-      VALUES (STR_TO_DATE('${this.birthday}', "%Y-%m-%d"), '${this.gender}', '${this.local}', ${this.private === true ? 1 : 0});`);
+      VALUES (STR_TO_DATE('?', "%Y-%m-%d"), '?', '?', ?);`,
+      [this.birthday, this.gender, this.local, this.private === true ? 1 : 0]);
       this.id = professional[0].insertId;
       return professional[0].insertId;
     } catch (error) {
@@ -44,7 +45,7 @@ class Professional {
     try{
       const [query] = await DB.pool.query(`select idProfessional"id", birthday, gender, local, private from Professional`);
       for(const element of query){
-        professionals.push(new Professional (element));
+        professionals.push(new Professional({...element, private: element.private === 1}));
       }
       return professionals;
     } catch(err){
@@ -56,9 +57,9 @@ class Professional {
   static async getProfessionalById(id){
     if(id && !isNaN(id) && Number.isSafeInteger(id)){
       try{
-        const [query] = await DB.pool.query(`select idProfessional"id", birthday, gender, local, private from Professional where idProfessional=${id}`);
+        const [query] = await DB.pool.query(`select idProfessional"id", birthday, gender, local, private from Professional where idProfessional=?`, [id]);
         if(query.length === 0) return null;
-        return new Professional(query[0]);
+        return new Professional({...query[0], private: query[0].private === 1});
       } catch(err){
         console.log(err);
         throw err;

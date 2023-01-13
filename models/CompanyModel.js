@@ -28,8 +28,9 @@ class Company {
     async create() {
         try {
             let company = await DB.pool.query(`
-      INSERT INTO Company (urlWebsite, urlLogo, valid)
-      VALUES ('${this.urlWebsite}', '${this.urlLogo}', ${this.valid === void 0 ? null : this.valid === true ? 1 : 0});`);
+                    INSERT INTO Company (urlWebsite, urlLogo, valid)
+                    VALUES (?, ?, ?);`,
+                [this.urlWebsite, this.urlLogo, this.valid === void 0 ? null : this.valid === true ? 1 : 0]);
             this.id = company[0].insertId;
             return company[0].insertId;
         } catch (error) {
@@ -44,11 +45,11 @@ class Company {
     async update() {
         await DB.pool.query(`
         UPDATE Company SET
-        urlWebsite = '${this.urlWebsite}',
-        urlLogo = '${this.urlLogo}',
-        valid = ${this.valid ? 1 : 0}
-        WHERE idCompany=${this.id};
-    `);
+        urlWebsite = ?,
+        urlLogo = ?,
+        valid = ?
+        WHERE idCompany=?;
+    `, [this.urlWebsite, this.urlLogo, this.valid ? 1 : 0, this.id]);
         return;
     }
 
@@ -61,7 +62,7 @@ class Company {
     static async getById(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
-                const [query] = await DB.pool.query(`select idCompany"id", urlWebsite, urlLogo, valid FROM Company where idCompany=${id}`);
+                const [query] = await DB.pool.query(`select idCompany"id", urlWebsite, urlLogo, valid FROM Company where idCompany=?`, [id]);
                 if (query.length === 0) return null;
                 return new Company({
                     ...query[0],
