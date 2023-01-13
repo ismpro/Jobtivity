@@ -1,5 +1,4 @@
-const DB = require('../config/connection')
-const Professional = require('../models/ProfessionalModel');
+const DB = require('../app/connection')
 
 /**
  * A class representing a user.
@@ -120,12 +119,12 @@ class User {
     }
 
 
-    static async getProfessionalsBySearchEmail(text) {
+    static async getProfessionalsBySearchEmailAndName(text) {
         if (text) {
             let users = [];
             try {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
-                                                        FROM User where email like '%?%' and professionalId is not null`, [text]);
+                                                        FROM User where LOWER(email) like ? or LOWER(name) like ? and professionalId is not null`, [`%${text}%`, `%${text}%`]);
                 if (query.length === 0) return null;
                 for (const element of query) {
                     users.push(new User({ ...element, valid: element.admin === 1 }));

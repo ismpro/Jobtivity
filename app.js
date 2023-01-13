@@ -5,8 +5,8 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const path = require('path');
 const chalk = require('chalk');
-const logger = require('./config/logger');
-let DB = require('./config/connection');
+const logger = require('./app/logger');
+let DB = require('./app/connection');
 var session = require('express-session');
 var MySQLStore = require('express-mysql-session')(session);
 const { validationResult } = require('express-validator');
@@ -77,6 +77,7 @@ db.connect().then(function () {
 
   //Serving statics files
   //app.use(express.static(path.join(__dirname, 'www')));
+  //Para não servir os html diretamente
   app.use('/images', express.static(path.join(__dirname, 'www', 'images')));
   app.use('/styles', express.static(path.join(__dirname, 'www', 'styles')));
   app.use('/scripts', express.static(path.join(__dirname, 'www', 'scripts')));

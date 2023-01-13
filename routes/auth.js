@@ -1,6 +1,6 @@
 let { Router } = require("express");
 const bcrypt = require('bcrypt');
-const { createid } = require('../config/functions');
+const { createid } = require('../app/functions');
 const { body } = require('express-validator');
 let router = Router();
 
@@ -8,13 +8,17 @@ const User = require("../models/UserModel");
 const Professional = require("../models/ProfessionalModel");
 const Company = require("../models/CompanyModel");
 
+// Check if email is already in use
 router.post('/checkemail',
+    // Check if email is valid
     body('email').isEmail().withMessage('Please enter a valid email address'),
+    // Check if password is valid
     body('password')
         .isLength({ min: 8, max: 16 })
         .withMessage('Password must be between 8 and 16 characters')
         .matches(/^(?=.*[a-z])(?=.*[A-Z])/)
         .withMessage('Password must contain at least one uppercase and one lowercase letter'),
+    // Check if confirm password matches password
     body('confirmPassword')
         .custom(async (confirmPassword, { req }) => {
             const password = req.body.password;
@@ -24,6 +28,7 @@ router.post('/checkemail',
             }
         }),
     global.checkForErrors,
+    // Send response if email is not in use
     async function (req, res) {
         let data = req.body;
         if (!(await User.existsByEmail(data.email))) {
@@ -34,13 +39,17 @@ router.post('/checkemail',
         }
     })
 
+// Handle user registration
 router.post('/register',
+    // Check if email is valid
     body('email').isEmail().withMessage('Please enter a valid email address'),
+    // Check if password is valid
     body('password')
         .isLength({ min: 8, max: 16 })
         .withMessage('Password must be between 8 and 16 characters')
         .matches(/^(?=.*[a-z])(?=.*[A-Z])/)
         .withMessage('Password must contain at least one uppercase and one lowercase letter'),
+    // Check if confirm password matches password
     body('confirmPassword')
         .custom(async (confirmPassword, { req }) => {
             const password = req.body.password;
@@ -49,21 +58,29 @@ router.post('/register',
                 throw new Error('Passwords must be same')
             }
         }),
+    // Check if name is valid
     body('name').isLength({ min: 2 }).withMessage('Name must be at least 2 characters'),
+    // Check if description is valid
     body('description').isLength({ min: 5 }).withMessage('Description must be at least 5 characters'),
     global.checkForErrors,
+    // Create new User and Professional/Company objects and save to database
     async function (req, res) {
         let fields = [];
         if (req.body.isCompany === null) {
             fields = [
                 body('birthDate').isLength({ min: 8 }).withMessage('Birthdate must be provided').toDate(),
+                // Check if gender is valid
                 body('gender').isIn(['M', 'F']).withMessage('Gender must be either M or F'),
+                // Check if location is valid
                 body('local').isLength({ min: 5 }).withMessage('Location must be provided'),
+                // Check if private is a boolean
                 body('private').isBoolean().withMessage('Private must be a boolean').toBoolean()
             ]
         } else {
             fields = [
+                // Check if website url is valid
                 body('urlWeb').isURL().withMessage('Please enter a valid website url'),
+                // Check if logo url is valid
                 body('urlLogo').isURL().withMessage('Please enter a valid logo url')
             ]
         }

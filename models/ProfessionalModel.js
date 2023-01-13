@@ -1,4 +1,4 @@
-let DB = require('../config/connection');
+let DB = require('../app/connection');
 
 /**
  * Class representing a Professional.

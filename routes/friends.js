@@ -91,11 +91,16 @@ router.put('/add',
     async function (req, res) {
         if (await User.existsByEmail(req.body.email)) {
             
-            let [user1, user2] = await Promise.all([User.getById(req.session.userid), User.getByEmail(req.body.email)]);     
-            let request = new FriendRequest({ professional1: user1.professional, professional2: user2.professional, timestamp: new Date() });
-            await request.create();
-
-            res.status(200).send("Friend Request created");
+            let [user1, user2] = await Promise.all([User.getById(req.session.userid), User.getByEmail(req.body.email)]);
+            if(!(await FriendRequest.existsByProfessionalId(user2.professional))) {
+                
+                let request = new FriendRequest({ professional1: user1.professional, professional2: user2.professional, timestamp: new Date() });
+                await request.create();
+    
+                res.status(200).send("Friend Request created");
+            } else {
+                res.status(216).send("Friend Request already send");
+            }
         } else {
             res.status(210).send("This email doenst exists.");
         }
@@ -110,21 +115,23 @@ router.post('/request/:type',
         if (req.params.type === 'accept') {
 
             let friend = new Friend({ professional1: friendRequest.professional1, professional2: friendRequest.professional2, since: new Date() });
-            await friend.create();
+            //await friend.create();
         }
 
-        await friendRequest.delete();
+        //await friendRequest.delete();
 
         res.status(200).send(true);
     });
 
-router.get('/search', async function (req, res) {
+router.get('/search', 
+body('text').isString().withMessage('Please enter a valid text for the search').toLowerCase(),
+async function (req, res) {
     let text = req.query.s;
 
     if (text) {
-        let users = await User.getProfessionalsBySearchEmail(text);
+        let users = await User.getProfessionalsBySearchEmailAndName(text);
         if (!users) users = [];
-        res.status(200).send(users.map(user => user.email).filter(user => user !== req.session.email));
+        res.status(200).send(users.map(user => ({email: user.email, name: user.name})).filter(user => user.email !== req.session.email));
     } else {
         res.sendStatus(400);
     }

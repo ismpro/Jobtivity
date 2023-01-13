@@ -8,6 +8,13 @@ router.get('/all', async function (req, res) {
 
     let output = [];
     try {
+
+        let user = User.getById(req.session.userid);
+
+        if(user) {
+            
+        }
+
         let professionals = await User.getAllProfessionalsUsers();
         for (const professional of professionals){
             if(req.session.userid !== professional.id){

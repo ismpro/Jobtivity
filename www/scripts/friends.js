@@ -32,7 +32,7 @@ function onReadyToMakeFriends() {
             const buttonAddI = document.createElement("i");
 
             buttonAddI.classList.add("material-icons");
-            buttonAddI.textContent = "add";/* patient_list */
+            buttonAddI.textContent = "add";
 
             buttonAddElement.appendChild(buttonAddI)
 
@@ -84,7 +84,6 @@ function onReadyToMakeFriends() {
             main.appendChild(asideElement);
         }
     }).catch(res => {
-        console.log(res)
         if (res.response.status === 401) {
             console.log("No Login");
         }
@@ -161,50 +160,73 @@ function makeAdd(body, data) {
     let br = document.createElement("br");
 
     let div = document.createElement("div");
+    div.style.marginTop = "10px";
+
+    let sending = false;
 
     input.addEventListener('input', async ({ target }) => {
-        let dataValue = target.value;
-        div.innerHTML = ``;
-        if (dataValue.length) {
-            let autoCompleteValues = await autoComplete(dataValue, data.friends.map(friend => friend.email));
-            autoCompleteValues.forEach(value => {
-                const msgDiv = document.createElement('div');
-                msgDiv.classList.add('d-flex', "clickble");
+        if (!sending) {
+            sending = true;
+            let dataValue = target.value;
+            while (div.hasChildNodes()) {
+                div.firstChild.remove();
+            }
+            if (dataValue.length) {
+                let autoCompleteValues = await autoComplete(dataValue, data.friends.map(friend => friend.email));
+                autoCompleteValues.forEach(user => {
+                    const msgDiv = document.createElement('div');
+                    msgDiv.classList.add('d-flex', "clickble");
 
-                msgDiv.onclick = (evt) => {
-                    api.put("/friends/add", { email: value }).then(res => {
-                        console.log(res)
-                    })
-                }
+                    let divImage = document.createElement("div");
+                    divImage.id = "profileImage";
+                    divImage.classList.add('rounded-circle', 'flex-shrink-0', 'me-3', 'fit-cover');
+                    divImage.textContent = user.email.toLocaleUpperCase().charAt(0);
 
-                let divImage = document.createElement("div");
-                divImage.id = "profileImage";
-                divImage.classList.add('rounded-circle', 'flex-shrink-0', 'me-3', 'fit-cover');
-                divImage.textContent = value.toLocaleUpperCase().charAt(0);
+                    msgDiv.appendChild(divImage);
 
-                msgDiv.appendChild(divImage);
+                    const innerDiv = document.createElement('div');
 
-                const innerDiv = document.createElement('div');
+                    const pElement1 = document.createElement('p');
+                    pElement1.classList.add('fw-bold', 'text-primary', 'mb-0');
+                    pElement1.textContent = user.name;
 
-                const pElement1 = document.createElement('p');
-                pElement1.classList.add('fw-bold', 'text-primary', 'mb-0');
-                pElement1.textContent = value;
+                    const pElement2 = document.createElement('p');
+                    pElement2.classList.add('text-muted', 'mb-0');
+                    pElement2.textContent = user.email;
 
-                innerDiv.appendChild(pElement1);
+                    innerDiv.appendChild(pElement1);
+                    innerDiv.appendChild(pElement2);
 
-                msgDiv.appendChild(innerDiv);
+                    msgDiv.appendChild(innerDiv);
 
-                let divider = document.createElement("hr");
-                divider.className = "divider";
+                    let divider = document.createElement("hr");
+                    divider.className = "divider";
 
-                div.appendChild(msgDiv);
-                div.appendChild(divider);
-            });
+                    div.appendChild(msgDiv);
+                    div.appendChild(divider);
+
+                    msgDiv.onclick = (evt) => {
+                        api.put("/friends/add", { email: user.email }).then(res => {
+                            if (res.status === 200) {
+                                pElement2.textContent = "Requested Sended";
+                                delete msgDiv.onclick;
+                                setTimeout(() => {
+                                    target.value = "";
+                                    msgDiv.previousElementSibling.remove();
+                                    msgDiv.remove();
+                                }, 2000);
+                            } else if (res.status === 216) {
+                                pElement2.textContent = res.data;
+                            }
+                        })
+                    }
+                });
+
+                div.lastElementChild.remove();
+
+            }
+            sending = false;
         }
-
-        console.log(div.lastElementChild)
-
-        div.lastElementChild.remove();
     });
 
     div.addEventListener('click', ({ target }) => {
@@ -272,14 +294,29 @@ function makeAdd(body, data) {
             iReject.textContent = "clear";
 
             iAccept.onclick = (evt) => {
-                api.post('friends/request/accept', { id: friendsRequest.id }).then(res => {
-                    console.log(res.data)
-                })
+                api.post('friends/request/accept', { id: friendsRequest.id })
+                    .then(res => {
+                        if (res.status === 200) {
+                            pElement2.textContent = "Accepted";
+                            delete iAccept.onclick;
+                            setTimeout(() => {
+                                if(msgDiv.previousElementSibling.nodeName === "H4") body.appendChild(document.createTextNode("No friends requests"));
+                                msgDiv.remove();
+                            }, 2000);
+                        }
+                    })
             }
 
             iReject.onclick = (evt) => {
                 api.post('friends/request/reject', { id: friendsRequest.id }).then(res => {
-                    console.log(res.data)
+                    if (res.status === 200) {
+                        pElement2.textContent = "Rejected";
+                        delete iReject.onclick;
+                        setTimeout(() => {
+                            if(msgDiv.previousElementSibling.nodeName === "H4") body.appendChild(document.createTextNode("No friends requests"));
+                            msgDiv.remove();
+                        }, 2000);
+                    }
                 })
             }
 

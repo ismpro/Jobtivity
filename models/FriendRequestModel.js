@@ -1,4 +1,4 @@
-let DB = require('../config/connection');
+let DB = require('../app/connection');
 
 /**
  * Class for handling friend requests between professionals.
@@ -35,7 +35,7 @@ class FriendsRequests {
             let query = await DB.pool.query(`
             INSERT INTO FriendRequest (idProfessional1, idProfessional2, timestamp)
                 VALUES (?, ?, STR_TO_DATE(?, '%Y-%m-%d  %H:%i:%s'));`,
-                [this.profissional1, this.profissional2, this.timestamp.toISOString().slice(0, 19).replace('T', ' ')]);
+                [this.professional1, this.professional2, this.timestamp.toISOString().slice(0, 19).replace('T', ' ')]);
             this.id = query[0].insertId;
             return query[0].insertId;
         } catch (error) {
@@ -59,6 +59,17 @@ class FriendsRequests {
     }
 
     /**
+    * Check if a request with the specified professional id exists in the database.
+    *
+    * @param {Number} id - ID of the professional to check for.
+    * @returns {Promise<Boolean>} - Promise that resolves with a Boolean indicating whether a request with the specified professional id exists.
+    */
+    static async existsByProfessionalId(id) {
+        const [query] = await DB.pool.query(`select idFriendRequest"id" FROM FriendRequest where idProfessional1=? or idProfessional2=?`, [id, id]);
+        return query.length !== 0;
+    }
+
+    /**
      * Retrieves a friend request by its ID from the database.
      *
      * @static
@@ -69,7 +80,7 @@ class FriendsRequests {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
                 const [query] = await DB.pool.query(`select idFriendRequest"id", idProfessional1"professional1", idProfessional2"professional2", timestamp 
-                                                    FROM FriendRequest where idFriendsRequests=?`, [id]);
+                                                    FROM FriendRequest where idFriendRequest=?`, [id]);
                 if (query.length === 0) return null;
                 return new FriendsRequests({
                     ...query[0],

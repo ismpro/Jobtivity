@@ -1,4 +1,4 @@
-let DB = require('../config/connection');
+let DB = require('../app/connection');
 
 /**
  * Class for handling past job information for a professional.
