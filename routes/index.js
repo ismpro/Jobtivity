@@ -11,64 +11,78 @@ let router = express.Router();
  * @param {express.Next} next
  */
 const redirectHome = async (req, res, next) => {
-    if (req.session.userid) {
+  if (req.session.userid) {
+    let user = await User.getById(req.session.userid);
 
-        let user = await User.getById(req.session.userid);
-
-        if (user && user.sessionId === req.session.sessionId) {
-            res.redirect('/')
-        } else {
-            next()
-        }
+    if (user && user.sessionId === req.session.sessionId) {
+      res.redirect("/");
     } else {
-        next()
+      next();
     }
-}
+  } else {
+    next();
+  }
+};
 
-router.get('/', function (req, res) {
-    res.status(200).sendFile(path.join(global.appRoot, 'www', `index.html`));
+router.get("/", function (req, res) {
+  res.status(200).sendFile(path.join(global.appRoot, "www", `index.html`));
 });
 
-router.get('/login', redirectHome);
-router.get('/registration', redirectHome);
-
-router.get('/admin', async (req, res) => {
-    if (req.session.userid) {
-
-        let user = await User.getById(req.session.userid);
-
-        if (user && user.sessionId === req.session.sessionId && user.admin) {
-            res.status(200).sendFile(path.join(global.appRoot, 'www', 'admin.html'));
-        } else {
-            res.redirect('/');
-        }
-    } else {
-        res.redirect('/');
-    }
-}
-);
-
-router.get('/*', function (req, res, next) {
-    if (fs.existsSync(path.join(global.appRoot, 'www', `${req.path.slice(1)}.html`))) {
-        res.status(200).sendFile(path.join(global.appRoot, 'www', `${req.path.slice(1)}.html`));
-    } else {
-        next();
-    }
+router.get("/favicon.ico", function (req, res) {
+  res.status(200).sendFile(path.join(global.appRoot, "www", `favicon.ico`));
 });
 
-router.get('/scripts/admin.js', async function (req, res) {
-    if (req.session.userid) {
+router.get("/login", redirectHome);
+router.get("/registration", redirectHome);
 
-        let user = await User.getById(req.session.userid);
+router.get("/admin", async (req, res) => {
+  if (req.session.userid) {
+    let user = await User.getById(req.session.userid);
 
-        if (user && user.sessionId === req.session.sessionId && user.admin) {
-            res.status(200).sendFile(path.join(global.appRoot, 'www', 'scripts', 'admin.js'));
-        } else {
-            res.sendStatus(401);
-        }
+    if (user && user.sessionId === req.session.sessionId && user.admin) {
+      res.status(200).sendFile(path.join(global.appRoot, "www", "admin.html"));
     } else {
-        res.sendStatus(401);
+      res.redirect("/");
     }
+  } else {
+    res.redirect("/");
+  }
+});
+
+router.get("/profile", async (req, res) => {
+  if (req.session.userid) {
+    res.status(200).sendFile(path.join(global.appRoot, "www", "profile.html"));
+  } else {
+    res.redirect("/");
+  }
+});
+
+router.get("/*", function (req, res, next) {
+  if (
+    fs.existsSync(path.join(global.appRoot, "www", `${req.path.slice(1)}.html`))
+  ) {
+    res
+      .status(200)
+      .sendFile(path.join(global.appRoot, "www", `${req.path.slice(1)}.html`));
+  } else {
+    next();
+  }
+});
+
+router.get("/scripts/admin.js", async function (req, res) {
+  if (req.session.userid) {
+    let user = await User.getById(req.session.userid);
+
+    if (user && user.sessionId === req.session.sessionId && user.admin) {
+      res
+        .status(200)
+        .sendFile(path.join(global.appRoot, "www", "scripts", "admin.js"));
+    } else {
+      res.sendStatus(401);
+    }
+  } else {
+    res.sendStatus(401);
+  }
 });
 
 module.exports = router;

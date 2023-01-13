@@ -81,7 +81,10 @@ module.exports = morgan(function (tokens, req, res) {
         return `\nRequest: ${ip} ${tokens.method(req, res)} ${tokens.url(req, res)} - ${tokens['response-time'](req, res)}
     Code: ${chalk.hex(status.color)(status.code)} -> ${status.message}`
     } catch (error) {
-        if (error.message === 'Code Not Found') { console.error("\n Erro on code: " + tokens.status(req, res)) }
+        if (error.message === 'Code Not Found') {
+            return `\nRequest: ${tokens.method(req, res)} ${tokens.url(req, res)} - ${tokens['response-time'](req, res)}
+    Code: ${tokens.status(req, res)}`
+        }
         else { console.error("Error on logger") }
     }
 })

@@ -7,8 +7,6 @@ function onReadyToMakeChat() {
     let main = document.querySelector("main");
 
     api.get('/friends').then(res => {
-
-        console.log(res.data)
         if (res.status === 200) {
             const asideElement = document.createElement('aside');
             asideElement.id = 'msg-overlay';
@@ -93,23 +91,15 @@ function onReadyToMakeChat() {
     })
 };
 
-function makeFriendList(body, data, api) {
+function makeFriendList(body, data) {
     if (data.length !== 0) {
         for (const friend of data) {
             const msgDiv = document.createElement('div');
-            msgDiv.classList.add('d-flex');
+            msgDiv.classList.add('d-flex', "clickble");
 
-            /* const imgElement = document.createElement('img');
-            imgElement.classList.add('rounded-circle', 'flex-shrink-0', 'me-3', 'fit-cover');
-            imgElement.width = 50;
-            imgElement.height = 50;
-            imgElement.src = 'https://cdn.bootstrapstudio.io/placeholders/1400x800.png'; 
-            
-            msgDiv.appendChild(imgElement);
-            */
-
-            {/* <div id="profileImage"></div> */ }
-
+            msgDiv.onclick = (evt) => {
+                window.location.href = `/profile?id=${friend.userid}`
+            }
 
             let divImage = document.createElement("div");
             divImage.id = "profileImage";
@@ -160,44 +150,70 @@ function autoComplete(inputValue, data) {
     });
 }
 
-function makeAdd(body, data, api) {
+function makeAdd(body, data) {
 
     let input = document.createElement("input");
     let br = document.createElement("br");
-    let button = document.createElement("button");
 
-    let ul = document.createElement("ul");
+    let div = document.createElement("div");
 
     input.addEventListener('input', async ({ target }) => {
         let dataValue = target.value;
-        ul.innerHTML = ``;
+        div.innerHTML = ``;
         if (dataValue.length) {
             let autoCompleteValues = await autoComplete(dataValue, data.friends.map(friend => friend.email));
-            autoCompleteValues.forEach(value => { ul.innerHTML = ul.innerHTML + `<li>${value}</li>` });
+            autoCompleteValues.forEach(value => {
+                const msgDiv = document.createElement('div');
+                msgDiv.classList.add('d-flex', "clickble");
+
+                msgDiv.onclick = (evt) => {
+                    api.put("/friends/add", { email: value }).then(res => {
+                        console.log(res)
+                    })
+                }
+
+                let divImage = document.createElement("div");
+                divImage.id = "profileImage";
+                divImage.classList.add('rounded-circle', 'flex-shrink-0', 'me-3', 'fit-cover');
+                divImage.textContent = value.toLocaleUpperCase().charAt(0);
+
+                msgDiv.appendChild(divImage);
+
+                const innerDiv = document.createElement('div');
+
+                const pElement1 = document.createElement('p');
+                pElement1.classList.add('fw-bold', 'text-primary', 'mb-0');
+                pElement1.textContent = value;
+
+                innerDiv.appendChild(pElement1);
+
+                msgDiv.appendChild(innerDiv);
+
+                let divider = document.createElement("hr");
+                divider.className = "divider";
+
+                msgDiv.appendChild(divider);
+
+                div.appendChild(msgDiv);
+            });
         }
+
+        div.lastElementChild.lastElementChild.remove();
     });
-    ul.addEventListener('click', ({ target }) => {
+
+    div.addEventListener('click', ({ target }) => {
         if (target.tagName === 'LI') {
             input.value = target.textContent;
             ul.innerHTML = ``;
         }
     });
 
-    button.textContent = "Add Friend";
-
-    button.onclick = ev => {
-        api.put("/friends/add", { email: input.value }).then(res => {
-            console.log(res)
-        })
-    };
-
     let divider = document.createElement("hr");
     divider.className = "divider";
 
     body.appendChild(input);
     body.appendChild(br);
-    body.appendChild(ul);
-    body.appendChild(button);
+    body.appendChild(div);
     body.appendChild(divider);
 
     if (data.friendsRequests.length !== 0) {
@@ -206,11 +222,12 @@ function makeAdd(body, data, api) {
             const msgDiv = document.createElement('div');
             msgDiv.classList.add('d-flex');
 
-            const imgElement = document.createElement('img');
-            imgElement.classList.add('rounded-circle', 'flex-shrink-0', 'me-3', 'fit-cover');
-            imgElement.width = 50;
-            imgElement.height = 50;
-            imgElement.src = 'https://cdn.bootstrapstudio.io/placeholders/1400x800.png';
+            let divImage = document.createElement("div");
+            divImage.id = "profileImage";
+            divImage.classList.add('rounded-circle', 'flex-shrink-0', 'me-3', 'fit-cover');
+            divImage.textContent = friend.name.toLocaleUpperCase().charAt(0);
+
+            msgDiv.appendChild(divImage);
 
             const innerDiv = document.createElement('div');
             innerDiv.classList.add('d-flex');
@@ -233,7 +250,6 @@ function makeAdd(body, data, api) {
 
             leftDiv.appendChild(pElement1);
             leftDiv.appendChild(pElement2);
-            msgDiv.appendChild(imgElement);
             msgDiv.appendChild(innerDiv);
 
             let iAccept = document.createElement("i");

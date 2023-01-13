@@ -1,6 +1,8 @@
 const { Router } = require("express");
 const router = Router();
 
+const { body } = require('express-validator');
+
 const Company = require("../models/CompanyModel");
 const User = require("../models/UserModel");
 
@@ -17,13 +19,17 @@ const checkAdmin = async function (req, res, next) {
         try {
             let user = await User.getById(req.session.userid);
 
-            if (user && user.sessionId === req.session.sessionId && user.admin) {
+            if (user
+                && user.sessionId === req.session.sessionId
+                && user.email === req.session.email
+                && user.admin) {
                 next();
             } else {
                 res.sendStatus(401);
             }
         } catch (error) {
-            res.status(500).send(error);
+            console.log(error);
+            res.sendStatus(500);
         }
     } else {
         res.sendStatus(401);
@@ -39,26 +45,31 @@ const checkAdmin = async function (req, res, next) {
  * @return {boolean} true - Se a alteração foi realizada com sucesso
  * @throws {Error} - Se ocorrer algum erro durante o processo
  */
-router.post('/alterValid', checkAdmin, async function (req, res) {
-    let data = req.body;
+router.post('/alterValid',
+    checkAdmin,
+    body('id').isInt().withMessage('Please enter a valid id').toInt(),
+    global.checkForErrors,
+    async function (req, res) {
+        let data = req.body;
 
-    try {
-        let company = await Company.getById(data.id);
+        try {
+            let company = await Company.getById(data.id);
 
-        if (data.type === "accept") {
-            company.valid = true;
-        } else if (data.type === "reject") {
-            company.valid = false;
+            if (data.type === "accept") {
+                company.valid = true;
+            } else if (data.type === "reject") {
+                company.valid = false;
+            }
+
+            await company.update();
+
+            res.status(200).send(true);
+
+        } catch (error) {
+            console.log(error);
+            res.sendStatus(500);
         }
-
-        await company.update();
-
-        res.status(200).send(true);
-
-    } catch (error) {
-        res.status(500).send(error);
-    }
-});
+    });
 
 /**
  * Rota que retorna uma lista de empresas que ainda não foram validadas.
@@ -87,8 +98,8 @@ router.get('/list', checkAdmin, async function (req, res) {
         res.status(200).send(output);
 
     } catch (error) {
-        console.log(error)
-        res.status(500).send(error);
+        console.log(error);
+        res.sendStatus(500);
     }
 })
 

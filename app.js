@@ -9,6 +9,7 @@ const logger = require('./config/logger');
 let DB = require('./config/connection');
 var session = require('express-session');
 var MySQLStore = require('express-mysql-session')(session);
+const { validationResult } = require('express-validator');
 
 console.clear()
 console.log(chalk.green('\n  Starting server'));
@@ -23,6 +24,18 @@ app.set("port", process.env.PORT || 3000);
 global.appRoot = path.resolve(__dirname);
 global.NODE_DEV = Boolean(process.env.NODE_ENV === 'development');
 console.log(chalk.green(`  Node Mode: ${(global.NODE_DEV ? 'DEV' : 'PRD')}`));
+
+
+global.checkForErrors = function (req, res, next) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(215).json({ errors: errors.array() });
+    return true;
+  } else {
+    next();
+    return false;
+  }
+}
 
 let db = new DB({
   host: process.env.DB_HOST,
@@ -81,7 +94,4 @@ db.connect().then(function () {
     () => {
       console.log(chalk.green(`\n  Server Listing on ${app.get("port")}`))
     })
-})
-
-
-
+});

@@ -1,19 +1,17 @@
 "use strict";
 
-/**
- * 
- * @param {SubmitEvent} ev 
- */
 function submitLogin(ev) {
     ev.preventDefault();
     const data = new FormData(ev.target);
-    console.log([...data.entries()]);
 
     let sendObj = {
         email: data.get("email"),
         password: data.get("password")
     }
-    //createSpinner("loginButton");
+    createSpinner("loginButton");
+
+    let errorText = document.getElementById("errorText");
+    errorText.textContent = "";
 
     api.post('/auth/login', sendObj)
         .then(function (res) {
@@ -23,11 +21,22 @@ function submitLogin(ev) {
                     window.location.href = '/';
                 }, 1000);
             } else if (code === 211) {
-                //removeSpinner("loginButton");
+                errorText.appendChild(document.createTextNode(res.data));
+                removeSpinner("loginButton");
+            } else if (code === 215) {
+                let errors = res.data.errors;
+
+                if (errors.length > 0) {
+                    errorText.appendChild(document.createTextNode(errors[0].msg));
+                } else {
+                    errorText.appendChild(document.createTextNode("ERROR"));
+                }
             }
         })
         .catch(function (err) {
             console.log(err);
+            errorText.appendChild(document.createTextNode("ERROR"));
+            removeSpinner("loginButton");
         });
 }
 

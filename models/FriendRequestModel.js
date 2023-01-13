@@ -20,8 +20,8 @@ class FriendsRequests {
     constructor(obj) {
         if (!obj) return;
         this.id = obj.id
-        this.profissional1 = obj.profissional1
-        this.profissional2 = obj.profissional2
+        this.professional1 = obj.professional1
+        this.professional2 = obj.professional2
         this.timestamp = obj.timestamp
     }
 
