@@ -15,7 +15,8 @@ window.addEventListener("DOMContentLoaded", function () {
                 logout.onclick = onLogout(api);
 
                 let people = document.createElement("a");
-                people.className = "nav-link";
+                people.classList.add("nav-link");
+                if (window.location.href.includes('/people')) people.classList.add("active");
                 people.href = "/people";
 
                 let img = document.createElement("img");
@@ -24,13 +25,14 @@ window.addEventListener("DOMContentLoaded", function () {
 
                 people.appendChild(img);
                 people.appendChild(document.createTextNode("People"));
-                
+
                 navbar.appendChild(createLI(people, "nav-item"));
 
                 //Criar botão perfil caso seja profissional
                 if (res.data.isProfessional) {
                     let profile = document.createElement("a");
-                    profile.className = "nav-link";
+                    profile.classList.add("nav-link");
+                    if (window.location.href.includes('/profile')) profile.classList.add("active");
                     profile.href = "/profile";
 
                     let img = document.createElement("img");
@@ -42,13 +44,14 @@ window.addEventListener("DOMContentLoaded", function () {
 
                     navbar.appendChild(createLI(profile, "nav-item"));
 
-                    if (typeof onReadyToMakeChat === 'function') onReadyToMakeChat();
+                    if (typeof onReadyToMakeFriends === 'function') onReadyToMakeFriends();
                 }
 
 
                 if (res.data.isAdmin) {
                     let adminA = document.createElement("a");
-                    adminA.className = "nav-link";
+                    adminA.classList.add("nav-link");
+                    if (window.location.href.includes('/admin')) adminA.classList.add("active");
                     adminA.href = "/admin";
 
                     let img = document.createElement("img");

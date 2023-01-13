@@ -1,6 +1,6 @@
 "use strict";
 
-function onReadyToMakeChat() {
+function onReadyToMakeFriends() {
 
     let add = false;
 
@@ -152,6 +152,11 @@ function autoComplete(inputValue, data) {
 
 function makeAdd(body, data) {
 
+    let h4Add = document.createElement("h4");
+    h4Add.appendChild(document.createTextNode("Add Friend"));
+
+    body.appendChild(h4Add);
+
     let input = document.createElement("input");
     let br = document.createElement("br");
 
@@ -192,13 +197,14 @@ function makeAdd(body, data) {
                 let divider = document.createElement("hr");
                 divider.className = "divider";
 
-                msgDiv.appendChild(divider);
-
                 div.appendChild(msgDiv);
+                div.appendChild(divider);
             });
         }
 
-        div.lastElementChild.lastElementChild.remove();
+        console.log(div.lastElementChild)
+
+        div.lastElementChild.remove();
     });
 
     div.addEventListener('click', ({ target }) => {
@@ -216,6 +222,11 @@ function makeAdd(body, data) {
     body.appendChild(div);
     body.appendChild(divider);
 
+    let h4Request = document.createElement("h4");
+    h4Request.appendChild(document.createTextNode("Friends Request"));
+
+    body.appendChild(h4Request);
+
     if (data.friendsRequests.length !== 0) {
         for (const friendsRequest of data.friendsRequests) {
 
@@ -225,7 +236,7 @@ function makeAdd(body, data) {
             let divImage = document.createElement("div");
             divImage.id = "profileImage";
             divImage.classList.add('rounded-circle', 'flex-shrink-0', 'me-3', 'fit-cover');
-            divImage.textContent = friend.name.toLocaleUpperCase().charAt(0);
+            divImage.textContent = friendsRequest.name.toLocaleUpperCase().charAt(0);
 
             msgDiv.appendChild(divImage);
 
