@@ -58,7 +58,8 @@ router.post('/register',
             fields = [
                 body('birthDate').isLength({ min: 8 }).withMessage('Birthdate must be provided').toDate(),
                 body('gender').isIn(['M', 'F']).withMessage('Gender must be either M or F'),
-                body('local').isLength({ min: 5 }).withMessage('Location must be provided')
+                body('local').isLength({ min: 5 }).withMessage('Location must be provided'),
+                body('private').isBoolean().withMessage('Private must be a boolean').toBoolean()
             ]
         } else {
             fields = [
@@ -109,6 +110,7 @@ router.post('/register',
 
 router.post('/login',
     body('email').isEmail().withMessage('Please enter a valid email address'),
+    body('password').exists().withMessage('Please enter a password'),
     global.checkForErrors,
     async function (req, res) {
         let data = req.body;
@@ -138,7 +140,7 @@ router.post('/login',
                 req.session.sessionId = sessionId;
                 user.sessionId = sessionId;
                 let sessionSave = req.session.save();
-                let userSave = user.updateSessionId();
+                let userSave = user.update();
 
                 Promise.all([sessionSave, userSave]).then(() => {
                     res.status(200).send({ id: user.id });
@@ -183,9 +185,7 @@ router.post('/logout', async function (req, res) {
         if (user) {
             user.sessionId = 'expired';
 
-            await user.updateSessionId();
-
-            Promise.all([user.updateSessionId(), req.session.destroy()])
+            Promise.all([user.update(), req.session.destroy()])
                 .then(() => {
                     res.status(200).send(true)
                 }).catch(err => {

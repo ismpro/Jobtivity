@@ -1,18 +1,20 @@
 let DB = require('../config/connection');
 
 /**
- * A class representing a professional.
+ * Class representing a Professional.
  * @class
  */
 class Professional {
+
   /**
    * Creates a new Professional instance.
-   * @param {Object} obj - The properties of the Professional.
-   * @param {Number} obj.id - The ID of the professional.
-   * @param {String} obj.birthday - The birthday of the professional in the format 'YYYY-MM-DD'.
+   * @constructor
+   * @param {Object} obj - The object containing the properties of a professional.
+   * @param {Number} obj.id - The id of the professional.
+   * @param {Date} obj.birthday - The birthday of the professional.
    * @param {String} obj.gender - The gender of the professional.
    * @param {String} obj.local - The local of the professional.
-   * @param {Boolean} obj.private - Whether the professional is private or not.
+   * @param {Boolean} obj.private - Indicates if the professional's information is private.
    */
   constructor(obj) {
     if (!obj) return;
@@ -25,14 +27,14 @@ class Professional {
 
   /**
    * Creates a new professional in the database.
-   * @returns {Promise<Number>} - The ID of the newly created professional.
+   * @returns {Promise<Number>} - The id of the created professional. 
    */
   async create() {
     try {
       let professional = await DB.pool.query(`
       INSERT INTO Professional (birthday, gender, local, private)
-      VALUES (STR_TO_DATE('?', "%Y-%m-%d"), '?', '?', ?);`,
-      [this.birthday, this.gender, this.local, this.private === true ? 1 : 0]);
+      VALUES (STR_TO_DATE(?, "%Y-%m-%d"), '?', '?', ?);`,
+        [this.birthday.toISOString().split("T")[0], this.gender, this.local, this.private === true ? 1 : 0]);
       this.id = professional[0].insertId;
       return professional[0].insertId;
     } catch (error) {
@@ -40,35 +42,86 @@ class Professional {
     }
   }
 
-  static async getAllProfessionals(){
+  /**
+   * Updates a professional's information in the database.
+   * @returns {Promise<void>}
+   */
+  async update() {
+    await DB.pool.query(`
+    UPDATE User SET
+    birthday = STR_TO_DATE(?, "%Y-%m-%d"),
+    gender = ?,
+    local = ?,
+    private = ?
+    WHERE idUser=?;`,
+      [this.birthday.toISOString().split("T")[0], this.gender, this.local, this.local, this.private === true ? 1 : 0, this.id]);
+    return;
+  }
+
+  /**
+   * Retrieves a professional from the database by their id.
+   * @static 
+   * @param {Number} id - The id of the professional.
+   * @returns {Promise<Professional|null>} - The professional with the given id or null if no such professional exists.
+   */
+  static async getById(id) {
+    if (id && !isNaN(id) && Number.isSafeInteger(id)) {
+      try {
+        const [query] = await DB.pool.query(`select idProfessional"id", birthday, gender, local, private from Professional
+                                                  where idProfessional=?`, [id]);
+        if (query.length === 0) return null;
+        return new Professional({ ...query[0], private: query[0].private === 1, birthday: new Date(query[0].birthday) });
+      } catch (err) {
+        console.log(err);
+        throw err
+      }
+    } else {
+      console.log("Invalid id");
+      throw "Invalid id"
+    }
+  }
+
+  /**
+   * Retrieves all professionals from the database.
+   * @static
+   * @returns {Promise<Professional[]|null>} - An array of all professionals in the database. 
+   */
+  static async getAllProfessionals() {
     let professionals = [];
-    try{
+    try {
       const [query] = await DB.pool.query(`select idProfessional"id", birthday, gender, local, private from Professional`);
-      for(const element of query){
-        professionals.push(new Professional({...element, private: element.private === 1}));
+      if (query.length === 0) return null;
+      for (const element of query) {
+        professionals.push(new Professional({ ...element, private: element.private === 1, birthday: new Date(element.birthday) }));
       }
       return professionals;
-    } catch(err){
+    } catch (err) {
       console.log(err);
       throw err;
     }
   }
 
-  static async getProfessionalById(id){
-    if(id && !isNaN(id) && Number.isSafeInteger(id)){
-      try{
+  /**
+   * Retrieves a professional from the database by their id.
+   * @static
+   * @param {Number} id - The id of the professional.
+   * @returns {Promise<Professional|null>} - The professional with the given id or null if no such professional exists.
+   */
+  static async getProfessionalById(id) {
+    if (id && !isNaN(id) && Number.isSafeInteger(id)) {
+      try {
         const [query] = await DB.pool.query(`select idProfessional"id", birthday, gender, local, private from Professional where idProfessional=?`, [id]);
-        if(query.length === 0) return null;
-        return new Professional({...query[0], private: query[0].private === 1});
-      } catch(err){
+        if (query.length === 0) return null;
+        return new Professional({ ...query[0], private: query[0].private === 1, birthday: new Date(query[0].birthday) });
+      } catch (err) {
         console.log(err);
         throw err;
       }
-    }else{
+    } else {
       console.log("Invalid id");
       throw "Invalid id"
     }
-}
+  }
 }
 
 module.exports = Professional;

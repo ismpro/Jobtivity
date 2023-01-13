@@ -57,31 +57,30 @@ class User {
             INSERT INTO User 
             (email, password, name, description, admin, companyId, professionalId)
             VALUES (?, ?, ?, ?, ?, ?, ?);`
-        , [this.email, this.password, this.name, this.description, this.admin === true ? 1 : 0, this.company ? this.company : null, this.professional ? this.professional : null]);
+            , [this.email, this.password, this.name, this.description, this.admin === true ? 1 : 0, this.company ? this.company : null, this.professional ? this.professional : null]);
         this.id = user[0].insertId;
         return user[0].insertId;
     }
 
-    static async update(id, data) {
-        let query = `UPDATE User SET name = ?, Description = ? WHERE professionalId = ?`;
-        let values = [data.name, data.description, id];
-        let query2 = `UPDATE Professional SET local = ? WHERE idProfessional = ?`;
-        let values2 = [data.local, id];
-        let results = await Promise.all([DB.pool.query(query, values), DB.pool.query(query2, values2)]);
-        return results;
-    }
-
     /**
-     * Updates the sessionId of the user in the database.
+     * Updates the user in the database.
      *
-     * @returns {Promise} - Promise that resolves when the update is complete.
+     * @returns {Promise<void>} - Promise that resolves when the update is complete.
      */
-    async updateSessionId() {
+    async update() {
         await DB.pool.query(`
         UPDATE User SET
-        sessionId = ?
-        WHERE idUser=?;`
-    , [this.sessionId, this.id]);
+        email = ?,
+        password = ?,
+        name = ?,
+        description = ?,
+        admin = ?,
+        sessionId = ?,
+        company = ?,
+        professional = ?
+        WHERE idUser=?;`,
+            [this.email, this.password, this.name, this.description, this.admin === true ? 1 : 0, this.sessionId,
+            this.company ? this.company : null, this.professional ? this.professional : null, this.id]);
         return;
     }
 
@@ -109,7 +108,7 @@ class User {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
                                                         FROM User where email=?`, [email]);
                 if (query.length === 0) return null;
-                return new User({...query[0], valid: query[0].admin === 1});
+                return new User({ ...query[0], valid: query[0].admin === 1 });
             } catch (err) {
                 console.log(err);
                 throw err;
@@ -120,6 +119,7 @@ class User {
         }
     }
 
+
     static async getProfessionalsBySearchEmail(text) {
         if (text) {
             let users = [];
@@ -128,7 +128,7 @@ class User {
                                                         FROM User where email like '%?%' and professionalId is not null`, [text]);
                 if (query.length === 0) return null;
                 for (const element of query) {
-                    users.push(new User({...element, valid: element.admin === 1}));
+                    users.push(new User({ ...element, valid: element.admin === 1 }));
                 }
                 return users;
             } catch (err) {
@@ -154,7 +154,7 @@ class User {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
                                                         FROM User where idUser=?`, [id]);
                 if (query.length === 0) return null;
-                return new User({...query[0], valid: query[0].admin === 1});
+                return new User({ ...query[0], valid: query[0].admin === 1 });
             } catch (err) {
                 console.log(err);
                 throw err
@@ -178,7 +178,7 @@ class User {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
                                                         FROM User where companyId=?`, [id]);
                 if (query.length === 0) return null;
-                return new User({...query[0], valid: query[0].admin === 1});
+                return new User({ ...query[0], valid: query[0].admin === 1 });
             } catch (err) {
                 console.log(err);
                 throw err
@@ -195,7 +195,7 @@ class User {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
                                                 FROM User where professionalId=?`, id);
                 if (query.length === 0) return null;
-                return new User({...query[0], valid: query[0].admin === 1});
+                return new User({ ...query[0], valid: query[0].admin === 1 });
             } catch (err) {
                 console.log(err);
                 throw err
@@ -212,7 +212,7 @@ class User {
             const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
                                                     FROM User where professionalId is not null`);
             for (const element of query) {
-                professionals.push(new User({...element, valid: element.admin === 1}));
+                professionals.push(new User({ ...element, valid: element.admin === 1 }));
             }
             return professionals;
         } catch (err) {

@@ -1,20 +1,20 @@
 let DB = require("../config/connection");
 
 /**
- * A class representing a PastJob.
+ * Class representing a Qualification.
  * @class
  */
 class Qualification {
+
   /**
-   * Creates a new PastJob instance.
-   * @param {Object} obj - The properties of the PastJob.
-   * @param {Number} obj.id -
-   * @param {String} obj.name -
-   * @param {String} obj.url -
-   * @param {Date} obj.beginDate -
-   * @param {Date} obj.endDate -
-   * @param {String} obj.description -
-   * @param {Number} obj.idProfessional -
+   * Creates an instance of Qualification.
+   * @param {Object} obj - The object containing the properties of the qualification.
+   * @param {Number} obj.id - The id of the qualification.
+   * @param {String} obj.name - The name of the qualification.
+   * @param {String} obj.local - The local where the qualification was obtained.
+   * @param {String} obj.type - The type of the qualification.
+   * @param {String} obj.grade - The grade of the qualification.
+   * @param {Number} obj.professional - The object containing the properties of the qualification.
    */
   constructor(obj) {
     if (!obj) return;
@@ -27,35 +27,44 @@ class Qualification {
   }
 
   /**
-   * Creates a new PastJob in the database.
-   * @returns {Promise<Number>} - The ID of the newly created professional.
+   * Creates a new Qualification in the database.
+   * @returns {Number} The id of the newly created Qualification.
    */
   async create() {
-    try {
-      let qualification = await DB.pool.query(`
+    let qualification = await DB.pool.query(`
       INSERT INTO Qualification (name, local, type, grade, idProfissional)
-      VALUES ('${this.name}', '${this.local}', '${this.type}', '${this.grade}', '${this.professional}');`);
-      this.id = qualification[0].insertId;
-      return qualification[0].insertId;
-    } catch (error) {
-      console.log(error);
-    }
+      VALUES (?, ?, ?, ?, ?);`,
+      [this.name, this.local, this.type, this.grade, this.professional]);
+    this.id = qualification[0].insertId;
+    return qualification[0].insertId;
   }
 
+  /**
+   * Retrieves a Qualification by its id.
+   * @static
+   * @param {Number} id - The id of the Qualification to retrieve.
+   * @returns {Promise<Qualification[]|null>} An array containing the Qualification objects.
+   * @throws {String} - If the id is invalid.
+   */
   static async getQualificationById(id) {
-    let qualifications = [];
-    try {
-      const [query] = await DB.pool.query(
-        `SELECT idQualification"id", local, name, type, grade, idProfissional"professional" FROM Qualification WHERE idProfissional=${id};`
-      );
-      for (const element of query) {
-        console.log("Elemento: " + element);
-        qualifications.push(new Qualification(element));
+    if (id && !isNaN(id) && Number.isSafeInteger(id)) {
+      let qualifications = [];
+      try {
+        const [query] = await DB.pool.query(
+          `SELECT idQualification"id", local, name, type, grade, idProfissional"professional" FROM Qualification WHERE idProfissional=?;`,
+          [id]);
+        for (const element of query) {
+          console.log("Elemento: " + element);
+          qualifications.push(new Qualification(element));
+        }
+        return qualifications;
+      } catch (err) {
+        console.log(err);
+        throw err;
       }
-      return qualifications;
-    } catch (err) {
-      console.log(err);
-      throw err;
+    } else {
+      console.log("Invalid id");
+      throw "Invalid id"
     }
   }
 }

@@ -1,6 +1,4 @@
 let { Router } = require("express");
-const bcrypt = require('bcrypt');
-const { createid } = require('../config/functions');
 let router = Router();
 
 const User = require("../models/UserModel");
@@ -9,7 +7,6 @@ const User = require("../models/UserModel");
 router.get('/all', async function (req, res) {
 
     let output = [];
-
     try {
         let professionals = await User.getAllProfessionalsUsers();
         for (const professional of professionals){

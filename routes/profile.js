@@ -1,98 +1,122 @@
 let { Router } = require("express");
-const bcrypt = require('bcrypt');
-const { createid } = require('../config/functions');
 let router = Router();
 
 const User = require("../models/UserModel");
 const Professional = require("../models/ProfessionalModel");
 const Qualification = require("../models/QualificationModel");
 const PastJob = require("../models/PastJobModel");
-
-//Middleware
+const { query, body } = require("express-validator");
 
 const checkLoggedIn = async function (req, res, next) {
-    console.log("Session");
-    console.log(req.session.userid);
     if (req.session.userid) {
-        next();
+        try {
+            let user = await User.getById(req.session.userid);
+
+            if (user
+                && user.sessionId === req.session.sessionId
+                && user.email === req.session.email) {
+                next();
+            } else {
+                res.sendStatus(401);
+            }
+        } catch (error) {
+            console.log(error);
+            res.sendStatus(500);
+        }
     } else {
         res.sendStatus(401);
     }
 }
 
 // All Users
-router.get('/user', checkLoggedIn,  async function (req, res) {
-    let data = req.query;
-    try {
-        if (data.id) {
-            let user = await User.getById(parseInt(data.id));
+router.get('/user',
+    query('id').optional().isInt().withMessage("Id must be a integer").toInt(),
+    global.checkForErrors,
+    async function (req, res) {
+        let data = req.query;
+        try {
+            let user;
+            if (data.id) {
+                user = await User.getById(parseInt(data.id));
+                if (!user || !user.isProfessional()) {
+                    res.status(401).send("Invalid ID");
+                    return;
+                }
+            } else {
+                user = await User.getById(req.session.userid);
+
+                if (!user || !user.sessionId === req.session.sessionId || !user.isProfessional()) {
+                    res.sendStatus(401);
+                    return;
+                }
+            }
+
             let professional = await Professional.getProfessionalById(user.professional);
             let qualification = await Qualification.getQualificationById(user.professional);
             let experience = await PastJob.getPastJobById(user.professional);
-            res.status(200).send(
-                {
-                    idProfessional: professional.id,
-                    name: user.name,
-                    description: user.description,
-                    birthday: professional.birthday,
-                    gender: professional.gender,
-                    local: professional.local,
-                    qualification: qualification,
-                    experience: experience
-                }
-            );
-        } else {
-            let user = await User.getById(req.session.userid);
-            console.log(user);
-            if (user && user.sessionId === req.session.sessionId && user.isProfessional()) {
-                let professional = await Professional.getProfessionalById(user.professional);
-                let qualification = await Qualification.getQualificationById(user.professional);
-                let experience = await PastJob.getPastJobById(user.professional);
-                console.log(qualification);
-                res.status(200).send(
-                    {
-                        idProfessional: professional.id,
-                        name: user.name,
-                        description: user.description,
-                        birthday: professional.birthday,
-                        gender: professional.gender,
-                        local: professional.local,
-                        qualification: qualification,
-                        experience: experience
-                    }
-                );
-            }
+
+            res.status(200).send({
+                idProfessional: professional.id,
+                name: user.name,
+                description: user.description,
+                birthday: professional.birthday,
+                gender: professional.gender,
+                local: professional.local,
+                qualification: qualification,
+                experience: experience
+            });
+        } catch (error) {
+            console.log(error);
+            res.sendStatus(500);
         }
-    } catch (error) {
-        console.log(error);
-        res.sendStatus(500);
-    }
-})
+    })
 
-router.post('/user', async function (req, res) {
-    let data = req.body;
-    let id = data.id;
-    try {
-        let updatedUser = await User.update(id, data);
-        res.sendStatus(200);
-    } catch (error) {
-        console.log(error);
-        res.sendStatus(500);
-    }
-})
+router.post('/user',
+    checkLoggedIn,
+    body('id').isInt().withMessage("Id must be a integer").toInt(),
+    body('name').isLength({ min: 2 }).withMessage('Name must be at least 2 characters'),
+    body('description').isLength({ min: 5 }).withMessage('Description must be at least 5 characters'),
+    body('local').isLength({ min: 5 }).withMessage('Location must be provided'),
+    global.checkForErrors,
+    async function (req, res) {
+        let data = req.body;
+        let id = data.id;
+        try {
+            let [user, professional] = await Promise.all([User.getByProfessionalId(id), Professional.getById(id)]);
 
-router.post('/qualification', async function (req, res) {
-    let data = req.body;
-    console.log("Qual ->");
-    console.log(data);
-    let qualification = new Qualification({
-        local: data.local, name: data.name,
-        type: data.type, grade: data.grade, professional: data.id
-    });
+            user.name = data.name;
+            user.description = data.description;
+            professional.local = data.local;
 
-    await qualification.create();
+            await Promise.all([user.update(), professional.update()]);
 
-    res.status(200).send("Qualification created");
-})
+            res.sendStatus(200);
+        } catch (error) {
+            console.log(error);
+            res.sendStatus(500);
+        }
+    })
+
+router.post('/qualification',
+    checkLoggedIn,
+    body('id').isInt().withMessage("Professional Id must be a integer").toInt(),
+    body('grade').isInt({ min: 0, max: 20 }).withMessage("Grade must be a integer between 0 and 20").toInt(),
+    body('name').isLength({ min: 2 }).withMessage('Name must be at least 2 characters'),
+    body('type').isLength({ min: 2 }).withMessage('Type must be at least 2 characters'),
+    body('local').isLength({ min: 5 }).withMessage('Location must be provided'),
+    global.checkForErrors,
+    async function (req, res) {
+        let data = req.body;
+        console.log("Qual ->");
+        console.log(data);
+        let qualification = new Qualification({
+            local: data.local, name: data.name,
+            type: data.type, grade: data.grade, professional: data.id
+        });
+
+        await qualification.create();
+
+        res.status(200).send("Qualification created");
+    })
 
 module.exports = router;

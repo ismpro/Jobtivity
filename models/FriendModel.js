@@ -55,7 +55,7 @@ class Friend {
                                       FROM Friend where idProfessional1=? or idProfessional2=?`, [id, id]);
                 if (query.length === 0) return null;
                 for (const element of query) {
-                    output.push(new Friend(element))
+                    output.push(new Friend({...element, since: new Date(element.since)}))
                 }
                 return output;
             } catch (err) {
