@@ -48,13 +48,13 @@ class Professional {
    */
   async update() {
     await DB.pool.query(`
-    UPDATE User SET
+    UPDATE Professional SET
     birthday = STR_TO_DATE(?, "%Y-%m-%d"),
     gender = ?,
     local = ?,
     private = ?
-    WHERE idUser=?;`,
-      [this.birthday.toISOString().split("T")[0], this.gender, this.local, this.local, this.private === true ? 1 : 0, this.id]);
+    WHERE idProfessional= ?;`,
+      [this.birthday.toISOString().split("T")[0], this.gender, this.local, this.private === true ? 1 : 0, this.id]);
     return;
   }
 

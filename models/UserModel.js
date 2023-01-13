@@ -76,9 +76,9 @@ class User {
         description = ?,
         admin = ?,
         sessionId = ?,
-        company = ?,
-        professional = ?
-        WHERE idUser=?;`,
+        companyId = ?,
+        professionalId = ?
+        WHERE idUser= ?;`,
             [this.email, this.password, this.name, this.description, this.admin === true ? 1 : 0, this.sessionId,
             this.company ? this.company : null, this.professional ? this.professional : null, this.id]);
         return;

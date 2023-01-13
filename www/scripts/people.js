@@ -1,65 +1,42 @@
 "use strict";
+let dataController = tableMaker("list-row", (element) => {
 
-const dataController = (function(){
+    let mainDiv = document.createElement("div");
+    mainDiv.className = "col-12 col-md-6 col-lg-4";
 
-    let data = [];
+    let professionalDiv = document.createElement("div");
+    professionalDiv.className = "clean-product-item";
 
-    let add = function (obj){
-        data = obj;
-        buildDom();
-    }
+    let imgDiv = document.createElement("div");
+    imgDiv.className = "text-center image";
 
-    let buildDom = function(){
-        for(let dados of data){
-            let row = document.getElementById("list-row");
+    let img = document.createElement("img");
+    img.src = "./images/avatar.png"
 
-            let mainDiv = document.createElement("div");
-            mainDiv.className = "col-12 col-md-6 col-lg-4";
+    let nameDiv = document.createElement("div");
+    nameDiv.className = "product-name";
 
-            let professionalDiv = document.createElement("div");
-            professionalDiv.className = "clean-product-item";
+    let name = document.createElement("h5");
+    name.className = "text-center";
+    name.textContent = element.name;
 
-            let imgDiv = document.createElement("div");
-            imgDiv.className = "text-center image";
+    let iconDiv = document.createElement("div");
+    iconDiv.className = "text-center";
 
-            let img = document.createElement("img");
-            img.src = "./images/avatar.png"
+    nameDiv.appendChild(name);
+    imgDiv.appendChild(img);
 
-            let nameDiv = document.createElement("div");
-            nameDiv.className = "product-name";
+    professionalDiv.appendChild(imgDiv);
+    professionalDiv.appendChild(nameDiv);
 
-            let name = document.createElement("h5");
-            name.className = "text-center";
-            name.textContent = dados.name;
+    mainDiv.appendChild(professionalDiv);
 
-            let iconDiv = document.createElement("div");
-            iconDiv.className = "text-center";
-            
-            nameDiv.appendChild(name);
-            imgDiv.appendChild(img);
-            
-            professionalDiv.appendChild(imgDiv);
-            professionalDiv.appendChild(nameDiv);
-            
-            mainDiv.appendChild(professionalDiv);
-            row.appendChild(mainDiv);
+    professionalDiv.addEventListener("click", ev => {
+        window.location.href = `/profile?id=${element.idUser}`;
+    })
 
-            professionalDiv.addEventListener("click", ev => {
-                window.location.href = `/profile?id=${dados.idUser}`;
-            }) 
-            
-            console.log(dados);
-        }
-        
-        
-    }
-
-    return{
-        addData: add
-    }
-
-}());
-
+    return mainDiv;
+})
 
 window.addEventListener("DOMContentLoaded", function () {
     api.get('/people/all').then(res => {
