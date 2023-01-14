@@ -49,6 +49,28 @@ class PastJob {
     }
   }
 
+  async update() {
+    await DB.pool.query(`
+    UPDATE PastJob SET
+    name = ?,
+    url = ?,
+    beginDate = ?,
+    endDate = ?,
+    description = ?
+    WHERE idPastJob = ?;`,
+        [this.name, this.url, this.beginDate.toISOString().split("T")[0], this.endDate.toISOString().split("T")[0], this.description, this.id]);
+    return;
+}
+
+async delete(){
+  await DB.pool.query(`
+    DELETE FROM PastJob
+    WHERE idPastJob = ?;
+  `,
+  [this.id]);
+  return;
+}
+
   /**
    * Retrieves past job by its professional ID from the database.
    *
@@ -56,7 +78,7 @@ class PastJob {
    * @param {Number} id - The ID of the professional.
    * @return {Promise<Array<PastJob>>} - An array of the past jobs of the professional.
    */
-  static async getPastJobById(id) {
+  static async getPastJobByProfessionalId(id) {
     let pastjob = [];
     try {
       const [query] = await DB.pool.query(
@@ -69,6 +91,24 @@ class PastJob {
     } catch (err) {
       console.log(err);
       throw err;
+    }
+  }
+
+  static async getPastJobById(id) {
+    if (id && !isNaN(id) && Number.isSafeInteger(id)) {
+      try {
+        const [query] = await DB.pool.query(
+          `SELECT idPastJob"id", name, url, beginDate, endDate, description, idProfissional"professional" FROM PastJob WHERE idPastJob=?;`,
+          [id]);
+          if (query.length === 0) return null;
+          return new PastJob(query[0]);
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+    } else {
+      console.log("Invalid id");
+      throw "Invalid id"
     }
   }
 

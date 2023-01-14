@@ -15,15 +15,21 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
     let inputName = document.getElementById("name");
     let inputDescription = document.getElementById("description");
     let inputLocal = document.getElementById("local");
+    let inputCheckbox = document.getElementById("privateCheckbox");
     let modal = document.querySelector(".modal-body.row");
-    let msgDiv = document.getElementById("info-profile");
     let divImage = document.createElement("div");
     let addExperience = document.getElementById("add-experience");
     let addAcademic = document.getElementById("add-academic");
-
+    
     lblName.textContent = data.name;
     lblLocation.textContent = data.local;
     lblDescription.textContent = data.description;
+    console.log(data);
+
+    if(data.private){
+      inputCheckbox.checked = true;
+    }
+    
     inputName.style.display = "none";
     inputDescription.style.display = "none";
     inputLocal.style.display = "none";
@@ -66,6 +72,8 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
       div.className = "info";
       aEdit.href = "javascript:void(0)"
       aDelete.href = "javascript:void(0)"
+      iEdit.setAttribute("data-bs-toggle", "modal");
+      iEdit.setAttribute("data-bs-target", "#modal1");
       iEdit.id = "edit-experience";
       iEdit.className = "material-icons";
       iEdit.style.textAlign = "right";
@@ -104,7 +112,22 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
       
       div.appendChild(li);
       div.appendChild(divIco);
-      
+
+      aEdit.addEventListener("click", (evt) => {
+        makeModal(modal, element, "experience", "edit");
+      });
+
+      aDelete.addEventListener("click", evt => {
+        if(confirm("Do you really want to delete this experience?")){
+          api.delete("/profile/experience", {data: {id: element.id}}).then((res) => {
+            if(res.status == 200){
+              console.log(res.data);
+            }else{
+              console.log("Error");
+            }
+          });
+        }
+      });
 
       if (data.experience.length > 1) {
         div.appendChild(hr);
@@ -131,6 +154,8 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
       div.className = "info";
       aEdit.href = "javascript:void(0)"
       aDelete.href = "javascript:void(0)"
+      iEdit.setAttribute("data-bs-toggle", "modal");
+      iEdit.setAttribute("data-bs-target", "#modal1");
       iEdit.id = "edit-experience";
       iEdit.className = "material-icons";
       iEdit.style.textAlign = "right";
@@ -172,6 +197,24 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
       }
 
       ulAcademic.appendChild(div);
+
+      aDelete.addEventListener("click", evt => {
+        if(confirm("Do you really want to delete this qualification?")){
+          api.delete("/profile/qualification", {data: {id: element.id}}).then((res) => {
+            if(res.status == 200){
+              console.log(res.data);
+            }else{
+              console.log("Error");
+            }
+          });
+        }
+      })
+
+      aEdit.addEventListener("click", evt => {
+        console.log(element);
+        makeModal(modal, element, "academic", "edit");
+        
+      })
     }
 
     addExperience.addEventListener("click", (evt) => {
@@ -181,13 +224,15 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
     addAcademic.addEventListener("click", (evt) => {
       makeModal(modal, data, "academic");
     });
+    
   };
 
-  let makeModal = function (modal, data, type) {
+  let makeModal = function (modal, data, type, action) {
     let existForm = document.getElementById("modal1").querySelector("form");
     if (existForm) {
       existForm.remove();
     }
+
     if (type == "experience") {
       let form = document.createElement("form");
       let lblName = document.createElement("label");
@@ -257,39 +302,68 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
 
       modal.appendChild(form);
 
-      let sendObj = [];
+      
+      if(action == "edit"){
+        let sendObj = [];
+        let alert = document.getElementById("alertText");
+        inputName.value = data.name;
+        inputUrl.value = data.url;
+        inputBeginDate.value = data.beginDate.substring(0,10);
+        inputEndDate.value = data.endDate.substring(0,10);
+        inputDescription.value = data.description;
 
-      let alert = document.getElementById("alertText");
+        btnSubmit.addEventListener("click", evt => {
+          evt.preventDefault();
+          const name = inputName.value;
+          const url = inputUrl.value;
+          const beginDate = inputBeginDate.value;
+          const endDate = inputEndDate.value;
+          const description = inputDescription.value;
+          const id = data.id;
+            let sendObj = {
+              id: id,
+              name: name,
+              url: url,
+              beginDate: beginDate,
+              endDate: endDate,
+              description: description
+            };
+            api.put("/profile/experience", sendObj).then(function (res) {
+              if (res.status == 200) {
+                console.log("Sucesso");
+              } else {
+                res.status(500).send("erro");
+              }
+            });
+          })
+      }
 
-      btnSubmit.addEventListener("click", (evt) => {
-        sendObj = {
-          name: inputName.value,
-          url: inputUrl.value,
-          beginDate: inputBeginDate.value,
-          endDate: inputEndDate.value,
-          description: inputDescription.value,
-          id: data.idProfessional,
-        };
-        api.post("/profile/experience", sendObj).then(function (res) {
-          alert.appendChild(document.createTextNode("Successfull!"));
-          alert.parentElement.classList.add("alert-success");
-          alert.parentElement.classList.remove("visually-hidden");
-          if (res.status == 200) {
-            window.location.reload();
-          } else if (res.status === 215) {
-            let errors = res.data.errors;
-            console.log(errors);
-            if (errors.length > 0) {
-              textEle.appendChild(document.createTextNode(errors[0].msg));
-            } else {
-              textEle.appendChild(document.createTextNode("ERROR"));
+
+      if(action !== "edit"){
+        let sendObj = [];
+        let alert = document.getElementById("alertText");
+        btnSubmit.addEventListener("click", (evt) => {
+          sendObj = {
+            name: inputName.value,
+            url: inputUrl.value,
+            beginDate: inputBeginDate.value,
+            endDate: inputEndDate.value,
+            description: inputDescription.value,
+            id: data.idProfessional,
+          };
+          api.post("/profile/experience", sendObj).then(function (res) {
+            alert.appendChild(document.createTextNode("Successfull!"));
+            alert.parentElement.classList.add("alert-success");
+            alert.parentElement.classList.remove("visually-hidden");
+            if (res.status == 200) {
+              window.location.reload();
+            }else {
+              res.send("erro");
+              console.log("TESTE");
             }
-          } else {
-            res.send("erro");
-            console.log("TESTE");
-          }
+          });
         });
-      });
+      } 
     } else if (type == "academic") {
       let form = document.createElement("form");
       let lblLocal = document.createElement("label");
@@ -316,6 +390,37 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
       let inputType = document.createElement("input");
       let inputGrade = document.createElement("input");
       let btnSubmit = document.createElement("button");
+
+      if(action == "edit"){
+        inputLocal.value = data.local;
+        inputName.value = data.name;
+        inputType.value = data.type;
+        inputGrade.value = data.grade;
+
+        btnSubmit.addEventListener("click", evt => {
+        evt.preventDefault();
+        const local = inputLocal.value;
+        const name = inputName.value;
+        const type = inputType.value;
+        const grade = inputGrade.value;
+        const id = data.id;
+          let sendObj = {
+            id: id,
+            local: local,
+            name: name,
+            type: type,
+            grade: grade
+          };
+          api.put("/profile/experience", sendObj).then(function (res) {
+            if (res.status == 200) {
+              console.log("Sucesso");
+            } else {
+              res.status(500).send("erro");
+            }
+          });
+        })
+      }
+
       btnSubmit.type = "button";
       btnSubmit.textContent = "Submit";
       btnSubmit.className = "btn btn-primary";
@@ -356,34 +461,36 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
 
       let alert = document.getElementById("alertText");
 
-      btnSubmit.addEventListener("click", (evt) => {
-        sendObj = {
-          local: inputLocal.value,
-          name: inputName.value,
-          type: inputType.value,
-          grade: inputGrade.value,
-          id: data.idProfessional,
-        };
-
-        api.post("/profile/qualification", sendObj).then(function (res) {
-          alert.appendChild(document.createTextNode("Successfull!"));
-          alert.parentElement.classList.add("alert-success");
-          alert.parentElement.classList.remove("visually-hidden");
-          if (res.status == 200) {
-            window.location.reload();
-          } else if (res.status === 215) {
-            let errors = res.data.errors;
-            console.log(errors);
-            if (errors.length > 0) {
-              textEle.appendChild(document.createTextNode(errors[0].msg));
+      if(action !== "edit"){
+        btnSubmit.addEventListener("click", (evt) => {
+          sendObj = {
+            local: inputLocal.value,
+            name: inputName.value,
+            type: inputType.value,
+            grade: inputGrade.value,
+            id: data.idProfessional,
+          };
+  
+          api.post("/profile/qualification", sendObj).then(function (res) {
+            alert.appendChild(document.createTextNode("Successfull!"));
+            alert.parentElement.classList.add("alert-success");
+            alert.parentElement.classList.remove("visually-hidden");
+            if (res.status == 200) {
+              window.location.reload();
+            } else if (res.status === 215) {
+              let errors = res.data.errors;
+              console.log(errors);
+              if (errors.length > 0) {
+                textEle.appendChild(document.createTextNode(errors[0].msg));
+              } else {
+                textEle.appendChild(document.createTextNode("ERROR"));
+              }
             } else {
-              textEle.appendChild(document.createTextNode("ERROR"));
+              res.status(500).send("erro");
             }
-          } else {
-            res.status(500).send("erro");
-          }
+          });
         });
-      });
+      }
     }
   };
 
@@ -400,18 +507,26 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
     let icoEditProfile = document.getElementById("edit-profile");
     let icoSave = document.getElementById("save-profile");
     let lblName = document.getElementById("user-name");
+    let lblCheckbox = document.getElementById("label-checkbox");
     let lblLocation = document.getElementById("user-location");
     let lblDescription = document.getElementById("user-description");
     let inputName = document.getElementById("name");
     let inputLocation = document.getElementById("local");
     let inputDescription = document.getElementById("description");
+    let inputCheckbox = document.getElementById("privateCheckbox");
+
     inputName.value = lblName.textContent;
     inputLocation.value = lblLocation.textContent;
     inputDescription.value = lblDescription.textContent;
+    
+    lblCheckbox.textContent = "Private";
 
     inputName.style.display = "inline-block";
     inputLocation.style.display = "inline-block";
     inputDescription.style.display = "inline-block";
+    lblCheckbox.style.display = "inline-block";
+    inputCheckbox.style.display = "inline-block";
+
 
     lblName.style.display = "none";
     lblLocation.style.display = "none";
@@ -421,6 +536,7 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
 
     icoEditProfile.style.display = "none";
     icoSave.style.display = "inline-block";
+    
 
     icoSave.addEventListener("click", (evt) => {
       icoEditProfile.style.display = "inline-block";
@@ -429,11 +545,14 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
       const name = document.getElementById("name").value;
       const description = document.getElementById("description").value;
       const local = document.getElementById("local").value;
+      const privateCheck = document.getElementById("privateCheckbox").checked;
       const id = data.idProfessional;
 
       lblName.style.display = "inline-block";
       lblLocation.style.display = "inline-block";
       lblDescription.style.display = "inline-block";
+      lblCheckbox.style.display = "none";
+      inputCheckbox.style.display = "none";
       inputName.style.display = "none";
       inputLocation.style.display = "none";
       inputDescription.style.display = "none";
@@ -442,10 +561,13 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
         name: name,
         description: description,
         local: local,
+        private: privateCheck
       };
       api.put("/profile/user", sendObj).then(function (res) {
         if (res.status == 200) {
-          window.location.reload(); //ISTO É PARA SAIR DAQUI NAO CA RELOADS DE PAGINAS
+         // window.location.reload(); //ISTO É PARA SAIR DAQUI NAO CA RELOADS DE PAGINAS
+         console.log("Dentro do put");
+         console.log(sendObj);
         } else {
           res.status(500).send("erro");
         }

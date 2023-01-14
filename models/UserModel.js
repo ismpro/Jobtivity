@@ -83,6 +83,8 @@ class User {
         return;
     }
 
+    
+
     /**
     * Check if a user with the specified email exists in the database.
     *

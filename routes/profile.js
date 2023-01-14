@@ -61,10 +61,12 @@ router.get(
       let professional = await Professional.getProfessionalById(
         user.professional
       );
-      let qualification = await Qualification.getQualificationById(
+      let qualification = await Qualification.getQualificationByProfessionalId(
         user.professional
       );
-      let experience = await PastJob.getPastJobById(user.professional);
+      let experience = await PastJob.getPastJobByProfessionalId(
+        user.professional
+      );
 
       res.status(200).send({
         idProfessional: professional.id,
@@ -73,6 +75,7 @@ router.get(
         birthday: professional.birthday,
         gender: professional.gender,
         local: professional.local,
+        private: professional.private,
         qualification: qualification,
         experience: experience,
       });
@@ -96,15 +99,18 @@ router.put(
   body("local").isLength({ min: 5 }).withMessage("Location must be provided"),
   global.checkForErrors,
   async function (req, res) {
-
     let data = req.body;
     let id = data.id;
     try {
-      let [user, professional] = await Promise.all([User.getByProfessionalId(id),Professional.getById(id)]);
+      let [user, professional] = await Promise.all([
+        User.getByProfessionalId(id),
+        Professional.getById(id),
+      ]);
 
       user.name = data.name;
       user.description = data.description;
       professional.local = data.local;
+      professional.private = data.private;
 
       await Promise.all([user.update(), professional.update()]);
 
@@ -150,6 +156,38 @@ router.post(
   }
 );
 
+router.put("/qualification", checkLoggedIn, async function (req, res) {
+  let data = req.body;
+  let id = data.id;
+  console.log("Dados recebidos");
+  console.log(data);
+  try {
+    let qualification = await Qualification.getQualificationById(id);
+    console.log("Qualification antes de mudar os dados");
+    console.log(qualification);
+    qualification.local = data.local;
+    qualification.name = data.name;
+    qualification.type = data.type;
+    qualification.grade = data.grade;
+
+    console.log("Qualification depois de mudar os dados");
+    console.log(qualification);
+
+    qualification.update();
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+router.delete("/qualification", checkLoggedIn, async function (req, res) {
+  let data = req.body;
+  let qualification = await Qualification.getQualificationById(data.id);
+  await qualification.delete();
+  res.status(200).send("Qualification deleted");
+});
+
 router.post(
   "/experience",
   checkLoggedIn,
@@ -189,5 +227,48 @@ router.post(
     res.status(200).send("Experience created");
   }
 );
+
+router.put(
+  "/experience",
+  checkLoggedIn,
+  body("beginDate")
+    .isLength({ min: 8 })
+    .withMessage("Begin Date must be provided")
+    .toDate(),
+  body("endDate")
+    .isLength({ min: 8 })
+    .withMessage("Begin Date must be provided")
+    .toDate(),
+  async function (req, res) {
+    let data = req.body;
+    let id = data.id;
+    console.log("Dados recebidos");
+    console.log(data);
+    try {
+      let experience = await PastJob.getPastJobById(id);
+      experience.name = data.name;
+      experience.url = data.url;
+      experience.beginDate = data.beginDate;
+      experience.endDate = data.endDate;
+      experience.description = data.description;
+
+      console.log("Qualification depois de mudar os dados");
+      console.log(experience);
+
+      experience.update();
+      res.sendStatus(200);
+    } catch (error) {
+      console.log(error);
+      res.sendStatus(500);
+    }
+  }
+);
+
+router.delete("/experience", checkLoggedIn, async function (req, res) {
+  let data = req.body;
+  let experience = await PastJob.getPastJobById(data.id);
+  await experience.delete();
+  res.status(200).send("Qualification deleted");
+});
 
 module.exports = router;

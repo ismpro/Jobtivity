@@ -39,6 +39,27 @@ class Qualification {
     return qualification[0].insertId;
   }
 
+  async update() {
+    await DB.pool.query(`
+    UPDATE Qualification SET
+    local = ?,
+    name = ?,
+    type = ?,
+    grade = ?
+    WHERE idQualification = ?;`,
+        [this.local, this.name, this.type, this.grade, this.id]);
+    return;
+}
+
+  async delete(){
+    await DB.pool.query(`
+      DELETE FROM Qualification
+      WHERE idQualification = ?;
+    `,
+    [this.id]);
+    return;
+  }
+
   /**
    * Retrieves a Qualification by its id.
    * @static
@@ -46,7 +67,7 @@ class Qualification {
    * @returns {Promise<Qualification[]|null>} An array containing the Qualification objects.
    * @throws {String} - If the id is invalid.
    */
-  static async getQualificationById(id) {
+  static async getQualificationByProfessionalId(id) {
     if (id && !isNaN(id) && Number.isSafeInteger(id)) {
       let qualifications = [];
       try {
@@ -58,6 +79,24 @@ class Qualification {
           qualifications.push(new Qualification(element));
         }
         return qualifications;
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+    } else {
+      console.log("Invalid id");
+      throw "Invalid id"
+    }
+  }
+
+  static async getQualificationById(id) {
+    if (id && !isNaN(id) && Number.isSafeInteger(id)) {
+      try {
+        const [query] = await DB.pool.query(
+          `SELECT idQualification"id", local, name, type, grade, idProfissional"professional" FROM Qualification WHERE idQualification=?;`,
+          [id]);
+          if (query.length === 0) return null;
+          return new Qualification(query[0]);
       } catch (err) {
         console.log(err);
         throw err;
