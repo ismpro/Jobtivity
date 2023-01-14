@@ -88,8 +88,6 @@ const filterController = (function () {
      */
     let filterDOM = function () {
         dataController.filter((job) => filters.every(filter => filter.fn(job)));
-        compararController.reset();
-        compararContainerCloseOrOpen("close");
     }
 
     /**
@@ -129,16 +127,15 @@ window.addEventListener("DOMContentLoaded", function () {
     api.get('/people/all').then(res => {
         // Check if response status is 200 and data is of object type
         if (res.status === 200 && typeof res.data === 'object') {
-            console.log(res.data);
             // Add data to dataController function
             dataController.addData(res.data);
 
             //Sets the values for the sliders
-            let arrIdade = res.data.map(job => job.duracao);
+            let arrIdade = res.data.map(obj => obj.birthdate);
 
-            createFilterSliders("idadeFilter", "Idade minima", Math.min(...arrDuracao), Math.max(...arrDuracao), (job) => job.duracao);
+            createFilterSliders("idadeFilter", "Idade minima", Math.min(...arrIdade), Math.max(...arrIdade), obj => obj.birthdate);
 
-            createFilterCheckboxes("locationFilter", "location", "Location", res.data);
+            createFilterCheckboxes("locationFilter", "local", "Location", res.data);
         }
     });
 });

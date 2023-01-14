@@ -30,16 +30,12 @@ class Professional {
    * @returns {Promise<Number>} - The id of the created professional. 
    */
   async create() {
-    try {
       let professional = await DB.pool.query(`
       INSERT INTO Professional (birthday, gender, local, private)
-      VALUES (STR_TO_DATE(?, "%Y-%m-%d"), '?', '?', ?);`,
+      VALUES (STR_TO_DATE(?, "%Y-%m-%d"), ?, ?, ?);`,
         [this.birthday.toISOString().split("T")[0], this.gender, this.local, this.private === true ? 1 : 0]);
       this.id = professional[0].insertId;
       return professional[0].insertId;
-    } catch (error) {
-      console.log(error)
-    }
   }
 
   /**

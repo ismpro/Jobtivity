@@ -26,16 +26,12 @@ class Company {
      * @returns {Promise<Number>} - The ID of the newly created company.
      */
     async create() {
-        try {
-            let company = await DB.pool.query(`
+        let company = await DB.pool.query(`
                     INSERT INTO Company (urlWebsite, urlLogo, valid)
                     VALUES (?, ?, ?);`,
-                [this.urlWebsite, this.urlLogo, this.valid === null ? null : this.valid === true ? 1 : 0]);
-            this.id = company[0].insertId;
-            return company[0].insertId;
-        } catch (error) {
-            console.log(error)
-        }
+            [this.urlWebsite, this.urlLogo, this.valid === null ? null : this.valid === true ? 1 : 0]);
+        this.id = company[0].insertId;
+        return company[0].insertId;
     }
 
     /**

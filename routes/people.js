@@ -10,6 +10,19 @@ const Professional = require("../models/ProfessionalModel");
 const Friend = require("../models/FriendModel");
 
 /**
+ * Converts a birthdate in age
+ * @param {Date} birthdate - birthdate of the user
+ * @return {Number} age in years
+ */
+function calculateAge(birthdate) {
+  // calculate the difference between the two dates in milliseconds
+  const ageInMilliseconds = Date.now() - birthdate.getTime();
+  // convert the difference to years and return it
+  return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365.25);
+}
+
+
+/**
  * @function
  * @route {GET} /all
  * @description Retrieve all professionals and companies for the current user
@@ -65,6 +78,7 @@ router.get('/all', async function (req, res) {
           name: user.name,
           description: user.description,
           local: professional.local,
+          birthdate: calculateAge(professional.birthday)
         };
       })
     );

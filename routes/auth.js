@@ -12,6 +12,18 @@ const Professional = require("../models/ProfessionalModel");
 const Company = require("../models/CompanyModel");
 
 /**
+ * Converts a birthdate in age
+ * @param {Date} birthdate - birthdate of the user
+ * @return {Number} age in years
+ */
+function calculateAge(birthdate) {
+    // calculate the difference between the two dates in milliseconds
+    const ageInMilliseconds = Date.now() - birthdate.getTime();
+    // convert the difference to years and return it
+    return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365.25);
+}
+
+/**
  * Generate a random id
  * @param {number} length - the length of the id to be generated
  * @return {string} the generated id
@@ -103,66 +115,73 @@ router.post('/register',
     body('name').isLength({ min: 2 }).withMessage('Name must be at least 2 characters'),
     // Check if description is valid
     body('description').isLength({ min: 5 }).withMessage('Description must be at least 5 characters'),
+    //Professionals valitions
+    // Check if birthDate is valid
+    body('birthDate')
+        .if((value, { req }) => !req.body.isCompany)
+        .isDate()
+        .withMessage('Birthdate must be provided')
+        .toDate()
+        .custom(async (value) => {
+            if (calculateAge(value) < 16) {
+                throw new Error('Must be 16 or higher')
+            }
+        }),
+    // Check if gender is valid
+    body('gender').if((value, { req }) => !req.body.isCompany).isIn(['M', 'F']).withMessage('Gender must be either M or F'),
+    // Check if location is valid
+    body('local').if((value, { req }) => !req.body.isCompany).isLength({ min: 5 }).withMessage('Location must be provided'),
+    // Check if private is a boolean
+    body('private').if((value, { req }) => !req.body.isCompany).isBoolean().withMessage('Private must be a boolean').toBoolean(),
+    //Company valitions
+    // Check if website url is valid
+    body('urlWeb').if((value, { req }) => req.body.isCompany).isURL().withMessage('Please enter a valid website url'),
+    // Check if logo url is valid
+    body('urlLogo').if((value, { req }) => req.body.isCompany).isURL().withMessage('Please enter a valid logo url'),
     global.checkForErrors,
     // Create new User and Professional/Company objects and save to database
     async function (req, res, next) {
+        try {
+            let data = req.body;
 
-        if (req.body.isCompany === null) {
-            body('birthDate').isDate().withMessage('Birthdate must be provided').toDate(),
-                // Check if gender is valid
-                body('gender').isIn(['M', 'F']).withMessage('Gender must be either M or F'),
-                // Check if location is valid
-                body('local').isLength({ min: 5 }).withMessage('Location must be provided'),
-                // Check if private is a boolean
-                body('private').isBoolean().withMessage('Private must be a boolean').toBoolean()
-        } else {
-            // Check if website url is valid
-            body('urlWeb').isURL().withMessage('Please enter a valid website url'),
-                // Check if logo url is valid
-                body('urlLogo').isURL().withMessage('Please enter a valid logo url')
-        }
+            if (!(await User.existsByEmail(data.email))) {
 
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            res.status(215).json({ errors: errors.array() });
-            return;
-        }
-
-        let data = req.body;
-
-        if (!(await User.existsByEmail(data.email))) {
-
-            let user = new User({
-                email: data.email, password: bcrypt.hashSync(data.password, bcrypt.genSaltSync(10)),
-                name: data.name, description: data.description, admin: false
-            });
-
-            if (data.isCompany) {
-                let comp = new Company({
-                    urlWebsite: data.urlWeb,
-                    urlLogo: data.urlLogo,
-                    valid: null
+                let user = new User({
+                    email: data.email, password: bcrypt.hashSync(data.password, bcrypt.genSaltSync(10)),
+                    name: data.name, description: data.description, admin: false
                 });
 
-                await comp.create();
-                user.company = comp.id;
+                if (data.isCompany) {
+                    let comp = new Company({
+                        urlWebsite: data.urlWeb,
+                        urlLogo: data.urlLogo,
+                        valid: null
+                    });
+
+                    await comp.create();
+                    user.company = comp.id;
+                } else {
+                    console.log(data.birthDate)
+                    let professional = new Professional({
+                        birthday: data.birthDate,
+                        gender: data.gender,
+                        local: data.local,
+                        private: data.private
+                    });
+
+                    await professional.create();
+                    user.professional = professional.id;
+                }
+
+                await user.create();
+
+                res.status(200).send("User created");
             } else {
-                let professional = new Professional({
-                    birthday: data.birthDate,
-                    gender: data.gender,
-                    local: data.local,
-                    private: data.private
-                });
-
-                await professional.create();
-                user.professional = professional.id;
+                res.status(210).send("This email is already in use");
             }
-
-            await user.create();
-
-            res.status(200).send("User created");
-        } else {
-            res.status(210).send("This email is already in use");
+        } catch (error) {
+            console.error(error);
+            res.sendStatus(500);
         }
     });
 
@@ -223,7 +242,7 @@ router.post('/login',
             }
         } catch (error) {
             console.log(error)
-            res.status(500).send(error)
+            res.sendStatus(500);
         }
     });
 
@@ -262,22 +281,27 @@ router.post('/validate', async function (req, res) {
  * @description Handle user logout
  */
 router.post('/logout', async function (req, res) {
-    if (req.session.userid) {
-        let user = await User.getById(req.session.userid);
+    try {
+        if (req.session.userid) {
+            let user = await User.getById(req.session.userid);
 
-        if (user) {
-            user.sessionId = 'expired';
+            if (user) {
+                user.sessionId = 'expired';
 
-            Promise.all([user.update(), req.session.destroy()])
-                .then(() => {
-                    res.status(200).send(true)
-                }).catch(err => {
-                    console.log(err)
-                    res.sendStatus(500);
-                });
-        } else {
-            res.status(200).send(false)
+                Promise.all([user.update(), req.session.destroy()])
+                    .then(() => {
+                        res.status(200).send(true)
+                    }).catch(err => {
+                        console.log(err)
+                        res.sendStatus(500);
+                    });
+            } else {
+                res.status(200).send(false)
+            }
         }
+    } catch (error) {
+        console.error(error)
+        res.sendStatus(500);
     }
 })
 

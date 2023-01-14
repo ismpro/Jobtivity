@@ -107,9 +107,9 @@ function createFilterSliders(id, nome, min, max, sliderFn) {
  * @param {String} id - The id of the DOM element to which the checkboxes will be appended
  * @param {String} key - The property of the objects in the "jobs" parameter to use as the label for the checkboxes
  * @param {String} title - The title to be displayed above the checkboxes
- * @param {{ nome: String, descricao: String, area: String, duracao: Number,  valor: Number, validade: Date }[]} jobs - An array of objects containing data to be used to create the checkboxes
+ * @param {Object[]} data - An array of objects containing data to be used to create the checkboxes
  */
-function createFilterCheckboxes(id, key, title, jobs) {
+function createFilterCheckboxes(id, key, title, data) {
 
     // Find the element in the DOM with the id passed in the "id" parameter
     const parent = document.getElementById(id);
@@ -120,7 +120,7 @@ function createFilterCheckboxes(id, key, title, jobs) {
 
     let arrControl = [];
     // Create a new set of unique values of the property defined in the "key" parameter
-    const datas = new Set(jobs.map(e => e[key]));
+    const datas = new Set(data.map(e => e[key]));
 
     // Iterate over the unique values
     for (const data of datas) {
@@ -182,7 +182,7 @@ function createFilterCheckboxes(id, key, title, jobs) {
             } else {
                 filterController.add({
                     type: key,
-                    fn: (job) => arrControl.includes(job[key])
+                    fn: (data) => arrControl.includes(data[key])
                 });
             }
         }
