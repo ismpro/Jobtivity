@@ -5,7 +5,7 @@ const User = require("../models/UserModel");
 const Professional = require("../models/ProfessionalModel");
 const Qualification = require("../models/QualificationModel");
 const PastJob = require("../models/PastJobModel");
-const { query, body } = require("express-validator");
+const { query, body, validationResult } = require("express-validator");
 
 const checkLoggedIn = async function (req, res, next) {
   if (req.session.userid) {
@@ -96,6 +96,13 @@ router.post(
   body("local").isLength({ min: 5 }).withMessage("Location must be provided"),
   global.checkForErrors,
   async function (req, res) {
+    
+    const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(215).json({ errors: errors.array() });
+            return;
+        }
+
     let data = req.body;
     let id = data.id;
     try {

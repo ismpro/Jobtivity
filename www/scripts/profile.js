@@ -121,23 +121,21 @@ const dataController = (function () {
       ulAcademic.appendChild(div);
     }
 
-    addExperience.addEventListener("click", evt => {
+    addExperience.addEventListener("click", (evt) => {
       makeModal(modal, data, "experience");
-    })
+    });
 
-    addAcademic.addEventListener("click", evt => {
+    addAcademic.addEventListener("click", (evt) => {
       makeModal(modal, data, "academic");
-    })
-
+    });
   };
 
   let makeModal = function (modal, data, type) {
     let existForm = document.getElementById("modal1").querySelector("form");
-    if(existForm){
+    if (existForm) {
       existForm.remove();
     }
     if (type == "experience") {
-      
       let form = document.createElement("form");
       let lblName = document.createElement("label");
       let lblUrl = document.createElement("label");
@@ -146,6 +144,9 @@ const dataController = (function () {
       let lblDescription = document.createElement("description");
       let modalDialog = document.getElementById("modal-dialog");
       let modalTitle = document.getElementById("modal-title");
+      let textEle = document.createElement("p");
+      textEle.textContent = "";
+      textEle.style.color = "red";
 
       modalDialog.style.maxWidth = "35%";
       modalDialog.style.padding = "20px";
@@ -197,6 +198,7 @@ const dataController = (function () {
 
       form.appendChild(lblDescription);
       form.appendChild(inputDescription);
+      form.appendChild(textEle);
 
       form.appendChild(btnSubmit);
 
@@ -221,6 +223,14 @@ const dataController = (function () {
           alert.parentElement.classList.remove("visually-hidden");
           if (res.status == 200) {
             window.location.reload();
+          } else if (res.status === 215) {
+            let errors = res.data.errors;
+            console.log(errors);
+            if (errors.length > 0) {
+              textEle.appendChild(document.createTextNode(errors[0].msg));
+            } else {
+              textEle.appendChild(document.createTextNode("ERROR"));
+            }
           } else {
             res.send("erro");
             console.log("TESTE");
@@ -235,6 +245,9 @@ const dataController = (function () {
       let lblGrade = document.createElement("label");
       let modalDialog = document.getElementById("modal-dialog");
       let modalTitle = document.getElementById("modal-title");
+      let textEle = document.createElement("p");
+      textEle.textContent = "";
+      textEle.style.color = "red";
 
       modalDialog.style.maxWidth = "35%";
       modalDialog.style.padding = "20px";
@@ -281,6 +294,7 @@ const dataController = (function () {
       form.appendChild(lblGrade);
       form.appendChild(inputGrade);
 
+      form.appendChild(textEle);
       form.appendChild(btnSubmit);
 
       modal.appendChild(form);
@@ -304,15 +318,21 @@ const dataController = (function () {
           alert.parentElement.classList.remove("visually-hidden");
           if (res.status == 200) {
             window.location.reload();
+          } else if (res.status === 215) {
+            let errors = res.data.errors;
+            console.log(errors);
+            if (errors.length > 0) {
+              textEle.appendChild(document.createTextNode(errors[0].msg));
+            } else {
+              textEle.appendChild(document.createTextNode("ERROR"));
+            }
           } else {
             res.status(500).send("erro");
           }
         });
       });
     }
-    
   };
-
 
   let hideEditFields = function () {
     [].forEach.call(
