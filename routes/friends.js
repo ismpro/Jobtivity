@@ -115,10 +115,10 @@ router.post('/request/:type',
         if (req.params.type === 'accept') {
 
             let friend = new Friend({ professional1: friendRequest.professional1, professional2: friendRequest.professional2, since: new Date() });
-            //await friend.create();
+            await friend.create();
         }
 
-        //await friendRequest.delete();
+        await friendRequest.delete();
 
         res.status(200).send(true);
     });
