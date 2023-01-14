@@ -20,11 +20,11 @@ router.get('/all', async function (req, res) {
     try {
 
       //Retrieve all professionals users  
-      let professionals = await User.getAllProfessionalsUsers();
+      let users = await User.getAllProfessionalsUsers();
       //Filter professionals that are not the current user  
-      for (const professional of professionals) {
-            if (req.session.userid !== professional.id) {
-                output.push(professional);
+      for (const user of users) {
+            if (req.session.userid !== user.id) {
+                output.push(user);
             }
         }
 
