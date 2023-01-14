@@ -49,13 +49,9 @@ class FriendsRequests {
      * @return {Promise<void>} - Resolves once the deletion is complete.
      */
     async delete() {
-        try {
-            await DB.pool.query(`DELETE FROM FriendRequest WHERE idFriendRequest=?;`, [this.id]);
-            this.id =  null;
-            return;
-        } catch (error) {
-            console.log(error)
-        }
+        await DB.pool.query(`DELETE FROM FriendRequest WHERE idFriendRequest=?;`, [this.id]);
+        this.id = null;
+        return;
     }
 
     /**

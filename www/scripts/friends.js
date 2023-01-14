@@ -94,31 +94,67 @@ function makeFriendList(body, data) {
     if (data.length !== 0) {
         for (const friend of data) {
             const msgDiv = document.createElement('div');
-            msgDiv.classList.add('d-flex', "clickble");
+            msgDiv.classList.add('d-flex');
 
-            msgDiv.onclick = (evt) => {
-                window.location.href = `/profile?id=${friend.userid}`
-            }
+            
 
             let divImage = document.createElement("div");
             divImage.id = "profileImage";
-            divImage.classList.add('rounded-circle', 'flex-shrink-0', 'me-3', 'fit-cover');
+            divImage.classList.add('rounded-circle', 'flex-shrink-0', 'me-3', 'fit-cover', "clickble");
             divImage.textContent = friend.name.toLocaleUpperCase().charAt(0);
+
+            divImage.onclick = (evt) => {
+                window.location.href = `/profile?id=${friend.userid}`
+            }
 
             msgDiv.appendChild(divImage);
 
             const innerDiv = document.createElement('div');
+            innerDiv.classList.add('d-flex');
 
             const pElement1 = document.createElement('p');
-            pElement1.classList.add('fw-bold', 'text-primary', 'mb-0');
+            pElement1.classList.add('fw-bold', 'text-primary', 'mb-0', "clickble");
             pElement1.textContent = friend.name;
+
+            pElement1.onclick = (evt) => {
+                window.location.href = `/profile?id=${friend.userid}`
+            }
 
             const pElement2 = document.createElement('p');
             pElement2.classList.add('text-muted', 'mb-0');
             pElement2.textContent = (new Date(friend.since)).toISOString().split("T")[0];
 
-            innerDiv.appendChild(pElement1);
-            innerDiv.appendChild(pElement2);
+            const leftDiv = document.createElement('div');
+            const rightDiv = document.createElement('div');
+            rightDiv.className = "d-xl-flex align-items-xl-center";
+            rightDiv.style.marginLeft = "20px";
+
+            innerDiv.appendChild(leftDiv);
+            innerDiv.appendChild(rightDiv);
+
+            leftDiv.appendChild(pElement1);
+            leftDiv.appendChild(pElement2);
+
+            let iRemove = document.createElement("i");
+
+            iRemove.className = "material-icons text-danger clickble";
+            iRemove.textContent = "clear";
+
+            iRemove.onclick = (evt) => {
+                api.delete('friends/remove', {data: { id: friend.id }})
+                    .then(res => {
+                        if (res.status === 200) {
+                            pElement2.textContent = "Removed";
+                            delete iRemove.onclick;
+                            setTimeout(() => {
+                                if(msgDiv.parentElement.childElementCount === 1) body.appendChild(document.createTextNode("No friends"));
+                                msgDiv.remove();
+                            }, 2000);
+                        }
+                    })
+            }
+
+            rightDiv.appendChild(iRemove);
 
             msgDiv.appendChild(innerDiv);
 

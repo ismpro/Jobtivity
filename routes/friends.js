@@ -198,14 +198,13 @@ router.delete('/remove',
     body('id').isInt().withMessage('Please enter a valid id').toInt(),
     global.checkForErrors,
     async function (req, res) {
-        let text = req.query.s;
-
-        if (text) {
-            let users = await User.getProfessionalsBySearchEmailAndName(text);
-            if (!users) users = [];
-            res.status(200).send(users.map(user => ({ email: user.email, name: user.name })).filter(user => user.email !== req.session.email));
-        } else {
-            res.sendStatus(400);
+        try {
+            let friend = await Friend.getById(req.body.id);
+            await friend.delete()
+            res.sendStatus(200);
+        } catch (error) {
+            console.log(error)
+            res.sendStatus(500);
         }
     })
 
