@@ -18,6 +18,8 @@ const dataController = (function () {
     let modal = document.querySelector(".modal-body.row");
     let msgDiv = document.getElementById("info-profile");
     let divImage = document.createElement("div");
+    let addExperience = document.getElementById("add-experience");
+    let addAcademic = document.getElementById("add-academic");
 
     lblName.textContent = data.name;
     lblLocation.textContent = data.local;
@@ -26,8 +28,7 @@ const dataController = (function () {
     inputDescription.style.display = "none";
     inputLocal.style.display = "none";
     divImage.id = "profileImage";
-    divImage.classList.add('rounded-circle', 'mb-3', 'mt-4');
-    
+    divImage.classList.add("rounded-circle", "mb-3", "mt-4");
 
     divImage.style.margin = "auto";
     divImage.style.textAlign = "center";
@@ -35,10 +36,10 @@ const dataController = (function () {
     divImage.style.height = "100px";
     divImage.style.fontSize = "45px";
     divImage.style.lineHeight = "100px";
-    
+
     divImage.textContent = data.name.toLocaleUpperCase().charAt(0);
-    
-    lblName.parentElement.before(divImage);        
+
+    lblName.parentElement.before(divImage);
 
     // Construir DOM para Academic
     let ulAcademic = document.getElementById("academic");
@@ -76,13 +77,11 @@ const dataController = (function () {
       li.appendChild(lblEndDate);
       li.appendChild(lblDesc);
 
-
       div.appendChild(li);
 
-      if(data.experience.length > 1){
+      if (data.experience.length > 1) {
         div.appendChild(hr);
       }
-      
 
       ulExperience.appendChild(div);
     }
@@ -115,97 +114,205 @@ const dataController = (function () {
 
       div.appendChild(li);
 
-      if(data.qualification.length > 1){
+      if (data.qualification.length > 1) {
         div.appendChild(hr);
       }
 
       ulAcademic.appendChild(div);
-
     }
 
-    makeAcademicModal(modal, data);
+    addExperience.addEventListener("click", evt => {
+      makeModal(modal, data, "experience");
+    })
+
+    addAcademic.addEventListener("click", evt => {
+      makeModal(modal, data, "academic");
+    })
+
   };
 
-  let makeAcademicModal = function (modal, data) {
-    let form = document.createElement("form");
-    let lblLocal = document.createElement("label");
-    let lblName = document.createElement("label");
-    let lblType = document.createElement("label");
-    let lblGrade = document.createElement("label");
-    let modalDialog = document.getElementById("modal-dialog");
+  let makeModal = function (modal, data, type) {
+    let existForm = document.getElementById("modal1").querySelector("form");
+    if(existForm){
+      existForm.remove();
+    }
+    if (type == "experience") {
+      
+      let form = document.createElement("form");
+      let lblName = document.createElement("label");
+      let lblUrl = document.createElement("label");
+      let lblBeginDate = document.createElement("label");
+      let lblEndDate = document.createElement("label");
+      let lblDescription = document.createElement("description");
+      let modalDialog = document.getElementById("modal-dialog");
+      let modalTitle = document.getElementById("modal-title");
 
-    modalDialog.style.maxWidth = "35%";
-    modalDialog.style.padding = "20px";
-    lblLocal.textContent = "Institution: ";
-    lblName.textContent = "Course: ";
-    lblType.textContent = "Type: ";
-    lblGrade.textContent = "Grade: ";
+      modalDialog.style.maxWidth = "35%";
+      modalDialog.style.padding = "20px";
+      lblName.textContent = "Company: ";
+      lblUrl.textContent = "URL: ";
+      lblBeginDate.textContent = "Start Date: ";
+      lblEndDate.textContent = "End Date: ";
+      lblDescription.textContent = "Description: ";
 
-    let inputLocal = document.createElement("input");
-    let inputName = document.createElement("input");
-    let inputType = document.createElement("input");
-    let inputGrade = document.createElement("input");
-    let btnSubmit = document.createElement("button");
-    btnSubmit.type = "button";
-    btnSubmit.textContent = "Submit";
-    btnSubmit.className = "btn btn-primary";
+      let inputName = document.createElement("input");
+      let inputUrl = document.createElement("input");
+      let inputBeginDate = document.createElement("input");
+      let inputEndDate = document.createElement("input");
+      let inputDescription = document.createElement("TEXTAREA");
+      let btnSubmit = document.createElement("button");
+      btnSubmit.type = "button";
+      btnSubmit.textContent = "Submit";
+      btnSubmit.className = "btn btn-primary";
 
-    inputLocal.type = "text";
-    inputName.type = "text";
-    inputType.type = "text";
-    inputGrade.type = "number";
+      inputName.type = "text";
+      inputUrl.type = "text";
+      inputBeginDate.type = "date";
+      inputEndDate.type = "date";
 
-    inputLocal.style.marginBottom = "2rem";
-    inputName.style.marginBottom = "2rem";
-    inputType.style.marginBottom = "2rem";
-    inputGrade.style.marginBottom = "2rem";
+      modalTitle.textContent = "Add Experience";
 
-    form.style.display = "flex";
-    form.style.flexDirection = "column";
-    form.style.alignItems = "center";
-    form.style.justifyContent = "space-between";
+      inputName.style.marginBottom = "2rem";
+      inputUrl.style.marginBottom = "2rem";
+      inputBeginDate.style.marginBottom = "2rem";
+      inputEndDate.style.marginBottom = "2rem";
+      inputDescription.style.marginBottom = "2rem";
 
-    form.appendChild(lblLocal);
-    form.appendChild(inputLocal);
+      form.style.display = "flex";
+      form.style.flexDirection = "column";
+      form.style.alignItems = "center";
+      form.style.justifyContent = "space-between";
 
-    form.appendChild(lblName);
-    form.appendChild(inputName);
+      form.appendChild(lblName);
+      form.appendChild(inputName);
 
-    form.appendChild(lblType);
-    form.appendChild(inputType);
+      form.appendChild(lblUrl);
+      form.appendChild(inputUrl);
 
-    form.appendChild(lblGrade);
-    form.appendChild(inputGrade);
+      form.appendChild(lblBeginDate);
+      form.appendChild(inputBeginDate);
 
-    form.appendChild(btnSubmit);
+      form.appendChild(lblEndDate);
+      form.appendChild(inputEndDate);
 
-    modal.appendChild(form);
+      form.appendChild(lblDescription);
+      form.appendChild(inputDescription);
 
-    let sendObj = [];
+      form.appendChild(btnSubmit);
 
-    let alert = document.getElementById("alertText");
+      modal.appendChild(form);
 
-    btnSubmit.addEventListener("click", (evt) => {
-      sendObj = {
-        local: inputLocal.value,
-        name: inputName.value,
-        type: inputType.value,
-        grade: inputGrade.value,
-        id: data.idProfessional,
-      };
+      let sendObj = [];
 
-      api.post("/profile/qualification", sendObj).then(function (res) {
-        alert.appendChild(document.createTextNode("Successfull!"));
-        alert.parentElement.classList.add("alert-success");
-        alert.parentElement.classList.remove("visually-hidden");
-        if (res.status == 200) {
-          window.location.reload();
-        } else {
-          res.status(500).send("erro");
-        }
+      let alert = document.getElementById("alertText");
+
+      btnSubmit.addEventListener("click", (evt) => {
+        sendObj = {
+          name: inputName.value,
+          url: inputUrl.value,
+          beginDate: inputBeginDate.value,
+          endDate: inputEndDate.value,
+          description: inputDescription.value,
+          id: data.idProfessional,
+        };
+        api.post("/profile/experience", sendObj).then(function (res) {
+          alert.appendChild(document.createTextNode("Successfull!"));
+          alert.parentElement.classList.add("alert-success");
+          alert.parentElement.classList.remove("visually-hidden");
+          if (res.status == 200) {
+            window.location.reload();
+          } else {
+            res.send("erro");
+            console.log("TESTE");
+          }
+        });
       });
-    });
+    } else if (type == "academic") {
+      let form = document.createElement("form");
+      let lblLocal = document.createElement("label");
+      let lblName = document.createElement("label");
+      let lblType = document.createElement("label");
+      let lblGrade = document.createElement("label");
+      let modalDialog = document.getElementById("modal-dialog");
+      let modalTitle = document.getElementById("modal-title");
+
+      modalDialog.style.maxWidth = "35%";
+      modalDialog.style.padding = "20px";
+      lblLocal.textContent = "Institution: ";
+      lblName.textContent = "Course: ";
+      lblType.textContent = "Type: ";
+      lblGrade.textContent = "Grade: ";
+
+      modalTitle.textContent = "Add Qualification";
+
+      let inputLocal = document.createElement("input");
+      let inputName = document.createElement("input");
+      let inputType = document.createElement("input");
+      let inputGrade = document.createElement("input");
+      let btnSubmit = document.createElement("button");
+      btnSubmit.type = "button";
+      btnSubmit.textContent = "Submit";
+      btnSubmit.className = "btn btn-primary";
+
+      inputLocal.type = "text";
+      inputName.type = "text";
+      inputType.type = "text";
+      inputGrade.type = "number";
+
+      inputLocal.style.marginBottom = "2rem";
+      inputName.style.marginBottom = "2rem";
+      inputType.style.marginBottom = "2rem";
+      inputGrade.style.marginBottom = "2rem";
+
+      form.style.display = "flex";
+      form.style.flexDirection = "column";
+      form.style.alignItems = "center";
+      form.style.justifyContent = "space-between";
+
+      form.appendChild(lblLocal);
+      form.appendChild(inputLocal);
+
+      form.appendChild(lblName);
+      form.appendChild(inputName);
+
+      form.appendChild(lblType);
+      form.appendChild(inputType);
+
+      form.appendChild(lblGrade);
+      form.appendChild(inputGrade);
+
+      form.appendChild(btnSubmit);
+
+      modal.appendChild(form);
+
+      let sendObj = [];
+
+      let alert = document.getElementById("alertText");
+
+      btnSubmit.addEventListener("click", (evt) => {
+        sendObj = {
+          local: inputLocal.value,
+          name: inputName.value,
+          type: inputType.value,
+          grade: inputGrade.value,
+          id: data.idProfessional,
+        };
+
+        api.post("/profile/qualification", sendObj).then(function (res) {
+          alert.appendChild(document.createTextNode("Successfull!"));
+          alert.parentElement.classList.add("alert-success");
+          alert.parentElement.classList.remove("visually-hidden");
+          if (res.status == 200) {
+            window.location.reload();
+          } else {
+            res.status(500).send("erro");
+          }
+        });
+      });
+    }
+    
   };
+
 
   let hideEditFields = function () {
     [].forEach.call(

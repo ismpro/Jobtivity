@@ -28,7 +28,7 @@ class PastJob {
     this.beginDate = obj.beginDate
     this.endDate = obj.endDate
     this.description = obj.description
-    this.professional = obj.idProfessional
+    this.professional = obj.professional
   }
 
   /**
@@ -36,12 +36,12 @@ class PastJob {
     *
     * @return {Promise<Number>} - The ID of the newly created past job.
     */
+
   async create() {
     try {
-      let pastjob = await DB.pool.query(`
-      INSERT INTO PastJob (name, url, beginDate, endDate, description, idProfissional)
-      VALUES (STR_TO_DATE(?, "%Y-%m-%d"), STR_TO_DATE(?, "%Y-%m-%d"), ?, ?, ?, ?);`,
-      [this.beginDate.toISOString().split("T")[0], this.endDate.toISOString().split("T")[0], this.url, this.description, this.professional]);
+      let pastjob = await DB.pool.query(
+    "INSERT INTO PastJob (name, url, beginDate, endDate, description, idProfissional) VALUES (?, ?, STR_TO_DATE(?, '%Y-%m-%d'), STR_TO_DATE(?, '%Y-%m-%d'), ?, ?)",
+    [this.name, this.url, this.beginDate.toISOString().split("T")[0], this.endDate.toISOString().split("T")[0], this.description, this.professional]);
       this.id = pastjob[0].insertId;
       return pastjob[0].insertId;
     } catch (error) {
