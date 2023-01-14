@@ -41,22 +41,45 @@ const dataController = (function () {
 
     lblName.parentElement.before(divImage);
 
-    // Construir DOM para Academic
+    // Construir DOM para Academic & Experience
     let ulAcademic = document.getElementById("academic");
     let ulExperience = document.getElementById("experience");
     ulAcademic.style.listStyleType = "none";
     ulExperience.style.listStyleType = "none";
-
+    
     for (let element of data.experience) {
       let li = document.createElement("li");
       let div = document.createElement("div");
-      div.className = "info";
+      let divIco = document.createElement("div");
+      
       let hr = document.createElement("hr");
       let lblCompany = document.createElement("h5");
       let lblUrl = document.createElement("h5");
       let lblBeginDate = document.createElement("h5");
       let lblEndDate = document.createElement("h5");
       let lblDesc = document.createElement("h5");
+      let aEdit = document.createElement("a");
+      let iEdit = document.createElement("i");
+      let aDelete = document.createElement("a");
+      let iDelete = document.createElement("i");
+
+      div.className = "info";
+      aEdit.href = "javascript:void(0)"
+      aDelete.href = "javascript:void(0)"
+      iEdit.id = "edit-experience";
+      iEdit.className = "material-icons";
+      iEdit.style.textAlign = "right";
+      iEdit.textContent = "edit";
+      iDelete.id = "delete-experience";
+      iDelete.className = "material-icons";
+      iDelete.style.textAlign = "right";
+      iDelete.textContent = "clear";
+      li.style.display = "inline-block";
+      divIco.style.display = "inline-block";
+      divIco.style.float = "right";
+
+      aEdit.appendChild(iEdit);
+      aDelete.appendChild(iDelete);
 
       hr.style.borderTop = "2px solid black";
       lblCompany.style.fontSize = "20px";
@@ -76,8 +99,12 @@ const dataController = (function () {
       li.appendChild(lblBeginDate);
       li.appendChild(lblEndDate);
       li.appendChild(lblDesc);
-
+      divIco.appendChild(aEdit);
+      divIco.appendChild(aDelete);
+      
       div.appendChild(li);
+      div.appendChild(divIco);
+      
 
       if (data.experience.length > 1) {
         div.appendChild(hr);
@@ -89,12 +116,36 @@ const dataController = (function () {
     for (let element of data.qualification) {
       let li = document.createElement("li");
       let div = document.createElement("div");
-      div.className = "info";
+      let divIco = document.createElement("div");
+      
       let hr = document.createElement("hr");
       let lblSchool = document.createElement("h5");
       let lblCourse = document.createElement("h5");
       let lblType = document.createElement("h5");
       let lblGrade = document.createElement("h5");
+      let aEdit = document.createElement("a");
+      let iEdit = document.createElement("i");
+      let aDelete = document.createElement("a");
+      let iDelete = document.createElement("i");
+
+      div.className = "info";
+      aEdit.href = "javascript:void(0)"
+      aDelete.href = "javascript:void(0)"
+      iEdit.id = "edit-experience";
+      iEdit.className = "material-icons";
+      iEdit.style.textAlign = "right";
+      iEdit.textContent = "edit";
+      iDelete.id = "delete-experience";
+      iDelete.className = "material-icons";
+      iDelete.style.textAlign = "right";
+      iDelete.textContent = "clear";
+      li.style.display = "inline-block";
+      divIco.style.display = "inline-block";
+      divIco.style.float = "right";
+
+      aEdit.appendChild(iEdit);
+      aDelete.appendChild(iDelete);
+
 
       hr.style.borderTop = "2px solid black";
       lblSchool.style.fontSize = "20px";
@@ -111,9 +162,11 @@ const dataController = (function () {
       li.appendChild(lblCourse);
       li.appendChild(lblType);
       li.appendChild(lblGrade);
+      divIco.appendChild(aEdit);
+      divIco.appendChild(aDelete);
 
       div.appendChild(li);
-
+      div.appendChild(divIco);
       if (data.qualification.length > 1) {
         div.appendChild(hr);
       }
