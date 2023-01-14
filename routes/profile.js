@@ -71,7 +71,7 @@ router.get('/user',
         }
     })
 
-router.post('/user',
+router.put('/user',
     checkLoggedIn,
     body('id').isInt().withMessage("Id must be a integer").toInt(),
     body('name').isLength({ min: 2 }).withMessage('Name must be at least 2 characters'),

@@ -1,3 +1,8 @@
+/**
+ * @file Express router for handling friends related routes
+ * @module routes/friends
+ */
+
 const router = require("express").Router();
 
 const { body } = require('express-validator');
@@ -6,6 +11,25 @@ const Friend = require("../models/FriendModel");
 const FriendRequest = require("../models/FriendRequestModel");
 const User = require("../models/UserModel");
 
+/**
+ * @function
+ * @middleware
+ * @description Check if user is logged in and has a valid session
+ */
+const checkSession = async function (req, res, next) {
+    if (req.session.userid) {
+        next();
+    } else {
+        res.sendStatus(401);
+    }
+}
+
+/**
+ * @function
+ * @description Get all friends for the current user
+ * @param {Array} friends - An array of friends objects
+ * @param {String} sameUserId - The id of the current user
+ */
 async function getFriends(friends, sameUserId) {
 
     if (!friends) {
@@ -39,6 +63,11 @@ async function getFriends(friends, sameUserId) {
     })
 }
 
+/**
+ * @function
+ * @description Get all friend requests for the current user
+ * @param {Array} friendsRequests - An array of friends request objects
+ */
 async function getFriendsRequest(friendsRequests) {
 
     if (!friendsRequests) {
@@ -64,39 +93,46 @@ async function getFriendsRequest(friendsRequests) {
     })
 }
 
-router.get('/', async function (req, res) {
-    if (req.session.userid) {
-        let user = await User.getById(req.session.userid);
+/**
+ * @route {GET} /
+ * @description Retrieve all friends and friend requests for the current user
+ */
+router.get('/', checkSession, async function (req, res) {
 
-        if (user.isProfessional() || user.admin) {
+    let user = await User.getById(req.session.userid);
 
-            let [friendsUnpasred, friendsRequestsUnpasred] = await Promise.all([Friend.getAllForProfessional(user.professional), FriendRequest.getAllByProfessional2Id(user.professional)]);
-            let [friends, friendsRequests] = await Promise.all([getFriends(friendsUnpasred, user.professional), getFriendsRequest(friendsRequestsUnpasred)]);
+    if (user.isProfessional() || user.admin) {
 
-            res.status(200).send({
-                friends,
-                friendsRequests
-            })
-        } else {
-            res.sendStatus(401);
-        }
+        let [friendsUnpasred, friendsRequestsUnpasred] = await Promise.all([Friend.getAllForProfessional(user.professional), FriendRequest.getAllByProfessional2Id(user.professional)]);
+        let [friends, friendsRequests] = await Promise.all([getFriends(friendsUnpasred, user.professional), getFriendsRequest(friendsRequestsUnpasred)]);
+
+        res.status(200).send({
+            friends,
+            friendsRequests
+        })
     } else {
         res.sendStatus(401);
     }
 });
 
-router.put('/add',
+/**
+ * @route {POST} /add
+ * @description Send a friend request to a user with a specific email
+ * @param {String} email - The email of the user to send the friend request to
+ */
+router.post('/add',
+    checkSession,
     body('email').isEmail().withMessage('Please enter a valid email address'),
     global.checkForErrors,
     async function (req, res) {
         if (await User.existsByEmail(req.body.email)) {
-            
+
             let [user1, user2] = await Promise.all([User.getById(req.session.userid), User.getByEmail(req.body.email)]);
-            if(!(await FriendRequest.existsByProfessionalId(user2.professional))) {
-                
+            if (!(await FriendRequest.existsByProfessionalId(user2.professional))) {
+
                 let request = new FriendRequest({ professional1: user1.professional, professional2: user2.professional, timestamp: new Date() });
                 await request.create();
-    
+
                 res.status(200).send("Friend Request created");
             } else {
                 res.status(216).send("Friend Request already send");
@@ -106,7 +142,14 @@ router.put('/add',
         }
     });
 
+/**
+ * @route {POST} /request/:type
+ * @description Handle accepting or declining a friend request
+ * @param {String} type - The type of request (accept or decline)
+ * @param {Number} id - The id of the friend request
+ */
 router.post('/request/:type',
+    checkSession,
     body('id').isInt().withMessage('Please enter a valid id').toInt(),
     global.checkForErrors,
     async function (req, res) {
@@ -123,18 +166,47 @@ router.post('/request/:type',
         res.status(200).send(true);
     });
 
-router.get('/search', 
-body('text').isString().withMessage('Please enter a valid text for the search').toLowerCase(),
-async function (req, res) {
-    let text = req.query.s;
+/**
+ * @route {GET} /search
+ * @description Search for a user based on a search term
+ * @param {String} text - The search term used to filter the results
+ */
+router.get('/search',
+    checkSession,
+    body('text').isString().withMessage('Please enter a valid text for the search').toLowerCase(),
+    async function (req, res) {
+        let text = req.query.s;
 
-    if (text) {
-        let users = await User.getProfessionalsBySearchEmailAndName(text);
-        if (!users) users = [];
-        res.status(200).send(users.map(user => ({email: user.email, name: user.name})).filter(user => user.email !== req.session.email));
-    } else {
-        res.sendStatus(400);
-    }
-})
+        if (text) {
+            let users = await User.getProfessionalsBySearchEmailAndName(text);
+            if (!users) users = [];
+            res.status(200).send(users.map(user => ({ email: user.email, name: user.name })).filter(user => user.email !== req.session.email));
+        } else {
+            res.sendStatus(400);
+        }
+    })
+
+
+/**
+ * @route {DELETE} /:id
+ * @middleware
+ * @description Handle deleting a friend
+ * @param {Number} id - The id of the friend
+ */
+router.delete('/remove',
+    checkSession,
+    body('id').isInt().withMessage('Please enter a valid id').toInt(),
+    global.checkForErrors,
+    async function (req, res) {
+        let text = req.query.s;
+
+        if (text) {
+            let users = await User.getProfessionalsBySearchEmailAndName(text);
+            if (!users) users = [];
+            res.status(200).send(users.map(user => ({ email: user.email, name: user.name })).filter(user => user.email !== req.session.email));
+        } else {
+            res.sendStatus(400);
+        }
+    })
 
 module.exports = router;

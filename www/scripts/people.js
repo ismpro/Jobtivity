@@ -53,6 +53,65 @@ let dataController = tableMaker("list-row", (element) => {
     return mainDiv;
 }, "No public profiles", 6);
 
+/**
+ * FilterController is a module for managing filters for filter data.
+ *
+ * @module FilterController
+ * 
+ * @property {Array} filters - An array with the filters.
+ * @property {function} filterDOM - Comunicates with data controller and passes the filters function.
+ * @property {function} addFilter - Adds a filter.
+ * @property {function} removeFilter - Removes a filter.
+ *
+ * @function add - Adds a filter.
+ * @function remove - Removes a filter.
+ */
+const filterController = (function () {
+    /**
+     * Array with the filters
+     */
+    const filters = [];
+
+    /**
+     * Comunicates with data controller and passes the filters function
+     */
+    let filterDOM = function () {
+        dataController.filter((job) => filters.every(filter => filter.fn(job)));
+        compararController.reset();
+        compararContainerCloseOrOpen("close");
+    }
+
+    /**
+     * Adds a filter
+     * @param {{type: String, fn: Function}} obj Object with filter information
+     */
+    let addFilter = function (obj) {
+        let filter = filters.find(filter => filter.type === obj.type)
+        if (filter) {
+            filter.fn = obj.fn;
+        } else {
+            filters.push(obj)
+        }
+        filterDOM();
+    }
+
+    /**
+     * Removes a filter
+     * @param {String} type Key with the type to be remove
+     */
+    let removeFilter = function (type) {
+        let index = filters.findIndex(filter => filter.type === type);
+        if (index === -1) return;
+        filters.splice(index, 1);
+        filterDOM();
+    }
+
+    return {
+        add: addFilter,
+        remove: removeFilter
+    }
+}())
+
 // Listen for DOMContentLoaded event
 window.addEventListener("DOMContentLoaded", function () {
     // Make API call to get people data
@@ -62,6 +121,13 @@ window.addEventListener("DOMContentLoaded", function () {
             console.log(res.data);
             // Add data to dataController function
             dataController.addData(res.data);
+
+            //Sets the values for the sliders
+            let arrIdade = res.data.map(job => job.duracao);
+
+            createFilterSliders("idadeFilter", "Idade minima", Math.min(...arrDuracao), Math.max(...arrDuracao), (job) => job.duracao);
+
+            createFilterCheckboxes("locationFilter", "location", "Location", res.data);
         }
     });
 });

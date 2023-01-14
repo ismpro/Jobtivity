@@ -353,6 +353,28 @@ const filterController = (function () {
     }
 }())
 
+/**
+ * This function opens or closes an element with the id "comparar-container"
+ * @param {("open"|"close")} type - The type of action to perform, either "open" or "close"
+ */
+function compararContainerCloseOrOpen(type) {
+    // Get the DOM element with the id "comparar-container"
+    let compararContainer = document.getElementById("comparar-container");
+
+    // Check if the input parameter is "close"
+    if (type === "close") {
+        // Hide the element and remove the "d-inline-flex" class
+        compararContainer.style.display = "none";
+        compararContainer.classList.remove("d-inline-flex");
+    } else
+        // Check if the input parameter is "open"
+        if (type === "open") {
+            // Add the "d-inline-flex" class to the element
+            compararContainer.classList.add("d-inline-flex");
+        }
+}
+
+
 window.addEventListener("DOMContentLoaded", function () {
 
     compararContainerCloseOrOpen("close");

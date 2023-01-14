@@ -211,27 +211,6 @@ function createFilterCheckboxes(id, key, title, jobs) {
 }
 
 /**
- * This function opens or closes an element with the id "comparar-container"
- * @param {("open"|"close")} type - The type of action to perform, either "open" or "close"
- */
-function compararContainerCloseOrOpen(type) {
-    // Get the DOM element with the id "comparar-container"
-    let compararContainer = document.getElementById("comparar-container");
-
-    // Check if the input parameter is "close"
-    if (type === "close") {
-        // Hide the element and remove the "d-inline-flex" class
-        compararContainer.style.display = "none";
-        compararContainer.classList.remove("d-inline-flex");
-    } else
-        // Check if the input parameter is "open"
-        if (type === "open") {
-            // Add the "d-inline-flex" class to the element
-            compararContainer.classList.add("d-inline-flex");
-        }
-}
-
-/**
  * createContainer function creates an HTML element of type `type` and adds a class of `className`
  * @param {String} type - The type of element to be created (i.e. 'div', 'h1', 'p')
  * @param {String} className - The class name to be added to the element

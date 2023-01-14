@@ -1,3 +1,7 @@
+/**
+ * @file Express router for handling user authentication and validation
+ * @module routes/auth
+ */
 let { Router } = require("express");
 const bcrypt = require('bcrypt');
 const { body, validationResult } = require('express-validator');
@@ -8,9 +12,9 @@ const Professional = require("../models/ProfessionalModel");
 const Company = require("../models/CompanyModel");
 
 /**
- * Generates a random string of the specified length
- * @param {Number} length - The desired length of the generated ID 
- * @returns {String} - The generated ID
+ * Generate a random id
+ * @param {number} length - the length of the id to be generated
+ * @return {string} the generated id
  */
 function createid(length) {
     let result = '';
@@ -22,7 +26,14 @@ function createid(length) {
     return result;
 }
 
-// Check if email is already in use
+/**
+ * @function
+ * @route {POST} /checkemail
+ * @description Check if email is already in use
+ * @param {string} email - Email to be checked
+ * @param {string} password - Password to be checked
+ * @param {string} confirmPassword - Confirm password to be matched with password
+ */
 router.post('/checkemail',
     // Check if email is valid
     body('email').isEmail().withMessage('Please enter a valid email address'),
@@ -53,7 +64,23 @@ router.post('/checkemail',
         }
     })
 
-// Handle user registration
+/**
+ * @function
+ * @route {POST} /register
+ * @description Handle user registration
+ * @param {String} email - Email to be checked
+ * @param {String} password - Password to be checked
+ * @param {String} confirmPassword - Confirm password to be matched with password
+ * @param {String} name - Name of the user
+ * @param {String} description - Description of the user
+ * @param {Boolean} isCompany - Check if user is a company
+ * @param {String} birthDate - Birthdate of the user, if user is not a company
+ * @param {String} gender - Gender of the user, if user is not a company
+ * @param {String} location - Location of the user, if user is not a company
+ * @param {Boolean} private - Privacy setting of the user, if user is not a company
+ * @param {String} urlWeb - Website url of the company, if user is a company
+ * @param {String} urlLogo - Logo url of the company, if user is a company
+ */
 router.post('/register',
     // Check if email is valid
     body('email').isEmail().withMessage('Please enter a valid email address'),
@@ -79,9 +106,9 @@ router.post('/register',
     global.checkForErrors,
     // Create new User and Professional/Company objects and save to database
     async function (req, res, next) {
-        
+
         if (req.body.isCompany === null) {
-                body('birthDate').isLength({ min: 8 }).withMessage('Birthdate must be provided').toDate(),
+            body('birthDate').isDate().withMessage('Birthdate must be provided').toDate(),
                 // Check if gender is valid
                 body('gender').isIn(['M', 'F']).withMessage('Gender must be either M or F'),
                 // Check if location is valid
@@ -89,8 +116,8 @@ router.post('/register',
                 // Check if private is a boolean
                 body('private').isBoolean().withMessage('Private must be a boolean').toBoolean()
         } else {
-                // Check if website url is valid
-                body('urlWeb').isURL().withMessage('Please enter a valid website url'),
+            // Check if website url is valid
+            body('urlWeb').isURL().withMessage('Please enter a valid website url'),
                 // Check if logo url is valid
                 body('urlLogo').isURL().withMessage('Please enter a valid logo url')
         }
@@ -139,15 +166,22 @@ router.post('/register',
         }
     });
 
+/**
+ * @function
+ * @route {POST} /login
+ * @description Handle user login
+ * @param {String} email - Email of the user
+ * @param {String} password - Password of the user
+ */
 router.post('/login',
+    // Check if email is valid
     body('email').isEmail().withMessage('Please enter a valid email address'),
+    // Check password is not undefined
     body('password').exists().withMessage('Please enter a password'),
     global.checkForErrors,
     async function (req, res) {
         let data = req.body;
         try {
-
-            
             let user = await User.getByEmail(data.email);
 
             if (!user) {
@@ -193,6 +227,13 @@ router.post('/login',
         }
     });
 
+/**
+ * @function
+ * @route {POST} /validate
+ * @description Validates the user session and sends information about the user
+ * @param {String} id - The id of the user
+ * @param {String} token - The validation token
+ */
 router.post('/validate', async function (req, res) {
     if (req.session.userid) {
         try {
@@ -215,6 +256,11 @@ router.post('/validate', async function (req, res) {
     }
 });
 
+/**
+ * @function
+ * @route {GET} /logout
+ * @description Handle user logout
+ */
 router.post('/logout', async function (req, res) {
     if (req.session.userid) {
         let user = await User.getById(req.session.userid);

@@ -1,3 +1,7 @@
+/**
+ * @file Express router for handling admin information
+ * @module routes/admin
+ */
 const { Router } = require("express");
 const router = Router();
 
@@ -8,12 +12,12 @@ const Company = require("../models/CompanyModel");
 const User = require("../models/UserModel");
 
 /**
- * Verifica se o usuário atualmente autenticado é um administrador.
- * Se não for, retorna o código de status HTTP 401 (não autorizado).
+ * Checks if the currently authenticated user is an administrator.
+ * If not, returns HTTP status code 401 (unauthorized).
  *
- * @param {e.Request} req - Objeto de requisição do express
- * @param {Response} res - Objeto de resposta do express
- * @param {function} next - Função que passa o controle para o próximo middleware
+ * @param {e.Request} req - Express request object
+ * @param {Response} res - Express response object
+ * @param {function} next - Function that passes control to the next middleware
  */
 const checkAdmin = async function (req, res, next) {
     if (req.session.userid) {
@@ -38,13 +42,13 @@ const checkAdmin = async function (req, res, next) {
 }
 
 /**
- * Rota que permite alterar o estado de validação de uma empresa.
- * Acessível apenas para administradores.
- *
- * @param {string} id - ID da empresa que deseja alterar o estado de validação
- * @param {string} type - Tipo de alteração que deseja realizar ('accept' ou 'reject')
- * @return {boolean} true - Se a alteração foi realizada com sucesso
- * @throws {Error} - Se ocorrer algum erro durante o processo
+ * Route that allows you to change the validation status of a company.
+ * Accessible only to administrators.
+ * @route {POST} /alterValid
+ * @param {string} id - ID of the company you wish to change the validation status of
+ * @param {string} type - Type of change you wish to make ('accept' or 'reject')
+ * @return {boolean} true - If the change was successful
+ * @throws {Error} - If an error occurs during the process
  */
 router.post('/alterValid',
     //checkAdmin,
@@ -75,11 +79,12 @@ router.post('/alterValid',
     });
 
 /**
- * Rota que retorna uma lista de empresas que ainda não foram validadas.
- * Acessível apenas para administradores.
- *
- * @return {Array<{idCompany: Number, name: String, description: String, logo: String, url: String}>} output - Lista de empresas
- * @throws {Error} - Se ocorrer algum erro durante o processo
+ * Route that returns a list of companies that have not yet been validated.
+ * Accessible only to administrators.
+ * 
+ * @route {GET} /list
+ * @return {Array<{idCompany: Number, name: String, description: String, logo: String, url: String}>} output - List of companies
+ * @throws {Error} - If any error occurs during the process
  */
 router.get('/list', checkAdmin, async function (req, res) {
 

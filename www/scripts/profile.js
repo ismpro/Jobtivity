@@ -1,6 +1,6 @@
 "use strict";
 
-const dataController = (function () {
+const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
   let data = [];
 
   let add = function (obj) {
@@ -199,7 +199,7 @@ const dataController = (function () {
         alert.parentElement.classList.add("alert-success");
         alert.parentElement.classList.remove("visually-hidden");
         if (res.status == 200) {
-          window.location.reload();
+          window.location.reload(); //ISTO É PARA SAIR DAQUI NAO CA RELOADS DE PAGINAS
         } else {
           res.status(500).send("erro");
         }
@@ -263,9 +263,9 @@ const dataController = (function () {
         description: description,
         local: local,
       };
-      api.post("/profile/user", sendObj).then(function (res) {
+      api.put("/profile/user", sendObj).then(function (res) {
         if (res.status == 200) {
-          window.location.reload();
+          window.location.reload(); //ISTO É PARA SAIR DAQUI NAO CA RELOADS DE PAGINAS
         } else {
           res.status(500).send("erro");
         }

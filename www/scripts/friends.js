@@ -206,7 +206,7 @@ function makeAdd(body, data) {
                     div.appendChild(divider);
 
                     msgDiv.onclick = (evt) => {
-                        api.put("/friends/add", { email: user.email }).then(res => {
+                        api.post("/friends/add", { email: user.email }).then(res => {
                             if (res.status === 200) {
                                 pElement2.textContent = "Requested Sended";
                                 delete msgDiv.onclick;
