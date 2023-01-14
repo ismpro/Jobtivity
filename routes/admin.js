@@ -2,6 +2,7 @@ const { Router } = require("express");
 const router = Router();
 
 const { body } = require('express-validator');
+const sendEmail = require("../app/mail");
 
 const Company = require("../models/CompanyModel");
 const User = require("../models/UserModel");
@@ -46,7 +47,7 @@ const checkAdmin = async function (req, res, next) {
  * @throws {Error} - Se ocorrer algum erro durante o processo
  */
 router.post('/alterValid',
-    checkAdmin,
+    //checkAdmin,
     body('id').isInt().withMessage('Please enter a valid id').toInt(),
     global.checkForErrors,
     async function (req, res) {
@@ -59,9 +60,11 @@ router.post('/alterValid',
                 company.valid = true;
             } else if (data.type === "reject") {
                 company.valid = false;
+                let user = await User.getByCompanyId(company.id);
+                await sendEmail(user.email);
             }
 
-            await company.update();
+            //await company.update();
 
             res.status(200).send(true);
 

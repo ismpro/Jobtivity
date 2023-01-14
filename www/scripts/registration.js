@@ -117,7 +117,7 @@ function submitRegister(ev) {
                     alert.parentElement.classList.add("alert-success");
                     alert.parentElement.classList.remove("visually-hidden");
                     setTimeout(() => {
-                        window.location.href = '/login.html';
+                        window.location.href = '/login';
                     }, 1000);
                 } else if (code === 210) {
                     alert.appendChild(document.createTextNode(res.data));

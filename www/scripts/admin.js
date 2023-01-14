@@ -7,6 +7,7 @@ let dataController = tableMaker("companies", (element) => {
     const div = document.createElement('div');
     div.style.boxShadow = '7px 7px 10px var(--bs-gray-700)';
     div.style.margin = '30px';
+    div.style.padding = '15px';
 
     // Create name element
     const h1 = document.createElement('h1');
@@ -32,6 +33,7 @@ let dataController = tableMaker("companies", (element) => {
     img.src = element.logo;
     img.height = 200;
     img.width = 200;
+    img.style.borderRadius = "10px"
     col1.appendChild(img);
 
     // Create description container div
@@ -40,6 +42,7 @@ let dataController = tableMaker("companies", (element) => {
 
     // Create description element
     const p = document.createElement('p');
+    p.appendChild(document.createElement('br'))
     p.style.width = '100%';
     p.style.minWidth = '100px';
     p.style.textAlign = 'left';
@@ -48,7 +51,7 @@ let dataController = tableMaker("companies", (element) => {
     p.style.overflowX = 'visible';
     p.style.maxHeight = '150px';
     p.style.color = 'rgb(0, 0, 0)';
-    p.textContent = element.description;
+    p.appendChild(document.createTextNode(element.description));
     col2.appendChild(p);
 
     // Create buttons container div
@@ -74,9 +77,8 @@ let dataController = tableMaker("companies", (element) => {
             type: "accept"
         }).then(res => {
             if (res.status === 200) {
-                // Remove element and rebuild DOM
-                removeElement(element.id);
-                buildDom();
+                // Remove element
+                dataController.remove(element.id);
             }
         })
     }
@@ -94,9 +96,8 @@ let dataController = tableMaker("companies", (element) => {
             type: "reject"
         }).then(res => {
             if (res.status === 200) {
-                // Remove element and rebuild DOM
-                removeElement(element.id);
-                buildDom();
+                // Remove element
+                dataController.remove(element.id);
             }
         })
     }
@@ -113,7 +114,7 @@ let dataController = tableMaker("companies", (element) => {
     div.appendChild(row);
 
     return div;
-});
+}, "No companies for validation", 5);
 
 // DOMContentLoaded event listener
 window.addEventListener("DOMContentLoaded", function () {

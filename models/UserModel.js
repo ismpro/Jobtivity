@@ -107,7 +107,7 @@ class User {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
                                                         FROM User where email=?`, [email]);
                 if (query.length === 0) return null;
-                return new User({ ...query[0], valid: query[0].admin === 1 });
+                return new User({ ...query[0], admin: query[0].admin === 1 });
             } catch (err) {
                 console.log(err);
                 throw err;
@@ -127,7 +127,7 @@ class User {
                                                         FROM User where LOWER(email) like ? or LOWER(name) like ? and professionalId is not null`, [`%${text}%`, `%${text}%`]);
                 if (query.length === 0) return null;
                 for (const element of query) {
-                    users.push(new User({ ...element, valid: element.admin === 1 }));
+                    users.push(new User({ ...element, admin: element.admin === 1 }));
                 }
                 return users;
             } catch (err) {
@@ -144,7 +144,7 @@ class User {
     * Get a user from the database with the specified id.
     *
     * @param {Number} id - ID of the user to get.
-    * @returns {Promise<User>} - Promise that resolves with a User object or null if no user was found with the specified id.
+    * @returns {Promise<User|null>} - Promise that resolves with a User object or null if no user was found with the specified id.
     * @throws {String} - If the id is invalid.
     */
     static async getById(id) {
@@ -153,7 +153,7 @@ class User {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
                                                         FROM User where idUser=?`, [id]);
                 if (query.length === 0) return null;
-                return new User({ ...query[0], valid: query[0].admin === 1 });
+                return new User({ ...query[0], admin: query[0].admin === 1 });
             } catch (err) {
                 console.log(err);
                 throw err
@@ -168,7 +168,7 @@ class User {
      * Get a user from the database with the specified company id.
      *
      * @param {Number} id - ID of the company the user belongs to.
-     * @returns {Promise<User>} - Promise that resolves with a User object or null if no user was found with the specified company id.
+     * @returns {Promise<User|null>} - Promise that resolves with a User object or null if no user was found with the specified company id.
      * @throws {String} - If the id is invalid.
      */
     static async getByCompanyId(id) {
@@ -177,7 +177,7 @@ class User {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
                                                         FROM User where companyId=?`, [id]);
                 if (query.length === 0) return null;
-                return new User({ ...query[0], valid: query[0].admin === 1 });
+                return new User({ ...query[0], admin: query[0].admin === 1 });
             } catch (err) {
                 console.log(err);
                 throw err
@@ -194,7 +194,7 @@ class User {
                 const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
                                                 FROM User where professionalId=?`, id);
                 if (query.length === 0) return null;
-                return new User({ ...query[0], valid: query[0].admin === 1 });
+                return new User({ ...query[0], admin: query[0].admin === 1 });
             } catch (err) {
                 console.log(err);
                 throw err
@@ -210,8 +210,9 @@ class User {
         try {
             const [query] = await DB.pool.query(`select idUser"id", email, password, name, description, admin, sessionId, companyId"company", professionalId"professional" 
                                                     FROM User where professionalId is not null`);
+            if (query.length === 0) return null;
             for (const element of query) {
-                professionals.push(new User({ ...element, valid: element.admin === 1 }));
+                professionals.push(new User({ ...element, admin: element.admin === 1 }));
             }
             return professionals;
         } catch (err) {

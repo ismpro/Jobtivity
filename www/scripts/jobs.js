@@ -280,7 +280,7 @@ let dataController = tableMaker("section_jobs", (element) => {
     jobContainer.appendChild(row4);
 
     return jobContainer;
-});
+}, "No jobs");
 
 /**
  * onSort function handles the sort event of a specific type

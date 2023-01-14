@@ -4,12 +4,7 @@
  * @param {String} main - The ID of the element to be used as the parent container for the table.
  * @param {Function} domMaker - The function that creates the DOM elements for each item in the data. 
  */
-function tableMaker(main, domMaker) {
-
-    /**
-     * Maximum number of items per page.
-     */
-    const MAXPERPAGE = 10;
+function tableMaker(main, domMaker, noDataText = "No data", MAXPERPAGE = 10) {
 
     /**
      * Data used for creating the table.
@@ -36,13 +31,27 @@ function tableMaker(main, domMaker) {
             dataOriginal = JSON.parse(JSON.stringify(obj));
             data = data.map((job, index) => ({ ...job, id: index, validade: new Date(job.validade) }));
             dataOriginal = dataOriginal.map((job, index) => ({ ...job, id: index, validade: new Date(job.validade) }));
-            //Object.freeze(dataOriginal);
 
             let sort = JSON.parse(window.sessionStorage.getItem("sort" + main));
             if (sort) {
                 document.getElementById(`${sort.key}Icon`).innerText = sort.asc ? "keyboard_arrow_up" : "keyboard_arrow_down";
                 data.sort((a, b) => sort.asc ? a[sort.key] - b[sort.key] : b[sort.key] - a[sort.key])
             }
+            buildDom();
+        }
+    }
+
+    /**
+     * Removes a element from data
+     * @param {Number} id Id of the element for remove
+     */
+    let remove = function (id) {
+        if (!(id === void 0)) {
+            let indexData = data.findIndex(ele => ele.id === id);
+            let indexDataOriginal = dataOriginal.findIndex(ele => ele.id === id);
+
+            if (indexData !== -1) data.splice(indexData, 1);
+            if (indexDataOriginal !== -1) dataOriginal.splice(indexDataOriginal, 1);
             buildDom();
         }
     }
@@ -113,9 +122,17 @@ function tableMaker(main, domMaker) {
                 mainSection.firstChild.remove();
             }
 
-            data.slice(pageIndex * MAXPERPAGE, (pageIndex + 1) * MAXPERPAGE).forEach((element, index) => {
-                mainSection.appendChild(domMaker(element, index));
-            });
+            if(data.length) {
+                data.slice(pageIndex * MAXPERPAGE, (pageIndex + 1) * MAXPERPAGE).forEach((element, index) => {
+                    mainSection.appendChild(domMaker(element, index));
+                });
+            } else {
+                let p = document.createElement("p");
+                p.classList.add("text-center");
+                p.appendChild(document.createTextNode(noDataText));
+
+                mainSection.appendChild(p);
+            }
         }
 
         build();
@@ -199,6 +216,7 @@ function tableMaker(main, domMaker) {
         addData: add,
         filter,
         onSort,
-        reset
+        reset,
+        remove
     }
 }

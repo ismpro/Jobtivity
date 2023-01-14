@@ -102,7 +102,7 @@ function onLogout(api) {
     return function () {
         api.post('/auth/logout').then(res => {
             if (res.status === 200) {
-                if (['/admin', '/admin.html'].includes(window.location.pathname)) {
+                if (['/admin', '/profile', '/people'].includes(window.location.pathname)) {
                     window.location.href = '/';
                 } else {
                     let li = document.getElementById("logoutid");

@@ -20,7 +20,7 @@ function submitLogin(ev) {
                 setTimeout(() => {
                     window.location.href = '/';
                 }, 1000);
-            } else if (code === 211) {
+            } else if (code === 211 || code === 225) {
                 errorText.appendChild(document.createTextNode(res.data));
                 removeSpinner("loginButton");
             } else if (code === 215) {
@@ -44,8 +44,6 @@ function createSpinner(id) {
     let input = document.getElementById(id);
     let parent = input.parentElement;
 
-    //<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-
     let div1 = document.createElement('div');
     div1.className = "lds-ellipsis";
     let div2 = document.createElement('div');
@@ -65,8 +63,6 @@ function createSpinner(id) {
 function removeSpinner(id) {
     let div = document.querySelector(".lds-ellipsis");
     let parent = div.parentElement;
-
-    //<input id="loginButton" class="btn btn-primary" type="submit" value="Log In">
 
     let input = document.createElement('input');
     input.className = "btn btn-primary";

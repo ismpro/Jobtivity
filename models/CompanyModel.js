@@ -30,7 +30,7 @@ class Company {
             let company = await DB.pool.query(`
                     INSERT INTO Company (urlWebsite, urlLogo, valid)
                     VALUES (?, ?, ?);`,
-                [this.urlWebsite, this.urlLogo, this.valid === void 0 ? null : this.valid === true ? 1 : 0]);
+                [this.urlWebsite, this.urlLogo, this.valid === null ? null : this.valid === true ? 1 : 0]);
             this.id = company[0].insertId;
             return company[0].insertId;
         } catch (error) {
@@ -49,7 +49,7 @@ class Company {
         urlLogo = ?,
         valid = ?
         WHERE idCompany=?;
-    `, [this.urlWebsite, this.urlLogo, this.valid ? 1 : 0, this.id]);
+    `, [this.urlWebsite, this.urlLogo, this.valid === null ? null : this.valid ? 1 : 0, this.id]);
         return;
     }
 
@@ -64,9 +64,10 @@ class Company {
             try {
                 const [query] = await DB.pool.query(`select idCompany"id", urlWebsite, urlLogo, valid FROM Company where idCompany=?`, [id]);
                 if (query.length === 0) return null;
+                console.log(query[0])
                 return new Company({
                     ...query[0],
-                    valid: query[0].valid === 1
+                    valid: query[0].valid === null ? null : query[0].valid === 1
                 });
             } catch (err) {
                 console.log(err);

@@ -51,7 +51,7 @@ let dataController = tableMaker("list-row", (element) => {
 
     // Return main container div
     return mainDiv;
-})
+}, "No public profiles", 6);
 
 // Listen for DOMContentLoaded event
 window.addEventListener("DOMContentLoaded", function () {

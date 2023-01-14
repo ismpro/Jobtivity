@@ -1,12 +1,26 @@
 let { Router } = require("express");
 const bcrypt = require('bcrypt');
-const { createid } = require('../app/functions');
-const { body } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 let router = Router();
 
 const User = require("../models/UserModel");
 const Professional = require("../models/ProfessionalModel");
 const Company = require("../models/CompanyModel");
+
+/**
+ * Generates a random string of the specified length
+ * @param {Number} length - The desired length of the generated ID 
+ * @returns {String} - The generated ID
+ */
+function createid(length) {
+    let result = '';
+    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
 
 // Check if email is already in use
 router.post('/checkemail',
@@ -64,10 +78,9 @@ router.post('/register',
     body('description').isLength({ min: 5 }).withMessage('Description must be at least 5 characters'),
     global.checkForErrors,
     // Create new User and Professional/Company objects and save to database
-    async function (req, res) {
-        let fields = [];
+    async function (req, res, next) {
+        
         if (req.body.isCompany === null) {
-            fields = [
                 body('birthDate').isLength({ min: 8 }).withMessage('Birthdate must be provided').toDate(),
                 // Check if gender is valid
                 body('gender').isIn(['M', 'F']).withMessage('Gender must be either M or F'),
@@ -75,17 +88,18 @@ router.post('/register',
                 body('local').isLength({ min: 5 }).withMessage('Location must be provided'),
                 // Check if private is a boolean
                 body('private').isBoolean().withMessage('Private must be a boolean').toBoolean()
-            ]
         } else {
-            fields = [
                 // Check if website url is valid
                 body('urlWeb').isURL().withMessage('Please enter a valid website url'),
                 // Check if logo url is valid
                 body('urlLogo').isURL().withMessage('Please enter a valid logo url')
-            ]
         }
 
-        if (global.checkForErrors()) return;
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(215).json({ errors: errors.array() });
+            return;
+        }
 
         let data = req.body;
 
@@ -100,7 +114,7 @@ router.post('/register',
                 let comp = new Company({
                     urlWebsite: data.urlWeb,
                     urlLogo: data.urlLogo,
-                    valid: false
+                    valid: null
                 });
 
                 await comp.create();
@@ -133,7 +147,7 @@ router.post('/login',
         let data = req.body;
         try {
 
-            console.log(data)
+            
             let user = await User.getByEmail(data.email);
 
             if (!user) {
@@ -143,9 +157,14 @@ router.post('/login',
 
             if (user.isCompany()) {
                 let company = await Company.getById(user.company);
+                console.log(company)
+                if (company.valid === null) {
+                    res.status(225).send('Wait for admin approval.');
+                    return;
+                }
 
                 if (!company.valid) {
-                    res.status(225).send('Company not valid');
+                    res.status(225).send('Your aplication has been reject.');
                     return;
                 }
             }
@@ -181,6 +200,7 @@ router.post('/validate', async function (req, res) {
             if (user
                 && user.sessionId === req.session.sessionId
                 && user.email === req.session.email) {
+                req.session.touch();
                 res.status(200).send({ isAuth: true, isAdmin: user.admin, isProfessional: user.isProfessional() })
             } else {
                 await req.session.destroy();
