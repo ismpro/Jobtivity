@@ -68,7 +68,7 @@ router.post('/alterValid',
                 await sendEmail(user.email);
             }
 
-            //await company.update();
+            await company.update();
 
             res.status(200).send(true);
 
