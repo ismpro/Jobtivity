@@ -312,7 +312,6 @@ router.post('/register',
                     await comp.create();
                     user.company = comp.id;
                 } else {
-                    console.log(data.birthDate)
                     let professional = new Professional({
                         birthday: data.birthDate,
                         gender: data.gender,
@@ -405,7 +404,6 @@ router.post('/login',
 
             if (user.isCompany()) {
                 let company = await Company.getById(user.company);
-                console.log(company)
                 if (company.valid === null) {
                     res.status(225).send('Wait for admin approval.');
                     return;

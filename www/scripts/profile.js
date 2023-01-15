@@ -305,6 +305,7 @@ let makeModal = function (modal, data, type, action) {
 
       
       if(action == "edit"){
+        
         inputName.value = data.name;
         inputUrl.value = data.url;
         inputBeginDate.value = data.beginDate.substring(0,10);

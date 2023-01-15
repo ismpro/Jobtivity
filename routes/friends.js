@@ -52,7 +52,6 @@ async function getFriends(friends, sameUserId) {
         let friend = friends.find(friend => friend.professional1 === userFriend.professional
             || friend.professional2 === userFriend.professional);
 
-        console.log(userFriend)
         return {
             id: friend.id,
             userid: userFriend.id,

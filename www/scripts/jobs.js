@@ -387,9 +387,11 @@ window.addEventListener("DOMContentLoaded", function () {
             let arrValor = res.data.map(job => (job.valor * job.duracao));
             let arrDuracao = res.data.map(job => job.duracao);
 
+            //Creates the sliders
             createFilterSliders("duracaoFilter", "Duração minima", Math.min(...arrDuracao), Math.max(...arrDuracao), (job) => job.duracao);
             createFilterSliders("valorFilter", "Valor minima", Math.min(...arrValor), Math.max(...arrValor), (job) => (job.valor * job.duracao));
 
+            //Creates the checkboxes
             createFilterCheckboxes("areaFilter", "area", "Area", res.data);
             createFilterCheckboxes("empresaFilter", "nome", "Empresas", res.data);
         }

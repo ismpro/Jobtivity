@@ -96,8 +96,6 @@ function makeFriendList(body, data) {
             const msgDiv = document.createElement('div');
             msgDiv.classList.add('d-flex');
 
-            
-
             let divImage = document.createElement("div");
             divImage.id = "profileImage";
             divImage.classList.add('rounded-circle', 'flex-shrink-0', 'me-3', 'fit-cover', "clickble");

@@ -83,7 +83,7 @@ class User {
         return;
     }
 
-    
+
 
     /**
     * Check if a user with the specified email exists in the database.
@@ -120,7 +120,12 @@ class User {
         }
     }
 
-
+    /**
+     * Search for professionals by email and name in the database.
+     *
+     * @param {String} text - The email or name of the professional user to search for.
+     * @returns {Promise<Array<User>>} - A promise that resolves with an array of user objects that match the specified email and name of a professional.
+     */
     static async getProfessionalsBySearchEmailAndName(text) {
         if (text) {
             let users = [];
@@ -190,6 +195,12 @@ class User {
         }
     }
 
+    /**
+     * Get a user from the database with the specified professionalId.
+     *
+     * @param {Number} professionalId - The ID of the professional associated with the user.
+     * @returns {Promise<User>} - A promise that resolves with the user object that matches the specified professionalId.
+     */
     static async getByProfessionalId(id) {
         if (id && !isNaN(id) && Number.isSafeInteger(id)) {
             try {
@@ -207,6 +218,11 @@ class User {
         }
     }
 
+    /**
+     * Get all users from the database that are professionals.
+     *
+     * @returns {Promise<Array<User>>} - A promise that resolves with an array of user objects that are professionals.
+     */
     static async getAllProfessionalsUsers() {
         let professionals = [];
         try {

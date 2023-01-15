@@ -3,17 +3,20 @@
 window.addEventListener("DOMContentLoaded", function () {
     const navbar = document.querySelector('ul.navbar-nav');
 
+    //validates the user's authentication status
     api.post('/auth/validate').then((res) => {
         if (res.status === 200) {
             if (res.data.isAuth) {
 
+                //creates logout button
                 let logout = document.createElement("a");
                 logout.className = "btn";
                 logout.href = "javascript:void(0)";
                 logout.textContent = "Logout";
                 logout.id = "logoutid";
-                logout.onclick = onLogout(api);
+                logout.onclick = onLogout();
 
+                //create people button
                 let people = document.createElement("a");
                 people.classList.add("nav-link");
                 if (window.location.href.includes('/people')) people.classList.add("active");
@@ -28,7 +31,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
                 navbar.appendChild(createLI(people, "nav-item"));
 
-                //Criar botão perfil caso seja profissional
+                //create profile button if user is a professional
                 if (res.data.isProfessional) {
                     let profile = document.createElement("a");
                     profile.classList.add("nav-link");
@@ -47,7 +50,7 @@ window.addEventListener("DOMContentLoaded", function () {
                     if (typeof onReadyToMakeFriends === 'function') onReadyToMakeFriends();
                 }
 
-
+                //create admin button if user is an admin
                 if (res.data.isAdmin) {
                     let adminA = document.createElement("a");
                     adminA.classList.add("nav-link");
@@ -64,16 +67,22 @@ window.addEventListener("DOMContentLoaded", function () {
                     navbar.appendChild(createLI(adminA, "nav-item"));
                 }
 
+                //add logout button to navbar
                 navbar.appendChild(createLI(logout));
 
                 return;
             }
         }
+        //if not authenticated, create login and register button
         makeLogin(navbar);
 
     }).catch(err => console.log(err))
 });
 
+/**
+* makeLogin - creates login and register buttons and appends them to the navbar element
+* @param {HTMLElement} navbar - The navbar element to which the buttons will be appended
+*/
 function makeLogin(navbar) {
     let loginA = document.createElement("a");
     let registerA = document.createElement("a");
@@ -91,6 +100,12 @@ function makeLogin(navbar) {
     navbar.appendChild(createLI(registerA));
 }
 
+/**
+* createLI - creates a list item element with the provided child element and class name
+* @param {HTMLElement} child - The element to be placed inside the list item
+* @param {string} cla - The class name to be applied to the list item
+* @returns {HTMLElement} The created list item element
+*/
 function createLI(child, cla) {
     let li = document.createElement("li");
     li.className = cla || "nav-item d-xl-flex align-items-xl-center";
@@ -98,7 +113,10 @@ function createLI(child, cla) {
     return li;
 }
 
-function onLogout(api) {
+/**
+* onLogout - function to handle logout functionality, makes a post request to '/auth/logout' using the provided 'api' object
+*/
+function onLogout() {
     return function () {
         api.post('/auth/logout').then(res => {
             if (res.status === 200) {

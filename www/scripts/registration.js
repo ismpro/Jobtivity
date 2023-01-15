@@ -1,11 +1,14 @@
 "use strict";
 
-//TODO: Browser está a dar submit no form quando eu tenho um preventDefault ??????????????
+/**
+ * A flag to check if the form can be submitted
+ * @type {Boolean}
+ */
 let canSend = false;
 
 /**
- * 
- * @param {Event} ev 
+ * Function to handle the first stage of the registration process
+ * @param {SubmitEvent} ev - The submit event
  */
 function firstSignUp(ev) {
     ev.preventDefault();
@@ -17,9 +20,11 @@ function firstSignUp(ev) {
     textEle.textContent = "";
     textEle.style.color = "red";
 
+    // Make API call to check email availability
     api.post('/auth/checkemail', { email: data.get("email"), password: data.get("pass1"), confirmPassword: data.get("pass2") })
         .then(function (res) {
             let code = res.status
+            // If email is available, hide first form and show next form based on user's company status
             if (code === 200) {
                 document.getElementById('firstform').style.display = "none";
                 if (document.getElementById('checkIsComp').checked) {
@@ -28,6 +33,7 @@ function firstSignUp(ev) {
                     document.getElementById('profForm').style.display = "block";
                 }
                 canSend = true;
+            //Show the errors on the error paragraph
             } else if (code === 210) {
                 textEle.appendChild(document.createTextNode(res.data));
             } else if (code === 215) {
@@ -41,6 +47,7 @@ function firstSignUp(ev) {
             }
             removeSpinnerFirst();
         })
+        // Handle any errors from API call
         .catch(function (err) {
             console.error(err);
             textEle.appendChild(document.createTextNode("ERROR"));
@@ -48,6 +55,10 @@ function firstSignUp(ev) {
         });
 }
 
+/**
+ * Function to handle the back button event
+ * @param {SubmitEvent} ev - The submit event
+ */
 function backSignUp(ev) {
     ev.preventDefault();
     document.getElementById('firstform').style.display = "block";
@@ -57,8 +68,8 @@ function backSignUp(ev) {
 }
 
 /**
- * 
- * @param {SubmitEvent} ev 
+ * Function to handle the final stage of registration 
+ * @param {SubmitEvent} ev - The submit event
  */
 function submitRegister(ev) {
     ev.preventDefault();
@@ -71,6 +82,7 @@ function submitRegister(ev) {
 
         let errorText;
 
+        // Determine if user is a company or individual
         if (data.get("checkIsComp") === null) {
             sendObj = {
                 email: data.get("email"),
@@ -104,7 +116,6 @@ function submitRegister(ev) {
         sendObj.isCompany = data.get("checkIsComp") !== null;
 
         let alert = document.getElementById("alertText");
-        var bsAlert = new bootstrap.Alert(alert.parentElement);
 
         alert.innerHTML = "";
         errorText.textContent = "";
@@ -143,12 +154,14 @@ function submitRegister(ev) {
     }
 }
 
+/**
+ * Creates a spinner element
+ * @param {String} id - The id of the button that creates the spinner
+ */
 function createSpinner(id) {
     let input = document.getElementById(id);
 
     let parent = input.parentElement;
-
-    //<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
 
     let div1 = document.createElement('div');
     div1.className = "lds-ellipsis";
@@ -169,12 +182,13 @@ function createSpinner(id) {
     if (inputBack) inputBack.remove();
 }
 
+/**
+ * Removes the spinner element and re-adds the Register button
+ * @param {String} id - the id of the register button element
+*/
 function removeSpinner(id) {
     let div = document.querySelector(".lds-ellipsis");
     let parent = div.parentElement;
-
-    //<input id="compInput" class="btn btn-primary" type="submit" style="margin-top: 10px;" value="Sign Up">
-    //<button id="profInputBack" class="btn btn-primary" onclick="javascript:backSignUp(event)" style="margin-top: 10px;">Back</button>
 
     let input = document.createElement('input');
     input.className = "btn btn-primary";
@@ -198,11 +212,12 @@ function removeSpinner(id) {
     div.remove();
 }
 
+/**
+ * Removes the spinner from the first button and replaces it with the next button
+ */
 function removeSpinnerFirst() {
     let div = document.querySelector(".lds-ellipsis");
     let parent = div.parentElement;
-
-    //<button id="firstButton" class="btn btn-primary" onclick="javascript: firstSignUp(event)" style="margin-top: 10px;">Next</button>
 
     let input = document.createElement('button');
     input.className = "btn btn-primary";

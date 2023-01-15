@@ -60,7 +60,6 @@ class Company {
             try {
                 const [query] = await DB.pool.query(`select idCompany"id", urlWebsite, urlLogo, valid FROM Company where idCompany=?`, [id]);
                 if (query.length === 0) return null;
-                console.log(query[0])
                 return new Company({
                     ...query[0],
                     valid: query[0].valid === null ? null : query[0].valid === 1

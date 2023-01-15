@@ -1,5 +1,9 @@
 "use strict";
 
+/**
+ * submitLogin - function that handles the submission of the login form
+ * @param {Event} ev - the submit event
+ */
 function submitLogin(ev) {
     ev.preventDefault();
     const data = new FormData(ev.target);
@@ -13,6 +17,7 @@ function submitLogin(ev) {
     let errorText = document.getElementById("errorText");
     errorText.textContent = "";
 
+    //Calls the login router form auth
     api.post('/auth/login', sendObj)
         .then(function (res) {
             let code = res.status
@@ -40,6 +45,10 @@ function submitLogin(ev) {
         });
 }
 
+/**
+ * Creates a spinner element
+ * @param {String} id - the id of the login button element removes the login button
+ */
 function createSpinner(id) {
     let input = document.getElementById(id);
     let parent = input.parentElement;
@@ -60,6 +69,10 @@ function createSpinner(id) {
     input.remove();
 }
 
+/**
+ * removeSpinner - removes the spinner element and re-adds the login button
+ * @param {String} id - the id of the login button element
+*/
 function removeSpinner(id) {
     let div = document.querySelector(".lds-ellipsis");
     let parent = div.parentElement;

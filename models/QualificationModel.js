@@ -75,7 +75,6 @@ class Qualification {
           `SELECT idQualification"id", local, name, type, grade, idProfissional"professional" FROM Qualification WHERE idProfissional=?;`,
           [id]);
         for (const element of query) {
-          console.log("Elemento: " + element);
           qualifications.push(new Qualification(element));
         }
         return qualifications;
