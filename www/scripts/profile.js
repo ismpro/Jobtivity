@@ -14,8 +14,10 @@ let buildDom = function (data) {
   let addAcademic = document.getElementById("add-academic");
   
   lblName.textContent = data.name;
+  lblName.style.fontWeight = "bold";
   lblLocation.textContent = data.local;
   lblDescription.textContent = data.description;
+  lblDescription.style.textAlign = "justify";
   console.log(data);
 
   if(data.private){
@@ -52,7 +54,7 @@ let buildDom = function (data) {
     
     let hr = document.createElement("hr");
     let lblCompany = document.createElement("h5");
-    let lblUrl = document.createElement("h5");
+    let lblUrl = document.createElement("a");
     let lblBeginDate = document.createElement("h5");
     let lblEndDate = document.createElement("h5");
     let lblDesc = document.createElement("h5");
@@ -61,8 +63,8 @@ let buildDom = function (data) {
     let aDelete = document.createElement("a");
     let iDelete = document.createElement("i");
 
-    div.className = "info";
-    li.className = "info";
+    div.className = "mb-3";
+    li.className = "mb-3";
     aEdit.href = "javascript:void(0)"
     aDelete.href = "javascript:void(0)"
     iEdit.setAttribute("data-bs-toggle", "modal");
@@ -76,23 +78,29 @@ let buildDom = function (data) {
     iDelete.style.textAlign = "right";
     iDelete.textContent = "clear";
     li.style.display = "inline-block";
+    li.style.maxWidth = "75%";
+    li.style.overflow = "hidden";
     divIco.style.display = "inline-block";
     divIco.style.float = "right";
+
 
     aEdit.appendChild(iEdit);
     aDelete.appendChild(iDelete);
 
     hr.style.borderTop = "2px solid black";
     lblCompany.style.fontSize = "20px";
+    lblCompany.style.fontWeight = "bold";
     lblUrl.style.fontSize = "15px";
     lblBeginDate.style.fontSize = "15px";
     lblEndDate.style.fontSize = "15px";
     lblDesc.style.fontSize = "15px";
 
     lblCompany.textContent = element.name;
-    lblUrl.textContent = element.url;
-    lblBeginDate.textContent = element.beginDate;
-    lblEndDate.textContent = element.endDate;
+    lblUrl.textContent = element.url.substring(8);
+    lblUrl.href = element.url;
+    lblUrl.target = "_blank";
+    lblBeginDate.textContent = "Start Date: " + element.beginDate.substring(0,10);
+    lblEndDate.textContent = "End Date: " + element.endDate.substring(0,10);
     lblDesc.textContent = element.description;
 
     li.appendChild(lblCompany);
@@ -137,13 +145,13 @@ let buildDom = function (data) {
     let hr = document.createElement("hr");
     let lblSchool = document.createElement("h5");
     let lblCourse = document.createElement("h5");
-    let lblType = document.createElement("h5");
     let lblGrade = document.createElement("h5");
     let aEdit = document.createElement("a");
     let iEdit = document.createElement("i");
     let aDelete = document.createElement("a");
     let iDelete = document.createElement("i");
 
+    lblSchool.style.fontWeight = "bold";
     div.className = "info";
     li.className = "info";
     aEdit.href = "javascript:void(0)"
@@ -169,17 +177,14 @@ let buildDom = function (data) {
     hr.style.borderTop = "2px solid black";
     lblSchool.style.fontSize = "20px";
     lblCourse.style.fontSize = "15px";
-    lblType.style.fontSize = "15px";
     lblGrade.style.fontSize = "15px";
 
     lblSchool.textContent = element.local;
-    lblCourse.textContent = element.name;
-    lblType.textContent = element.type;
-    lblGrade.textContent = element.grade;
+    lblCourse.textContent = element.type + " in " +  element.name;
+    lblGrade.textContent = "Final grade: " + element.grade + " in 20";
 
     li.appendChild(lblSchool);
     li.appendChild(lblCourse);
-    li.appendChild(lblType);
     li.appendChild(lblGrade);
     divIco.appendChild(aEdit);
     divIco.appendChild(aDelete);
@@ -262,6 +267,7 @@ let makeModal = function (modal, data, type, action) {
       inputUrl.type = "text";
       inputBeginDate.type = "date";
       inputEndDate.type = "date";
+      inputDescription.style.resize = "none";
 
       modalTitle.textContent = "Add Experience";
 
@@ -270,6 +276,7 @@ let makeModal = function (modal, data, type, action) {
       inputBeginDate.style.marginBottom = "2rem";
       inputEndDate.style.marginBottom = "2rem";
       inputDescription.style.marginBottom = "2rem";
+      btnSubmit.style.marginBottom = "2rem";
 
       form.style.display = "flex";
       form.style.flexDirection = "column";
