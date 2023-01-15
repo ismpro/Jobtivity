@@ -78,10 +78,10 @@
                         </div>
                     </div>
                     <div id="info-profile" class="card-body text-center shadow">
-                        <div class="mb-3"><input style="display:none;" id="name" type="text"/><label id="user-name" class="form-label"></label></div>
-                        <div class="mb-3" style="margin-bottom: 16px;"><input id="local" type="text" style="display:none;"/><label id="user-location" class="form-label"></label></div>
-                        <div class="mb-3"><textarea id="description" style="display:none;" > </textarea><label id="user-description" class="form-label"></label></div>
-                        <div class="mb-3"><input type="checkbox" id="privateCheckbox" style="display:none;" > </textarea><label id="label-checkbox" class="form-label"></label></div>
+                        <div class="mb-3"><input style="display:none;" class="show" id="name" type="text"/><h4 id="user-name" class="hide"></h4></div>
+                        <div class="mb-3" style="margin-bottom: 16px;"><input id="local" class="show" type="text" style="display:none;"/><label id="user-location" class="hide"></label></div>
+                        <div class="mb-3"><textarea id="description" class="show" style="display:none;" > </textarea><label id="user-description" class="hide"></label></div>
+                        <div class="mb-3"><input type="checkbox" id="privateCheckbox" class="show" style="display:none;" > </textarea><label id="label-checkbox" class="show"></label></div>
                         <div class="mb-3" style="text-align: left;">
                             <div class="btn-group" role="group"><button id="remove-friend" class="btn btn-primary" type="button" style="margin-left: 20px;border-radius: 15px;display:none;">Remove Friend</button></div>
                         </div>      
@@ -99,7 +99,6 @@
                     </div>
                     <div class="col" style="text-align: right;">
                         <a href="javascript:void(0)"><i data-bs-toggle="modal" data-bs-target="#modal1" id="add-experience" class="material-icons" style="text-align: right;">add</i></a>
-                        
                     </div>
                 </div>
             </div>

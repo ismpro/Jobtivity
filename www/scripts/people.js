@@ -34,10 +34,12 @@ let dataController = tableMaker("list-row", (element) => {
     let name = document.createElement("h5");
     name.className = "text-center";
     name.textContent = element.name;
+    name.style.fontWeight = "bold";
 
     // Create location element
     let location = document.createElement("label");
     location.textContent = element.local;
+    locationDiv.style.textAlign = "center";
 
     // Create icon container div
     let iconDiv = document.createElement("div");

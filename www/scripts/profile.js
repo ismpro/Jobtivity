@@ -1,233 +1,232 @@
 "use strict";
 
-const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
-  let data = [];
+let buildDom = function (data) {
+  let lblName = document.getElementById("user-name");
+  let lblLocation = document.getElementById("user-location");
+  let lblDescription = document.getElementById("user-description");
+  let inputName = document.getElementById("name");
+  let inputDescription = document.getElementById("description");
+  let inputLocal = document.getElementById("local");
+  let inputCheckbox = document.getElementById("privateCheckbox");
+  let modal = document.querySelector(".modal-body.row");
+  let divImage = document.createElement("div");
+  let addExperience = document.getElementById("add-experience");
+  let addAcademic = document.getElementById("add-academic");
+  
+  lblName.textContent = data.name;
+  lblName.style.fontWeight = "bold";
+  lblLocation.textContent = data.local;
+  lblDescription.textContent = data.description;
+  lblDescription.style.textAlign = "justify";
+  console.log(data);
 
-  let add = function (obj) {
-    data = obj;
-    buildDom();
-  };
+  if(data.private){
+    inputCheckbox.checked = true;
+  }
+  
+  inputName.style.display = "none";
+  inputDescription.style.display = "none";
+  inputLocal.style.display = "none";
+  divImage.id = "profileImage";
+  divImage.classList.add("rounded-circle", "mb-3", "mt-4");
 
-  let buildDom = function () {
-    let lblName = document.getElementById("user-name");
-    let lblLocation = document.getElementById("user-location");
-    let lblDescription = document.getElementById("user-description");
-    let inputName = document.getElementById("name");
-    let inputDescription = document.getElementById("description");
-    let inputLocal = document.getElementById("local");
-    let inputCheckbox = document.getElementById("privateCheckbox");
-    let modal = document.querySelector(".modal-body.row");
-    let divImage = document.createElement("div");
-    let addExperience = document.getElementById("add-experience");
-    let addAcademic = document.getElementById("add-academic");
+  divImage.style.margin = "auto";
+  divImage.style.textAlign = "center";
+  divImage.style.width = "100px";
+  divImage.style.height = "100px";
+  divImage.style.fontSize = "45px";
+  divImage.style.lineHeight = "100px";
+
+  divImage.textContent = data.name.toLocaleUpperCase().charAt(0);
+
+  lblName.parentElement.before(divImage);
+
+  // Construir DOM para Academic & Experience
+  let ulAcademic = document.getElementById("academic");
+  let ulExperience = document.getElementById("experience");
+  ulAcademic.style.listStyleType = "none";
+  ulExperience.style.listStyleType = "none";
+  
+  for (let element of data.experience) {
+    let li = document.createElement("li");
+    let div = document.createElement("div");
+    let divIco = document.createElement("div");
     
-    lblName.textContent = data.name;
-    lblLocation.textContent = data.local;
-    lblDescription.textContent = data.description;
-    console.log(data);
+    let hr = document.createElement("hr");
+    let lblCompany = document.createElement("h5");
+    let lblUrl = document.createElement("a");
+    let lblBeginDate = document.createElement("h5");
+    let lblEndDate = document.createElement("h5");
+    let lblDesc = document.createElement("h5");
+    let aEdit = document.createElement("a");
+    let iEdit = document.createElement("i");
+    let aDelete = document.createElement("a");
+    let iDelete = document.createElement("i");
 
-    if(data.private){
-      inputCheckbox.checked = true;
-    }
+    div.className = "mb-3";
+    li.className = "mb-3";
+    aEdit.href = "javascript:void(0)"
+    aDelete.href = "javascript:void(0)"
+    iEdit.setAttribute("data-bs-toggle", "modal");
+    iEdit.setAttribute("data-bs-target", "#modal1");
+    iEdit.id = "edit-experience";
+    iEdit.className = "material-icons";
+    iEdit.style.textAlign = "right";
+    iEdit.textContent = "edit";
+    iDelete.id = "delete-experience";
+    iDelete.className = "material-icons";
+    iDelete.style.textAlign = "right";
+    iDelete.textContent = "clear";
+    li.style.display = "inline-block";
+    li.style.maxWidth = "75%";
+    li.style.overflow = "hidden";
+    divIco.style.display = "inline-block";
+    divIco.style.float = "right";
+
+
+    aEdit.appendChild(iEdit);
+    aDelete.appendChild(iDelete);
+
+    hr.style.borderTop = "2px solid black";
+    lblCompany.style.fontSize = "20px";
+    lblCompany.style.fontWeight = "bold";
+    lblUrl.style.fontSize = "15px";
+    lblBeginDate.style.fontSize = "15px";
+    lblEndDate.style.fontSize = "15px";
+    lblDesc.style.fontSize = "15px";
+
+    lblCompany.textContent = element.name;
+    lblUrl.textContent = element.url.substring(8);
+    lblUrl.href = element.url;
+    lblUrl.target = "_blank";
+    lblBeginDate.textContent = "Start Date: " + element.beginDate.substring(0,10);
+    lblEndDate.textContent = "End Date: " + element.endDate.substring(0,10);
+    lblDesc.textContent = element.description;
+
+    li.appendChild(lblCompany);
+    li.appendChild(lblUrl);
+    li.appendChild(lblBeginDate);
+    li.appendChild(lblEndDate);
+    li.appendChild(lblDesc);
+    divIco.appendChild(aEdit);
+    divIco.appendChild(aDelete);
     
-    inputName.style.display = "none";
-    inputDescription.style.display = "none";
-    inputLocal.style.display = "none";
-    divImage.id = "profileImage";
-    divImage.classList.add("rounded-circle", "mb-3", "mt-4");
+    div.appendChild(li);
+    div.appendChild(divIco);
 
-    divImage.style.margin = "auto";
-    divImage.style.textAlign = "center";
-    divImage.style.width = "100px";
-    divImage.style.height = "100px";
-    divImage.style.fontSize = "45px";
-    divImage.style.lineHeight = "100px";
-
-    divImage.textContent = data.name.toLocaleUpperCase().charAt(0);
-
-    lblName.parentElement.before(divImage);
-
-    // Construir DOM para Academic & Experience
-    let ulAcademic = document.getElementById("academic");
-    let ulExperience = document.getElementById("experience");
-    ulAcademic.style.listStyleType = "none";
-    ulExperience.style.listStyleType = "none";
-    
-    for (let element of data.experience) {
-      let li = document.createElement("li");
-      let div = document.createElement("div");
-      let divIco = document.createElement("div");
-      
-      let hr = document.createElement("hr");
-      let lblCompany = document.createElement("h5");
-      let lblUrl = document.createElement("h5");
-      let lblBeginDate = document.createElement("h5");
-      let lblEndDate = document.createElement("h5");
-      let lblDesc = document.createElement("h5");
-      let aEdit = document.createElement("a");
-      let iEdit = document.createElement("i");
-      let aDelete = document.createElement("a");
-      let iDelete = document.createElement("i");
-
-      div.className = "info";
-      aEdit.href = "javascript:void(0)"
-      aDelete.href = "javascript:void(0)"
-      iEdit.setAttribute("data-bs-toggle", "modal");
-      iEdit.setAttribute("data-bs-target", "#modal1");
-      iEdit.id = "edit-experience";
-      iEdit.className = "material-icons";
-      iEdit.style.textAlign = "right";
-      iEdit.textContent = "edit";
-      iDelete.id = "delete-experience";
-      iDelete.className = "material-icons";
-      iDelete.style.textAlign = "right";
-      iDelete.textContent = "clear";
-      li.style.display = "inline-block";
-      divIco.style.display = "inline-block";
-      divIco.style.float = "right";
-
-      aEdit.appendChild(iEdit);
-      aDelete.appendChild(iDelete);
-
-      hr.style.borderTop = "2px solid black";
-      lblCompany.style.fontSize = "20px";
-      lblUrl.style.fontSize = "15px";
-      lblBeginDate.style.fontSize = "15px";
-      lblEndDate.style.fontSize = "15px";
-      lblDesc.style.fontSize = "15px";
-
-      lblCompany.textContent = element.name;
-      lblUrl.textContent = element.url;
-      lblBeginDate.textContent = element.beginDate;
-      lblEndDate.textContent = element.endDate;
-      lblDesc.textContent = element.description;
-
-      li.appendChild(lblCompany);
-      li.appendChild(lblUrl);
-      li.appendChild(lblBeginDate);
-      li.appendChild(lblEndDate);
-      li.appendChild(lblDesc);
-      divIco.appendChild(aEdit);
-      divIco.appendChild(aDelete);
-      
-      div.appendChild(li);
-      div.appendChild(divIco);
-
-      aEdit.addEventListener("click", (evt) => {
-        makeModal(modal, element, "experience", "edit");
-      });
-
-      aDelete.addEventListener("click", evt => {
-        if(confirm("Do you really want to delete this experience?")){
-          api.delete("/profile/experience", {data: {id: element.id}}).then((res) => {
-            if(res.status == 200){
-              console.log(res.data);
-            }else{
-              console.log("Error");
-            }
-          });
-        }
-      });
-
-      if (data.experience.length > 1) {
-        div.appendChild(hr);
-      }
-
-      ulExperience.appendChild(div);
-    }
-
-    for (let element of data.qualification) {
-      let li = document.createElement("li");
-      let div = document.createElement("div");
-      let divIco = document.createElement("div");
-      
-      let hr = document.createElement("hr");
-      let lblSchool = document.createElement("h5");
-      let lblCourse = document.createElement("h5");
-      let lblType = document.createElement("h5");
-      let lblGrade = document.createElement("h5");
-      let aEdit = document.createElement("a");
-      let iEdit = document.createElement("i");
-      let aDelete = document.createElement("a");
-      let iDelete = document.createElement("i");
-
-      div.className = "info";
-      aEdit.href = "javascript:void(0)"
-      aDelete.href = "javascript:void(0)"
-      iEdit.setAttribute("data-bs-toggle", "modal");
-      iEdit.setAttribute("data-bs-target", "#modal1");
-      iEdit.id = "edit-experience";
-      iEdit.className = "material-icons";
-      iEdit.style.textAlign = "right";
-      iEdit.textContent = "edit";
-      iDelete.id = "delete-experience";
-      iDelete.className = "material-icons";
-      iDelete.style.textAlign = "right";
-      iDelete.textContent = "clear";
-      li.style.display = "inline-block";
-      divIco.style.display = "inline-block";
-      divIco.style.float = "right";
-
-      aEdit.appendChild(iEdit);
-      aDelete.appendChild(iDelete);
-
-
-      hr.style.borderTop = "2px solid black";
-      lblSchool.style.fontSize = "20px";
-      lblCourse.style.fontSize = "15px";
-      lblType.style.fontSize = "15px";
-      lblGrade.style.fontSize = "15px";
-
-      lblSchool.textContent = element.local;
-      lblCourse.textContent = element.name;
-      lblType.textContent = element.type;
-      lblGrade.textContent = element.grade;
-
-      li.appendChild(lblSchool);
-      li.appendChild(lblCourse);
-      li.appendChild(lblType);
-      li.appendChild(lblGrade);
-      divIco.appendChild(aEdit);
-      divIco.appendChild(aDelete);
-
-      div.appendChild(li);
-      div.appendChild(divIco);
-      if (data.qualification.length > 1) {
-        div.appendChild(hr);
-      }
-
-      ulAcademic.appendChild(div);
-
-      aDelete.addEventListener("click", evt => {
-        if(confirm("Do you really want to delete this qualification?")){
-          api.delete("/profile/qualification", {data: {id: element.id}}).then((res) => {
-            if(res.status == 200){
-              console.log(res.data);
-            }else{
-              console.log("Error");
-            }
-          });
-        }
-      })
-
-      aEdit.addEventListener("click", evt => {
-        console.log(element);
-        makeModal(modal, element, "academic", "edit");
-        
-      })
-    }
-
-    addExperience.addEventListener("click", (evt) => {
-      makeModal(modal, data, "experience");
+    aEdit.addEventListener("click", (evt) => {
+      makeModal(modal, element, "experience", "edit");
     });
 
-    addAcademic.addEventListener("click", (evt) => {
-      makeModal(modal, data, "academic");
+    aDelete.addEventListener("click", evt => {
+      if(confirm("Do you really want to delete this experience?")){
+        api.delete("/profile/experience", {data: {id: element.id}}).then((res) => {
+          if(res.status == 200){
+            console.log(res.data);
+          }else{
+            console.log("Error");
+          }
+        });
+      }
     });
-    
-  };
 
-  let makeModal = function (modal, data, type, action) {
+    if (data.experience.length > 1) {
+      div.appendChild(hr);
+    }
+
+    ulExperience.appendChild(div);
+  }
+
+  for (let element of data.qualification) {
+    let li = document.createElement("li");
+    let div = document.createElement("div");
+    let divIco = document.createElement("div");
+    
+    let hr = document.createElement("hr");
+    let lblSchool = document.createElement("h5");
+    let lblCourse = document.createElement("h5");
+    let lblGrade = document.createElement("h5");
+    let aEdit = document.createElement("a");
+    let iEdit = document.createElement("i");
+    let aDelete = document.createElement("a");
+    let iDelete = document.createElement("i");
+
+    lblSchool.style.fontWeight = "bold";
+    div.className = "info";
+    li.className = "info";
+    aEdit.href = "javascript:void(0)"
+    aDelete.href = "javascript:void(0)"
+    iEdit.setAttribute("data-bs-toggle", "modal");
+    iEdit.setAttribute("data-bs-target", "#modal1");
+    iEdit.id = "edit-experience";
+    iEdit.className = "material-icons";
+    iEdit.style.textAlign = "right";
+    iEdit.textContent = "edit";
+    iDelete.id = "delete-experience";
+    iDelete.className = "material-icons";
+    iDelete.style.textAlign = "right";
+    iDelete.textContent = "clear";
+    li.style.display = "inline-block";
+    divIco.style.display = "inline-block";
+    divIco.style.float = "right";
+
+    aEdit.appendChild(iEdit);
+    aDelete.appendChild(iDelete);
+
+
+    hr.style.borderTop = "2px solid black";
+    lblSchool.style.fontSize = "20px";
+    lblCourse.style.fontSize = "15px";
+    lblGrade.style.fontSize = "15px";
+
+    lblSchool.textContent = element.local;
+    lblCourse.textContent = element.type + " in " +  element.name;
+    lblGrade.textContent = "Final grade: " + element.grade + " in 20";
+
+    li.appendChild(lblSchool);
+    li.appendChild(lblCourse);
+    li.appendChild(lblGrade);
+    divIco.appendChild(aEdit);
+    divIco.appendChild(aDelete);
+
+    div.appendChild(li);
+    div.appendChild(divIco);
+    if (data.qualification.length > 1) {
+      div.appendChild(hr);
+    }
+
+    ulAcademic.appendChild(div);
+
+    aDelete.addEventListener("click", evt => {
+      if(confirm("Do you really want to delete this qualification?")){
+        api.delete("/profile/qualification", {data: {id: element.id}}).then((res) => {
+          if(res.status == 200){
+            console.log(res.data);
+          }else{
+            console.log("Error");
+          }
+        });
+      }
+    })
+
+    aEdit.addEventListener("click", evt => {
+      console.log(element);
+      makeModal(modal, element, "academic", "edit");
+      
+    })
+  }
+
+  addExperience.addEventListener("click", (evt) => {
+    makeModal(modal, data, "experience");
+  });
+
+  addAcademic.addEventListener("click", (evt) => {
+    makeModal(modal, data, "academic");
+  });
+  
+};
+
+let makeModal = function (modal, data, type, action) {
     let existForm = document.getElementById("modal1").querySelector("form");
     if (existForm) {
       existForm.remove();
@@ -245,7 +244,7 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
       let textEle = document.createElement("p");
       textEle.textContent = "";
       textEle.style.color = "red";
-
+      
       modalDialog.style.maxWidth = "35%";
       modalDialog.style.padding = "20px";
       lblName.textContent = "Company: ";
@@ -268,6 +267,7 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
       inputUrl.type = "text";
       inputBeginDate.type = "date";
       inputEndDate.type = "date";
+      inputDescription.style.resize = "none";
 
       modalTitle.textContent = "Add Experience";
 
@@ -276,6 +276,7 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
       inputBeginDate.style.marginBottom = "2rem";
       inputEndDate.style.marginBottom = "2rem";
       inputDescription.style.marginBottom = "2rem";
+      btnSubmit.style.marginBottom = "2rem";
 
       form.style.display = "flex";
       form.style.flexDirection = "column";
@@ -304,8 +305,6 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
 
       
       if(action == "edit"){
-        let sendObj = [];
-        let alert = document.getElementById("alertText");
         inputName.value = data.name;
         inputUrl.value = data.url;
         inputBeginDate.value = data.beginDate.substring(0,10);
@@ -330,15 +329,13 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
             };
             api.put("/profile/experience", sendObj).then(function (res) {
               if (res.status == 200) {
-                console.log("Sucesso");
+                console.log("Sucesso.");
               } else {
                 res.status(500).send("erro");
               }
             });
           })
       }
-
-
       if(action !== "edit"){
         let sendObj = [];
         let alert = document.getElementById("alertText");
@@ -359,7 +356,6 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
               window.location.reload();
             }else {
               res.send("erro");
-              console.log("TESTE");
             }
           });
         });
@@ -411,7 +407,7 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
             type: type,
             grade: grade
           };
-          api.put("/profile/experience", sendObj).then(function (res) {
+          api.put("/profile/qualification", sendObj).then(function (res) {
             if (res.status == 200) {
               console.log("Sucesso");
             } else {
@@ -492,18 +488,29 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
         });
       }
     }
-  };
+};
 
-  let hideEditFields = function () {
-    [].forEach.call(
-      document.querySelectorAll(".material-icons"),
-      function (el) {
-        el.style.display = "none";
-      }
-    );
-  };
+// Recebe a classe e esconde todos os membros da mesma.
+let hide = function (className) {
+  [].forEach.call(
+    document.querySelectorAll("." + className),
+    function (el){
+      el.style.display = "none";
+    }
+  )
+}
 
-  let onEdit = function () {
+// Recebe a classe e mostra todos os membros da mesma.
+let show = function (className){
+  [].forEach.call(
+    document.querySelectorAll("." + className),
+    function (el){
+      el.style.display = "inline-block";
+    }
+  )
+}
+
+let onEdit = function (data) {
     let icoEditProfile = document.getElementById("edit-profile");
     let icoSave = document.getElementById("save-profile");
     let lblName = document.getElementById("user-name");
@@ -521,16 +528,9 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
     
     lblCheckbox.textContent = "Private";
 
-    inputName.style.display = "inline-block";
-    inputLocation.style.display = "inline-block";
-    inputDescription.style.display = "inline-block";
-    lblCheckbox.style.display = "inline-block";
-    inputCheckbox.style.display = "inline-block";
-
-
-    lblName.style.display = "none";
-    lblLocation.style.display = "none";
-    lblDescription.style.display = "none";
+    //Esconde labels e mostra inputs para efetuar a mudança do user.
+    show(inputName.className);
+    hide(lblName.className);
 
     inputDescription.style.width = "550px";
 
@@ -548,14 +548,9 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
       const privateCheck = document.getElementById("privateCheckbox").checked;
       const id = data.idProfessional;
 
-      lblName.style.display = "inline-block";
-      lblLocation.style.display = "inline-block";
-      lblDescription.style.display = "inline-block";
-      lblCheckbox.style.display = "none";
-      inputCheckbox.style.display = "none";
-      inputName.style.display = "none";
-      inputLocation.style.display = "none";
-      inputDescription.style.display = "none";
+      show(lblName.className);
+      hide(inputName.className);
+
       let sendObj = {
         id: id,
         name: name,
@@ -565,22 +560,15 @@ const dataController = (function () { //ISTO NAO PRECISA DE UM DATA CONTROLLER
       };
       api.put("/profile/user", sendObj).then(function (res) {
         if (res.status == 200) {
-         // window.location.reload(); //ISTO É PARA SAIR DAQUI NAO CA RELOADS DE PAGINAS
-         console.log("Dentro do put");
-         console.log(sendObj);
+          lblName.textContent = name;
+          lblLocation.textContent = local;
+          lblDescription.textContent = description;
         } else {
           res.status(500).send("erro");
         }
       });
     });
-  };
-
-  return {
-    addData: add,
-    hideEdit: hideEditFields,
-    edit: onEdit,
-  };
-})();
+};
 
 window.addEventListener("DOMContentLoaded", function () {
   const query = new URLSearchParams(window.location.href);
@@ -591,18 +579,16 @@ window.addEventListener("DOMContentLoaded", function () {
     );
     api.get(`/profile/user?id=${id}`).then((res) => {
       if (res.status === 200 && typeof res.data === "object") {
-        console.log(res.data);
-        dataController.addData(res.data);
-        dataController.hideEdit();
+        buildDom(res.data);
+        hide(icoEditProfile.className);
       }
     });
   } else {
     api.get("/profile/user").then((res) => {
       if (res.status === 200 && typeof res.data === "object") {
-        console.log(res.data);
-        dataController.addData(res.data);
+        buildDom(res.data);
         icoEditProfile.addEventListener("click", (evt) => {
-          dataController.edit();
+          onEdit(res.data);
         });
       }
     });
