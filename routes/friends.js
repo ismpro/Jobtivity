@@ -5,7 +5,7 @@
 
 const router = require("express").Router();
 
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 
 const Friend = require("../models/FriendModel");
 const FriendRequest = require("../models/FriendRequestModel");
@@ -96,6 +96,67 @@ async function getFriendsRequest(friendsRequests) {
 /**
  * @route {GET} /
  * @description Retrieve all friends and friend requests for the current user
+ * @swagger
+ * path:
+ *   /friends:
+ *     get:
+ *       summary: Retrieve all friends and friend requests for the current user
+ *       tags:
+ *         - Friends
+ *       security:
+ *         - bearerAuth: []
+ *       responses:
+ *         200:
+ *           description: Successfully retrieved friends and friend requests
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   friends:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: integer
+ *                         userid:
+ *                           type: integer
+ *                         name:
+ *                           type: string
+ *                         email:
+ *                           type: string
+ *                         since:
+ *                           type: string
+ *                   friendsRequests:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: integer
+ *                         name:
+ *                           type: string
+ *                         timestamp:
+ *                           type: string
+ *         215:
+ *           description: Validation errors
+ *           content:
+ *              application/json:
+ *                   schema:
+ *                       properties:
+ *                           errors:
+ *                           type: array
+ *                       items:
+ *                           properties:
+ *                              msg:
+ *                                  type: string
+ *                              param:
+ *                                  type: string
+ *                              location:
+ *                                  type: string 
+ *         401:
+ *           description: Unauthorized 
  */
 router.get('/', checkSession, async function (req, res) {
 
@@ -119,6 +180,50 @@ router.get('/', checkSession, async function (req, res) {
  * @route {POST} /add
  * @description Send a friend request to a user with a specific email
  * @param {String} email - The email of the user to send the friend request to
+ * @swagger
+ *   /friends/add:
+ *     post:
+ *       summary: Send a friend request to a user with a specific email
+ *       tags:
+ *         - Friends
+ *       security:
+ *         - bearerAuth: []
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 email:
+ *                   type: string
+ *                   format: email
+ *                   description: The email of the user to send the friend request to
+ *       responses:
+ *         200:
+ *           description: Successfully sent friend request
+ *         216:
+ *           description: Friend request already sent
+ *         210:
+ *           description: Email does not exist
+ *         215:
+ *           description: Validation errors
+ *           content:
+ *              application/json:
+ *                   schema:
+ *                       properties:
+ *                           errors:
+ *                           type: array
+ *                       items:
+ *                           properties:
+ *                              msg:
+ *                                  type: string
+ *                              param:
+ *                                  type: string
+ *                              location:
+ *                                  type: string  
+ *         401:
+ *           description: Unauthorized
  */
 router.post('/add',
     checkSession,
@@ -138,7 +243,7 @@ router.post('/add',
                 res.status(216).send("Friend Request already send");
             }
         } else {
-            res.status(210).send("This email doenst exists.");
+            res.status(210).send("This email does not exists.");
         }
     });
 
@@ -147,6 +252,50 @@ router.post('/add',
  * @description Handle accepting or declining a friend request
  * @param {String} type - The type of request (accept or decline)
  * @param {Number} id - The id of the friend request
+ * @swagger
+ *   /friends/request/{type}:
+ *     post:
+ *       summary: Handle accepting or declining a friend request
+ *       tags:
+ *         - Friends
+ *       security:
+ *         - bearerAuth: []
+ *       parameters:
+ *         - name: type
+ *           in: path
+ *           required: true
+ *           schema:
+ *             type: string
+ *             enum: [accept, decline]
+ *           description: The type of request (accept or decline)
+ *         - name: id
+ *           in: body
+ *           required: true
+ *           schema:
+ *             type: integer
+ *             format: int64
+ *           description: The id of the friend request
+ *       responses:
+ *         200:
+ *           description: Successfully handled request
+ *         215:
+ *           description: Validation errors
+ *           content:
+ *              application/json:
+ *                   schema:
+ *                       properties:
+ *                           errors:
+ *                           type: array
+ *                       items:
+ *                           properties:
+ *                              msg:
+ *                                  type: string
+ *                              param:
+ *                                  type: string
+ *                              location:
+ *                                  type: string 
+ *         401:
+ *           description: Unauthorized
  */
 router.post('/request/:type',
     checkSession,
@@ -163,17 +312,68 @@ router.post('/request/:type',
 
         await friendRequest.delete();
 
-        res.status(200).send(true);
+        res.sendStatus(200);
     });
 
 /**
  * @route {GET} /search
  * @description Search for a user based on a search term
  * @param {String} text - The search term used to filter the results
+ * @swagger
+ *   /friends/search:
+ *     get:
+ *       summary: Search for a user based on a search term
+ *       tags:
+ *         - Friends
+ *       security:
+ *         - bearerAuth: []
+ *       parameters:
+ *         - name: text
+ *           in: query
+ *           required: true
+ *           schema:
+ *             type: string
+ *             format: string
+ *           description: The search term used to filter the results
+ *       responses:
+ *         200:
+ *           description: Successfully retrieved search results
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     email:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *         215:
+ *           description: Validation errors
+ *           content:
+ *              application/json:
+ *                   schema:
+ *                       properties:
+ *                           errors:
+ *                           type: array
+ *                       items:
+ *                           properties:
+ *                              msg:
+ *                                  type: string
+ *                              param:
+ *                                  type: string
+ *                              location:
+ *                                  type: string 
+ *         400:
+ *           description: Invalid request, missing search term
+ *         401:
+ *           description: Unauthorized
  */
 router.get('/search',
     checkSession,
-    body('text').isString().withMessage('Please enter a valid text for the search').toLowerCase(),
+    query('text').isString().withMessage('Please enter a valid text for the search').toLowerCase(),
+    global.checkForErrors,
     async function (req, res) {
         let text = req.query.s;
 
@@ -189,9 +389,45 @@ router.get('/search',
 
 /**
  * @route {DELETE} /:id
- * @middleware
  * @description Handle deleting a friend
  * @param {Number} id - The id of the friend
+ * @swagger
+ *  /friends/remove:
+ *      delete:
+ *          summary: Handle deleting a friend
+ *          tags: 
+ *            - Friends
+ *          parameters:
+ *            - name: id
+ *              in: body
+ *              required: true
+ *              schema:
+ *                  type: integer
+ *              
+ *              description: The id of the friend for the removal
+ *          responses:
+ *              200:
+ *                  description: Deleted successfully
+ *              215:
+ *                 description: Validation errors
+ *                 content:
+ *                     application/json:
+ *                          schema:
+ *                              properties:
+ *                                  errors:
+ *                                  type: array
+ *                              items:
+ *                                  properties:
+ *                                     msg:
+ *                                         type: string
+ *                                     param:
+ *                                         type: string
+ *                                     location:
+ *                                         type: string 
+ *              401:
+ *                  description: Unauthorized
+ *              500:
+ *                  description: Internal Server Error
  */
 router.delete('/remove',
     checkSession,

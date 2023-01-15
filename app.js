@@ -10,6 +10,8 @@ let DB = require('./app/connection');
 var session = require('express-session');
 var MySQLStore = require('express-mysql-session')(session);
 const { validationResult } = require('express-validator');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
 
 console.clear()
 console.log(chalk.green('\n  Starting server'));
@@ -88,6 +90,20 @@ db.connect().then(function () {
   app.use('/friends', require('./routes/friends'));
   app.use('/profile', require('./routes/profile'));
   app.use('/people', require('./routes/people'));
+
+  const options = {
+    definition: {
+      openapi: '3.0.0',
+      info: {
+        title: 'Jobtivity',
+        version: '1.0.0',
+      },
+    },
+    apis: ['./routes/admin.js', './routes/api.js','./routes/auth.js','./routes/friends.js','./routes/people.js','./routes/profile.js'],
+  };
+  
+  const specs = swaggerJsdoc(options);
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
 
   console.log(chalk.green('  Done configurating Server'));
 

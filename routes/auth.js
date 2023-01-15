@@ -45,6 +45,54 @@ function createid(length) {
  * @param {string} email - Email to be checked
  * @param {string} password - Password to be checked
  * @param {string} confirmPassword - Confirm password to be matched with password
+ * @swagger
+ * /auth/checkemail:
+ *  post:
+ *    tags:
+ *    - Auth
+ *    summary: Check if email is already in use
+ *    parameters:
+ *    - in: body
+ *      name: email
+ *      schema:
+ *        type: string
+ *      required: true
+ *      description: Email to be checked
+ *    - in: body
+ *      name: password
+ *      schema:
+ *        type: string
+ *      required: true
+ *      description: Password to be checked
+ *    - in: body
+ *      name: confirmPassword
+ *      schema:
+ *        type: string
+ *      required: true
+ *      description: Confirm password to be matched with password
+ *    responses:
+ *      200:
+ *        description: Email is not in use
+ *      210:
+ *        description: Email is already in use
+ *      215:
+ *           description: Validation errors
+ *           content:
+ *              application/json:
+ *                   schema:
+ *                       properties:
+ *                           errors:
+ *                           type: array
+ *                       items:
+ *                           properties:
+ *                              msg:
+ *                                  type: string
+ *                              param:
+ *                                  type: string
+ *                              location:
+ *                                  type: string 
+ *      500:
+ *        description: Internal Server Error
  */
 router.post('/checkemail',
     // Check if email is valid
@@ -80,8 +128,8 @@ router.post('/checkemail',
  * @function
  * @route {POST} /register
  * @description Handle user registration
- * @param {String} email - Email to be checked
- * @param {String} password - Password to be checked
+ * @param {String} email - Email of the user
+ * @param {String} password - Password of the user
  * @param {String} confirmPassword - Confirm password to be matched with password
  * @param {String} name - Name of the user
  * @param {String} description - Description of the user
@@ -92,6 +140,109 @@ router.post('/checkemail',
  * @param {Boolean} private - Privacy setting of the user, if user is not a company
  * @param {String} urlWeb - Website url of the company, if user is a company
  * @param {String} urlLogo - Logo url of the company, if user is a company
+ * @swagger
+ * /auth/register:
+ *  post:
+ *    tags:
+ *    - Auth
+ *    summary: Handle user registration
+ *    parameters:
+ *    - in: body
+ *      name: email
+ *      schema:
+ *        type: string
+ *      required: true
+ *      description: Email of the user
+ *    - in: body
+ *      name: password
+ *      schema:
+ *        type: string
+ *      required: true
+ *      description: Password of the user
+ *    - in: body
+ *      name: confirmPassword
+ *      schema:
+ *        type: string
+ *      required: true
+ *      description: Confirm password to be matched with password
+ *    - in: body
+ *      name: name
+ *      schema:
+ *        type: string
+ *      required: true
+ *      description: Name of the user
+ *    - in: body
+ *      name: description
+ *      schema:
+ *        type: string
+ *      required: true
+ *      description: Description of the user
+ *    - in: body
+ *      name: isCompany
+ *      schema:
+ *        type: boolean
+ *      required: true
+ *      description: Check if user is a company
+ *    - in: body
+ *      name: birthDate
+ *      schema:
+ *        type: string
+ *        format: date
+ *      required: false
+ *      description: Birthdate of the user, if user is not a company
+ *    - in: body
+ *      name: gender
+ *      schema:
+ *        type: string
+ *      required: false
+ *      description: Gender of the user, if user is not a company
+ *    - in: body
+ *      name: location
+ *      schema:
+ *        type: string
+ *      required: false
+ *      description: Location of the user, if user is not a company
+ *    - in: body
+ *      name: private
+ *      schema:
+ *        type: boolean
+ *      required: false
+ *      description: Privacy setting of the user, if user is not a company
+ *    - in: body
+ *      name: urlWeb
+ *      schema:
+ *        type: string
+ *      required: false
+ *      description: Website url of the company, if user is a company
+ *    - in: body
+ *      name: urlLogo
+ *      schema:
+ *        type: string
+ *      required: false
+ *      description: Logo url of the company, if user is a company
+ *    responses:
+ *      200:
+ *       description: Successfully registered user
+ *      210:
+ *        description: Email is already in use
+ *      215:
+ *           description: Validation errors
+ *           content:
+ *              application/json:
+ *                   schema:
+ *                       properties:
+ *                           errors:
+ *                           type: array
+ *                       items:
+ *                           properties:
+ *                              msg:
+ *                                  type: string
+ *                              param:
+ *                                  type: string
+ *                              location:
+ *                                  type: string  
+ *      500:
+ *        description: Internal server error
  */
 router.post('/register',
     // Check if email is valid
@@ -191,6 +342,50 @@ router.post('/register',
  * @description Handle user login
  * @param {String} email - Email of the user
  * @param {String} password - Password of the user
+ * @swagger
+ * /auth/login:
+ *  post:
+ *    tags:
+ *    - Auth
+ *    summary: Handle user login
+ *    parameters:
+ *    - in: body
+ *      name: email
+ *      schema:
+ *        type: string
+ *      required: true
+ *      description: Email of the user
+ *    - in: body
+ *      name: password
+ *      schema:
+ *        type: string
+ *      required: true
+ *      description: Password of the user
+ *    responses:
+ *      200:
+ *       description: Successfully login
+ *      211:
+ *        description: Email or password invalid
+ *      225:
+ *        description: Company invalid
+ *      215:
+ *           description: Validation errors
+ *           content:
+ *              application/json:
+ *                   schema:
+ *                       properties:
+ *                           errors:
+ *                           type: array
+ *                       items:
+ *                           properties:
+ *                              msg:
+ *                                  type: string
+ *                              param:
+ *                                  type: string
+ *                              location:
+ *                                  type: string 
+ *      500:
+ *        description: Internal server error
  */
 router.post('/login',
     // Check if email is valid
@@ -250,8 +445,45 @@ router.post('/login',
  * @function
  * @route {POST} /validate
  * @description Validates the user session and sends information about the user
- * @param {String} id - The id of the user
- * @param {String} token - The validation token
+ * @swagger
+ * /auth/validate:
+ *   post:
+ *     summary: Validate the user session and retrieve user information
+ *     tags:
+ *       - Auth
+ *     responses:
+ *       200:
+ *         description: Successful validation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 isAuth:
+ *                   type: boolean
+ *                 isAdmin:
+ *                   type: boolean
+ *                 isProfessional:
+ *                   type: boolean
+ *       401:
+ *         description: Unauthorized
+ *       215:
+ *           description: Validation errors
+ *           content:
+ *              application/json:
+ *                   schema:
+ *                       properties:
+ *                           errors:
+ *                           type: array
+ *                       items:
+ *                           properties:
+ *                              msg:
+ *                                  type: string
+ *                              param:
+ *                                  type: string
+ *                              location:
+ *                                  type: string 
+ *       500:
+ *         description: Server error
  */
 router.post('/validate', async function (req, res) {
     if (req.session.userid) {
@@ -279,6 +511,37 @@ router.post('/validate', async function (req, res) {
  * @function
  * @route {GET} /logout
  * @description Handle user logout
+ * @swagger
+ * /auth/logout:
+ *   post:
+ *     summary: Handle user logout
+ *     tags:
+ *       - Auth
+ *     responses:
+ *       200:
+ *         description: Successful logout
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: boolean
+ *       215:
+ *           description: Validation errors
+ *           content:
+ *              application/json:
+ *                   schema:
+ *                       properties:
+ *                           errors:
+ *                           type: array
+ *                       items:
+ *                           properties:
+ *                              msg:
+ *                                  type: string
+ *                              param:
+ *                                  type: string
+ *                              location:
+ *                                  type: string 
+ *       500:
+ *          description: Internal server error
  */
 router.post('/logout', async function (req, res) {
     try {

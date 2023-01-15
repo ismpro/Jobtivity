@@ -24,9 +24,37 @@ function calculateAge(birthdate) {
 
 /**
  * @function
- * @route {GET} /all
- * @description Retrieve all professionals and companies for the current user
+ * @route {GET} /people/all
+ * @description Retrieve all portfolio infomation
+ * @swagger
+ * /people/all:
+ *   get:
+ *     summary: Retrieve all portfolio information for the current user
+ *     tags:
+ *       - People
+ *     responses:
+ *       200:
+ *         description: List with portfolio information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 properties:
+ *                   idUser:
+ *                     type: integer
+ *                   name:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   local:
+ *                     type: string
+ *                   birthdate:
+ *                     type: integer
+ *       500:
+ *         description: Internal server error
  */
+
 router.get('/all', async function (req, res) {
 
     let output = [];
