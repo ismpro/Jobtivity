@@ -120,7 +120,9 @@ let compararController = (function () {
             modal.firstChild.remove();
         }
 
-        compararArray.forEach(ele => {
+        let bestIndex = compararArray.findIndex(job => job.element.valor === Math.max(...compararArray.map(job => job.element.valor)));
+
+        compararArray.forEach((ele, index) => {
 
             let element = ele.element
 
@@ -132,7 +134,7 @@ let compararController = (function () {
             div.className = "col";
 
             h4.appendChild(document.createTextNode(element.nome));
-            p.appendChild(document.createTextNode(`${element.area} - ${element.valor}€`));
+            p.appendChild(document.createTextNode(`${element.area} - ${element.valor * element.duracao}€`));
             div.appendChild(h4);
             div.appendChild(p);
             compararInfo.appendChild(div);
@@ -145,9 +147,12 @@ let compararController = (function () {
             let pModal3 = document.createElement("p");
             let pModal4 = document.createElement("p");
 
+            console.log(bestIndex === index)
+
             divModal.className = "col";
+
             h4Modal.appendChild(document.createTextNode(element.nome));
-            pModal1.appendChild(document.createTextNode(`${element.valor}€`));
+            pModal1.appendChild(document.createTextNode(`${element.valor * element.duracao}€`));
             pModal2.appendChild(document.createTextNode(element.area));
             pModal3.appendChild(document.createTextNode(`For ${element.duracao} months`));
             pModal4.appendChild(document.createTextNode(`Until ${element.validade.toLocaleString().split(',')[0]}`));
@@ -158,6 +163,11 @@ let compararController = (function () {
             divModal.appendChild(pModal3);
             divModal.appendChild(pModal4);
             modal.appendChild(divModal);
+
+            //Apply bold to text on the best offer
+            if (bestIndex === index) {
+                Array.from(divModal.children).forEach(ele => ele.classList.add("bold"));
+            }
         });
 
         let canvas = document.createElement("canvas");
@@ -167,7 +177,7 @@ let compararController = (function () {
             data: {
                 labels: compararArray.map(ele => ele.element.nome),
                 datasets: [{
-                    label: 'Salario',
+                    label: 'Salario Mensal',
                     data: compararArray.map(ele => ele.element.valor),
                     backgroundColor: [
                         'rgba(54, 162, 235, 0.2)',

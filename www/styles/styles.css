@@ -759,3 +759,7 @@ main {
   text-align: center;
   line-height: 50px;
 }
+
+.bold {
+  font-weight: bold;
+}

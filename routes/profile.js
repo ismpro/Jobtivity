@@ -5,34 +5,18 @@ const User = require("../models/UserModel");
 const Professional = require("../models/ProfessionalModel");
 const Qualification = require("../models/QualificationModel");
 const PastJob = require("../models/PastJobModel");
-const { query, body, validationResult } = require("express-validator");
+const { query, body } = require("express-validator");
 
 const checkLoggedIn = async function (req, res, next) {
   if (req.session.userid) {
-    try {
-      let user = await User.getById(req.session.userid);
-
-      if (
-        user &&
-        user.sessionId === req.session.sessionId &&
-        user.email === req.session.email
-      ) {
-        next();
-      } else {
-        res.sendStatus(401);
-      }
-    } catch (error) {
-      console.log(error);
-      res.sendStatus(500);
-    }
+    next();
   } else {
     res.sendStatus(401);
   }
 };
 
 // All Users
-router.get(
-  "/user",
+router.get("/user",
   query("id").optional().isInt().withMessage("Id must be a integer").toInt(),
   global.checkForErrors,
   async function (req, res) {
@@ -58,15 +42,9 @@ router.get(
         }
       }
 
-      let professional = await Professional.getProfessionalById(
-        user.professional
-      );
-      let qualification = await Qualification.getQualificationByProfessionalId(
-        user.professional
-      );
-      let experience = await PastJob.getPastJobByProfessionalId(
-        user.professional
-      );
+      let [professional, qualification, experience] = await Promise.all([Professional.getProfessionalById(user.professional),
+      Qualification.getQualificationByProfessionalId(user.professional),
+      PastJob.getPastJobByProfessionalId(user.professional)]);
 
       res.status(200).send({
         idProfessional: professional.id,
@@ -86,8 +64,7 @@ router.get(
   }
 );
 
-router.put(
-  "/user",
+router.put("/user",
   checkLoggedIn,
   body("id").isInt().withMessage("Id must be a integer").toInt(),
   body("name")
@@ -122,8 +99,7 @@ router.put(
   }
 );
 
-router.post(
-  "/qualification",
+router.post("/qualification",
   checkLoggedIn,
   body("id").isInt().withMessage("Professional Id must be a integer").toInt(),
   body("grade")
@@ -140,8 +116,7 @@ router.post(
   global.checkForErrors,
   async function (req, res) {
     let data = req.body;
-    console.log("Qual ->");
-    console.log(data);
+
     let qualification = new Qualification({
       local: data.local,
       name: data.name,
@@ -156,56 +131,70 @@ router.post(
   }
 );
 
-router.put("/qualification", checkLoggedIn, async function (req, res) {
-  let data = req.body;
-  let id = data.id;
-  console.log("Dados recebidos");
-  console.log(data);
-  try {
-    let qualification = await Qualification.getQualificationById(id);
-    console.log("Qualification antes de mudar os dados");
-    console.log(qualification);
-    qualification.local = data.local;
-    qualification.name = data.name;
-    qualification.type = data.type;
-    qualification.grade = data.grade;
-
-    console.log("Qualification depois de mudar os dados");
-    console.log(qualification);
-
-    qualification.update();
-    res.sendStatus(200);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
-  }
-});
-
-router.delete("/qualification", checkLoggedIn, async function (req, res) {
-  let data = req.body;
-  let qualification = await Qualification.getQualificationById(data.id);
-  await qualification.delete();
-  res.status(200).send("Qualification deleted");
-});
-
-router.post(
-  "/experience",
+router.put("/qualification",
   checkLoggedIn,
   body("id").isInt().withMessage("Professional Id must be a integer").toInt(),
   body("name")
     .isLength({ min: 2 })
     .withMessage("Name must be at least 2 characters"),
-  body("url")
-    .matches(
-      /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/
-    )
+  body("local").isLength({ min: 5 }).withMessage("Location must be provided"),
+  body("type")
+    .isLength({ min: 2 })
+    .withMessage("Type must be at least 2 characters"),
+  body("grade")
+    .isInt({ min: 0, max: 20 })
+    .withMessage("Grade must be a integer between 0 and 20")
+    .toInt(),
+  global.checkForErrors,
+  async function (req, res) {
+    let data = req.body;
+    let id = data.id;
+
+    try {
+      let qualification = await Qualification.getQualificationById(id);
+
+      qualification.local = data.local;
+      qualification.name = data.name;
+      qualification.type = data.type;
+      qualification.grade = data.grade;
+
+      await qualification.update();
+      res.sendStatus(200);
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(500);
+    }
+  });
+
+router.delete("/qualification",
+  checkLoggedIn,
+  body('id').isInt().withMessage('Please enter a valid id').toInt(),
+  global.checkForErrors,
+  async function (req, res) {
+    try {
+      let qualification = await Qualification.getQualificationById(req.body.id);
+      await qualification.delete();
+      res.status(200).send("Qualification deleted");
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(500);
+    }
+  });
+
+router.post("/experience",
+  checkLoggedIn,
+  body("id").isInt().withMessage("Professional Id must be a integer").toInt(),
+  body("name")
+    .isLength({ min: 2 })
+    .withMessage("Name must be at least 2 characters"),
+  body("url").isURL()
     .withMessage("Invalid URL"),
   body("beginDate")
-    .isLength({ min: 8 })
+    .isDate()
     .withMessage("Begin Date must be provided")
     .toDate(),
   body("endDate")
-    .isLength({ min: 8 })
+    .isDate()
     .withMessage("End Date must be provided")
     .toDate(),
   body("description")
@@ -213,37 +202,40 @@ router.post(
     .withMessage("Description must be at least 5 characters"),
   global.checkForErrors,
   async function (req, res) {
-    let data = req.body;
-    let experience = new PastJob({
-      name: data.name,
-      url: data.url,
-      beginDate: data.beginDate,
-      endDate: data.endDate,
-      description: data.description,
-      professional: data.id,
-    });
-    await experience.create();
+    try {
+      let data = req.body;
+      let experience = new PastJob({
+        name: data.name,
+        url: data.url,
+        beginDate: data.beginDate,
+        endDate: data.endDate,
+        description: data.description,
+        professional: data.id,
+      });
+      await experience.create();
 
-    res.status(200).send("Experience created");
+      res.status(200).send("Experience created");
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(error);
+    }
   }
 );
 
-router.put(
-  "/experience",
+router.put("/experience",
   checkLoggedIn,
   body("beginDate")
-    .isLength({ min: 8 })
+    .isDate()
     .withMessage("Begin Date must be provided")
     .toDate(),
   body("endDate")
-    .isLength({ min: 8 })
+    .isDate()
     .withMessage("Begin Date must be provided")
     .toDate(),
   async function (req, res) {
     let data = req.body;
     let id = data.id;
-    console.log("Dados recebidos");
-    console.log(data);
+
     try {
       let experience = await PastJob.getPastJobById(id);
       experience.name = data.name;
@@ -252,10 +244,7 @@ router.put(
       experience.endDate = data.endDate;
       experience.description = data.description;
 
-      console.log("Qualification depois de mudar os dados");
-      console.log(experience);
-
-      experience.update();
+      await experience.update();
       res.sendStatus(200);
     } catch (error) {
       console.log(error);
@@ -264,11 +253,19 @@ router.put(
   }
 );
 
-router.delete("/experience", checkLoggedIn, async function (req, res) {
-  let data = req.body;
-  let experience = await PastJob.getPastJobById(data.id);
-  await experience.delete();
-  res.status(200).send("Qualification deleted");
-});
+router.delete("/experience",
+  checkLoggedIn,
+  body('id').isInt().withMessage('Please enter a valid id').toInt(),
+  global.checkForErrors,
+  async function (req, res) {
+    try {
+      let experience = await PastJob.getPastJobById(req.body.id);
+      await experience.delete();
+      res.status(200).send("Qualification deleted");
+    } catch (error) {
+      console.log(error);
+      res.sendStatus(error);
+    }
+  });
 
 module.exports = router;
