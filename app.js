@@ -90,6 +90,7 @@ db.connect().then(function () {
   app.use('/friends', require('./routes/friends'));
   app.use('/profile', require('./routes/profile'));
   app.use('/people', require('./routes/people'));
+  app.use('/companies', require('./routes/companies'));
 
   const options = {
     definition: {

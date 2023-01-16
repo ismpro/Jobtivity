@@ -127,6 +127,7 @@ function onLogout() {
                     li.parentElement.remove();
                     makeLogin(document.querySelector('ul.navbar-nav'));
                     if (typeof deleteChat === 'function') deleteChat();
+                    window.location.href = window.location.pathname;
                 }
             }
         });

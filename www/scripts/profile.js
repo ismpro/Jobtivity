@@ -1,6 +1,11 @@
 "use strict";
-
+/**
+ * Function to build the DOM elements with the given data
+ * @function buildDom
+ * @param {Object} data - The data to be used to build the DOM elements
+ */
 let buildDom = function (data) {
+  // Variables for DOM elements
   let lblName = document.getElementById("user-name");
   let lblLocation = document.getElementById("user-location");
   let lblDescription = document.getElementById("user-description");
@@ -13,22 +18,25 @@ let buildDom = function (data) {
   let addExperience = document.getElementById("add-experience");
   let addAcademic = document.getElementById("add-academic");
   
+  // Set the text content and styles of the labels.
   lblName.textContent = data.name;
   lblName.style.fontWeight = "bold";
   lblLocation.textContent = data.local;
   lblDescription.textContent = data.description;
   lblDescription.style.textAlign = "justify";
-  console.log(data);
-
+  
+  // Check the private checkbox if data.private is true
   if(data.private){
     inputCheckbox.checked = true;
   }
   
+  // Hide input elements from profile
   inputName.style.display = "none";
   inputDescription.style.display = "none";
   inputLocal.style.display = "none";
-  divImage.classList.add("rounded-circle", "mb-3", "mt-4", "profileImage");
 
+  // Set styles and class for the image div
+  divImage.classList.add("rounded-circle", "mb-3", "mt-4", "profileImage");
   divImage.style.margin = "auto";
   divImage.style.textAlign = "center";
   divImage.style.width = "100px";
@@ -36,17 +44,21 @@ let buildDom = function (data) {
   divImage.style.fontSize = "45px";
   divImage.style.lineHeight = "100px";
 
+  // Set as content of div image the first letter of user name.
   divImage.textContent = data.name.toLocaleUpperCase().charAt(0);
 
+  // Add the div element before the parent of the label name element
   lblName.parentElement.before(divImage);
 
-  // Construir DOM para Academic & Experience
+  // Build DOM for Academic & Experience
   let ulAcademic = document.getElementById("academic");
   let ulExperience = document.getElementById("experience");
   ulAcademic.style.listStyleType = "none";
   ulExperience.style.listStyleType = "none";
   
+  // Loop through the experience array of the data object
   for (let element of data.experience) {
+    // Building DOM for Experience
     let li = document.createElement("li");
     let div = document.createElement("div");
     let divIco = document.createElement("div");
@@ -146,8 +158,9 @@ let buildDom = function (data) {
 
     ulExperience.appendChild(div);
   }
-
+  // Loop through the qualification array of the data object
   for (let element of data.qualification) {
+    //Building DOM for Qualification
     let li = document.createElement("li");
     let div = document.createElement("div");
     let divIco = document.createElement("div");
@@ -238,12 +251,23 @@ let buildDom = function (data) {
   
 };
 
+
+/**
+ * @function makeModal
+ * @param {HTMLElement} modal - modal element 
+ * @param {Object} data - data object 
+ * @param {string} type - type of the data, 'experience' or 'academic'
+ * @param {string} action - the action to be performed on the modal, used on "edit"
+ * This function creates a modal to create or edit the experience or academic with the provided data 
+ */
 let makeModal = function (modal, data, type, action) {
+    // Check if the modal already has a form element and remove it
     let existForm = document.getElementById("modal1").querySelector("form");
     if (existForm) {
       existForm.remove();
     }
 
+    // Create form elements based on type
     if (type == "experience") {
       let form = document.createElement("form");
       let lblName = document.createElement("label");
@@ -257,6 +281,7 @@ let makeModal = function (modal, data, type, action) {
       textEle.textContent = "";
       textEle.style.color = "red";
       
+      // Properties of modal elements
       modalDialog.style.maxWidth = "35%";
       modalDialog.style.padding = "20px";
       lblName.textContent = "Company: ";
@@ -265,6 +290,7 @@ let makeModal = function (modal, data, type, action) {
       lblEndDate.textContent = "End Date: ";
       lblDescription.textContent = "Description: ";
 
+      // Inputs of modal elements
       let inputName = document.createElement("input");
       let inputUrl = document.createElement("input");
       let inputBeginDate = document.createElement("input");
@@ -275,6 +301,7 @@ let makeModal = function (modal, data, type, action) {
       btnSubmit.textContent = "Submit";
       btnSubmit.className = "btn btn-primary";
 
+      // Properties of input elements
       inputName.type = "text";
       inputUrl.type = "text";
       inputBeginDate.type = "date";
@@ -287,9 +314,7 @@ let makeModal = function (modal, data, type, action) {
       inputUrl.style.marginBottom = "2rem";
       inputBeginDate.style.marginBottom = "2rem";
       inputEndDate.style.marginBottom = "2rem";
-      inputDescription.style.marginBottom = "2rem";
-      btnSubmit.style.marginBottom = "2rem";
-
+      
       form.style.display = "flex";
       form.style.flexDirection = "column";
       form.style.alignItems = "center";
@@ -315,9 +340,8 @@ let makeModal = function (modal, data, type, action) {
 
       modal.appendChild(form);
 
-      
+      // If action is edit, populate form with the data
       if(action == "edit"){
-        
         inputName.value = data.name;
         inputUrl.value = data.url;
         inputBeginDate.value = data.beginDate.substring(0,10);
@@ -332,6 +356,7 @@ let makeModal = function (modal, data, type, action) {
           const endDate = inputEndDate.value;
           const description = inputDescription.value;
           const id = data.id;
+          // Create the object that will be sent in the request
             let sendObj = {
               id: id,
               name: name,
@@ -340,6 +365,7 @@ let makeModal = function (modal, data, type, action) {
               endDate: endDate,
               description: description
             };
+            // API call to update the experience
             api.put("/profile/experience", sendObj).then(function (res) {
               if (res.status == 200) {
                 window.location.reload();
@@ -360,7 +386,9 @@ let makeModal = function (modal, data, type, action) {
       if(action !== "edit"){
         let sendObj = [];
         let alert = document.getElementById("alertText");
+        // Event listener to Submit button
         btnSubmit.addEventListener("click", (evt) => {
+          // Object that will be sent in the request
           sendObj = {
             name: inputName.value,
             url: inputUrl.value,
@@ -369,6 +397,7 @@ let makeModal = function (modal, data, type, action) {
             description: inputDescription.value,
             id: data.idProfessional,
           };
+          // API call to create a new experience
           api.post("/profile/experience", sendObj).then(function (res) {
             alert.appendChild(document.createTextNode("Successfull!"));
             alert.parentElement.classList.add("alert-success");
@@ -402,6 +431,7 @@ let makeModal = function (modal, data, type, action) {
       textEle.textContent = "";
       textEle.style.color = "red";
 
+      // Properties of modal elements
       modalDialog.style.maxWidth = "35%";
       modalDialog.style.padding = "20px";
       lblLocal.textContent = "Institution: ";
@@ -411,18 +441,21 @@ let makeModal = function (modal, data, type, action) {
 
       modalTitle.textContent = "Add Qualification";
 
+      // Inputs of modal elements
       let inputLocal = document.createElement("input");
       let inputName = document.createElement("input");
       let inputType = document.createElement("input");
       let inputGrade = document.createElement("input");
       let btnSubmit = document.createElement("button");
 
+      // If action is edit, populate form with the data
       if(action == "edit"){
         inputLocal.value = data.local;
         inputName.value = data.name;
         inputType.value = data.type;
         inputGrade.value = data.grade;
 
+        // Event listener to submit button
         btnSubmit.addEventListener("click", evt => {
         evt.preventDefault();
         const local = inputLocal.value;
@@ -430,6 +463,7 @@ let makeModal = function (modal, data, type, action) {
         const type = inputType.value;
         const grade = inputGrade.value;
         const id = data.id;
+        // Create the object that will be sent in the request
           let sendObj = {
             id: id,
             local: local,
@@ -437,6 +471,7 @@ let makeModal = function (modal, data, type, action) {
             type: type,
             grade: grade
           };
+          // API call to update the qualification
           api.put("/profile/qualification", sendObj).then(function (res) {
             if (res.status == 200) {
               console.log("Sucesso");
@@ -497,6 +532,7 @@ let makeModal = function (modal, data, type, action) {
 
       if(action !== "edit"){
         btnSubmit.addEventListener("click", (evt) => {
+          // Object that will be sent in the request
           sendObj = {
             local: inputLocal.value,
             name: inputName.value,
@@ -504,7 +540,7 @@ let makeModal = function (modal, data, type, action) {
             grade: inputGrade.value,
             id: data.idProfessional,
           };
-  
+          // API call to create a new qualification
           api.post("/profile/qualification", sendObj).then(function (res) {
             alert.appendChild(document.createTextNode("Successfull!"));
             alert.parentElement.classList.add("alert-success");
@@ -528,26 +564,43 @@ let makeModal = function (modal, data, type, action) {
     }
 };
 
-// Recebe a classe e esconde todos os membros da mesma.
+/**
+ * @function hide
+ * @param {string} className - class name of the elements to be hidden
+ * @desc This function is used to hide elements with a given class name
+ */
 let hide = function (className) {
+  // Iterate over all elements with specific class name
   [].forEach.call(
     document.querySelectorAll("." + className),
     function (el){
+      // Set display property to none
       el.style.display = "none";
     }
   )
 }
 
-// Recebe a classe e mostra todos os membros da mesma.
+/**
+ * @function show
+ * @param {string} className - class name of the elements to be shown
+ * @desc This function is used to show elements with a given class name
+ */
 let show = function (className){
+  // Iterate over all elements with specific class name
   [].forEach.call(
     document.querySelectorAll("." + className),
     function (el){
+      // Set display property to inline-block
       el.style.display = "inline-block";
     }
   )
 }
 
+/**
+ * @function onEdit
+ * @param {Object} data - Data of the user
+ * @desc This function is used to enable editing for the user's profile
+ */
 let onEdit = function (data) {
     let icoEditProfile = document.getElementById("edit-profile");
     let icoSave = document.getElementById("save-profile");
@@ -558,24 +611,22 @@ let onEdit = function (data) {
     let inputName = document.getElementById("name");
     let inputLocation = document.getElementById("local");
     let inputDescription = document.getElementById("description");
-    let inputCheckbox = document.getElementById("privateCheckbox");
 
+    // Set the value of input fields with label values
     inputName.value = lblName.textContent;
     inputLocation.value = lblLocation.textContent;
     inputDescription.value = lblDescription.textContent;
-    
     lblCheckbox.textContent = "Private";
 
-    //Esconde labels e mostra inputs para efetuar a mudança do user.
+    // Show the input fields and hide the labels to enable editing
     show(inputName.className);
     hide(lblName.className);
 
     inputDescription.style.width = "550px";
-
     icoEditProfile.style.display = "none";
     icoSave.style.display = "inline-block";
     
-
+    // Event listener to save button
     icoSave.addEventListener("click", (evt) => {
       icoEditProfile.style.display = "inline-block";
       icoSave.style.display = "none";
@@ -585,10 +636,11 @@ let onEdit = function (data) {
       const local = document.getElementById("local").value;
       const privateCheck = document.getElementById("privateCheckbox").checked;
       const id = data.idProfessional;
-
+      // Show labels and hide the input fields
       show(lblName.className);
       hide(inputName.className);
 
+      // Object that will be sent in the request
       let sendObj = {
         id: id,
         name: name,
@@ -596,6 +648,8 @@ let onEdit = function (data) {
         local: local,
         private: privateCheck
       };
+
+      // API call to update the user info
       api.put("/profile/user", sendObj).then(function (res) {
         if (res.status == 200) {
           lblName.textContent = name;
@@ -608,23 +662,36 @@ let onEdit = function (data) {
     });
 };
 
+/**
+ * DOMContentLoaded event listener function that retrieves user data from the API and builds the DOM
+ * based on the URL query parameters.
+ */
 window.addEventListener("DOMContentLoaded", function () {
+  // Create a new URLSearchParams object to parse the current URL
   const query = new URLSearchParams(window.location.href);
+  // Get edit-profile DOM element
   let icoEditProfile = document.getElementById("edit-profile");
+  // Check if the URL has an id query parameter
   if (query.has(window.location.origin + window.location.pathname + "?id")) {
+    // Get the value of the id query parameter
     let id = query.get(
       window.location.origin + window.location.pathname + "?id"
     );
+    // API GET request to retrieve user data based on the id
     api.get(`/profile/user?id=${id}`).then((res) => {
       if (res.status === 200 && typeof res.data === "object") {
+        // Build the DOM using the user data
         buildDom(res.data);
         hide(icoEditProfile.className);
       }
     });
   } else {
+    // Make a GET request to the API to retrieve the current user data
     api.get("/profile/user").then((res) => {
       if (res.status === 200 && typeof res.data === "object") {
+        // Build the DOM using the user data
         buildDom(res.data);
+        // Event listener to call onEdit function
         icoEditProfile.addEventListener("click", (evt) => {
           onEdit(res.data);
         });

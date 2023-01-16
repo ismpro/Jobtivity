@@ -94,5 +94,23 @@ class Company {
             throw err
         }
     }
+
+    /**
+   * Gets all companies from the database.
+   * @returns {Promise<Company[]>} - An array of companies.
+   */
+    static async getAllCompanies() {
+        let companies = [];
+        try {
+            const [query] = await DB.pool.query(`select idCompany"id", urlWebsite, urlLogo, valid FROM Company where valid is not null`);
+            for (const element of query) {
+                companies.push(new Company(element));
+            }
+            return companies;
+        } catch (err) {
+            console.log(err);
+            throw err
+        }
+    }
 }
 module.exports = Company;
