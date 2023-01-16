@@ -213,7 +213,7 @@ router.post(
     .withMessage("Description must be at least 5 characters"),
   global.checkForErrors,
   async function (req, res) {
-    let data = req.body;
+    let data = req.body;  
     let experience = new PastJob({
       name: data.name,
       url: data.url,

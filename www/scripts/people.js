@@ -14,7 +14,7 @@ let dataController = tableMaker("list-row", (element) => {
     // Create image container div
     let imgDiv = document.createElement("div");
     imgDiv.id = "profileImage";
-    imgDiv.classList.add("rounded-circle", "mb-3", "mt-4");
+    imgDiv.classList.add("rounded-circle", "mb-3", "mt-4", "profileImage");
     imgDiv.style.margin = "auto";
     imgDiv.style.textAlign = "center";
     imgDiv.style.width = "100px";
