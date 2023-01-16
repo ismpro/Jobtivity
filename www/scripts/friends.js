@@ -124,7 +124,9 @@ function makeFriendList(body, data) {
             iRemove.textContent = "clear";
 
             // Create the friend UI element
-            const msgDiv = createFriendUI({ id: friend.userid, element1: friend.name, element2: (new Date(friend.since)).toISOString().split("T")[0] }, [iRemove]);
+            const msgDiv = createFriendUI({ id: friend.userid, element1: friend.name, element2: (new Date(friend.since)).toLocaleDateString() }, [iRemove]);
+
+            let pElement2 = msgDiv.querySelector("div > p.text-muted.mb-0");
 
             // Add an event listener to the remove button that makes an API call to remove the friend
             iRemove.onclick = (evt) => {
@@ -165,7 +167,7 @@ function makeFriendList(body, data) {
  * Makes an API call to search for friends based on a given input value.
  * @param {String} inputValue - The value to search for
  * @param {String[]} data - An array of existing friends
- * @return {Promise} A promise that resolves with an array of filtered search results, or rejects with an error.
+ * @return {Promise<{name: String, email: String}[]>} A promise that resolves with an array of filtered search results, or rejects with an error.
  */
 function autoComplete(inputValue, data) {
     return new Promise((resolve, reject) => {
@@ -173,7 +175,9 @@ function autoComplete(inputValue, data) {
             .then(res => {
                 if (res.status === 200) {
                     // Filter out existing friends
-                    resolve(res.data.filter(email => !data.includes(email)));
+                    resolve(res.data.filter(obj => !data.includes(obj.email)));
+                } else if (code === 215) {
+                    resolve([]);
                 }
             })
             .catch(err => reject(err));
@@ -215,37 +219,44 @@ function makeAdd(body, data) {
             if (dataValue.length) {
                 //Getting autocomplete values for the input field
                 let autoCompleteValues = await autoComplete(dataValue, data.friends.map(friend => friend.email));
-                autoCompleteValues.forEach(user => {
 
-                    //Create the ui for the search users
-                    let divider = document.createElement("hr");
-                    divider.className = "divider";
+                if (autoCompleteValues.length) {
+                    autoCompleteValues.forEach(user => {
 
-                    let msgDiv = createFriendUI({ element1: user.name, element2: user.email }, [])
+                        //Create the ui for the search users
+                        let divider = document.createElement("hr");
+                        divider.className = "divider";
 
-                    div.appendChild(msgDiv);
-                    div.appendChild(divider);
+                        let msgDiv = createFriendUI({ element1: user.name, element2: user.email }, [])
 
-                    // Send a request to the server to add a friend when clicked on the created element
-                    msgDiv.onclick = (evt) => {
-                        api.post("/friends/add", { email: user.email }).then(res => {
-                            if (res.status === 200) {
-                                pElement2.textContent = "Requested Sended";
-                                delete msgDiv.onclick;
-                                setTimeout(() => {
-                                    target.value = "";
-                                    msgDiv.previousElementSibling.remove();
-                                    msgDiv.remove();
-                                }, 2000);
-                            } else if (res.status === 216) {
-                                pElement2.textContent = res.data;
-                            }
-                        })
-                    }
-                });
+                        msgDiv.classList.add("clickble");
 
-                div.lastElementChild.remove();
+                        let pElement2 = msgDiv.querySelector("div > p.text-muted.mb-0");
 
+                        div.appendChild(msgDiv);
+                        div.appendChild(divider);
+
+                        // Send a request to the server to add a friend when clicked on the created element
+                        msgDiv.onclick = (evt) => {
+                            api.post("/friends/add", { email: user.email }).then(res => {
+                                if (res.status === 200) {
+                                    pElement2.textContent = "Requested Sended";
+                                    delete msgDiv.onclick;
+                                    setTimeout(() => {
+                                        target.value = "";
+                                        while (div.hasChildNodes()) {
+                                            div.firstChild.remove();
+                                        }
+                                    }, 2000);
+                                } else if (res.status === 216) {
+                                    pElement2.textContent = res.data;
+                                }
+                            })
+                        }
+                    });
+
+                    div.lastElementChild.remove();
+                }
             }
             sending = false;
         }
@@ -278,7 +289,9 @@ function makeAdd(body, data) {
             iReject.textContent = "clear";
 
             let msgDiv = createFriendUI({ element1: friendsRequest.name, element2: (new Date(friendsRequest.timestamp)).toLocaleDateString() }, [iAccept, iReject])
-        
+
+            let pElement2 = msgDiv.querySelector("div > p.text-muted.mb-0");
+
             //Accepts the friend request
             iAccept.onclick = (evt) => {
                 api.post('friends/request/accept', { id: friendsRequest.id })
@@ -329,7 +342,6 @@ function deleteChat() {
     }
 }
 
-
 /**
  * Creates a UI element for a friend that contains a profile image and some text information.
  *
@@ -356,13 +368,9 @@ function createFriendUI(element, childsRightArray) {
 
     // Create left and right divs to hold the content
     const leftDiv = document.createElement('div');
-    const rightDiv = document.createElement('div');
-    rightDiv.className = "d-xl-flex align-items-xl-center";
-    rightDiv.style.marginLeft = "20px";
 
     // Append the left and right divs to the inner div
     innerDiv.appendChild(leftDiv);
-    innerDiv.appendChild(rightDiv);
 
     // Create p elements for element1 and element2
     const pElement1 = document.createElement('p');
@@ -378,9 +386,18 @@ function createFriendUI(element, childsRightArray) {
     leftDiv.appendChild(pElement2);
     friendDiv.appendChild(innerDiv);
 
-    // Append the child elements to the right div
-    for (const innerHTMEle of childsRightArray) {
-        rightDiv.appendChild(innerHTMEle);
+    if (childsRightArray.length) {
+        const rightDiv = document.createElement('div');
+        rightDiv.className = "d-xl-flex align-items-xl-center";
+        rightDiv.style.marginLeft = "20px";
+
+
+        // Append the child elements to the right div
+        for (const innerHTMEle of childsRightArray) {
+            rightDiv.appendChild(innerHTMEle);
+        }
+
+        innerDiv.appendChild(rightDiv);
     }
 
     if (element.id) {
@@ -394,5 +411,5 @@ function createFriendUI(element, childsRightArray) {
     }
 
     // Return the friend div
-    return [friendDiv, divImage, pElement1];
+    return friendDiv;
 }

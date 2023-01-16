@@ -371,7 +371,7 @@ router.post('/request/:type',
  */
 router.get('/search',
     checkSession,
-    query('text').isString().withMessage('Please enter a valid text for the search').toLowerCase(),
+    query('s').isString().withMessage('Please enter a valid text for the search').toLowerCase(),
     global.checkForErrors,
     async function (req, res) {
         let text = req.query.s;
@@ -379,7 +379,9 @@ router.get('/search',
         if (text) {
             let users = await User.getProfessionalsBySearchEmailAndName(text);
             if (!users) users = [];
-            res.status(200).send(users.map(user => ({ email: user.email, name: user.name })).filter(user => user.email !== req.session.email));
+            res.status(200).send(users
+                .filter(user => user.email !== req.session.email && user.isProfessional())
+                .map(user => ({ email: user.email, name: user.name })));
         } else {
             res.sendStatus(400);
         }
