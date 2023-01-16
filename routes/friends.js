@@ -203,7 +203,7 @@ router.get('/', checkSession, async function (req, res) {
  *           description: Successfully sent friend request
  *         216:
  *           description: Friend request already sent
- *         210:
+ *         217:
  *           description: Email does not exist
  *         215:
  *           description: Validation errors
@@ -242,7 +242,7 @@ router.post('/add',
                 res.status(216).send("Friend Request already send");
             }
         } else {
-            res.status(210).send("This email does not exists.");
+            res.status(217).send("This email does not exists.");
         }
     });
 
