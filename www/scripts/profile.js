@@ -27,8 +27,7 @@ let buildDom = function (data) {
   inputName.style.display = "none";
   inputDescription.style.display = "none";
   inputLocal.style.display = "none";
-  divImage.id = "profileImage";
-  divImage.classList.add("rounded-circle", "mb-3", "mt-4");
+  divImage.classList.add("rounded-circle", "mb-3", "mt-4", "profileImage");
 
   divImage.style.margin = "auto";
   divImage.style.textAlign = "center";
@@ -96,11 +95,22 @@ let buildDom = function (data) {
     lblDesc.style.fontSize = "15px";
 
     lblCompany.textContent = element.name;
-    lblUrl.textContent = element.url.substring(8);
-    lblUrl.href = element.url;
+    
+    if(element.url.includes("https://")){
+      lblUrl.href = element.url;
+      lblUrl.textContent = element.url.substring(8);
+    }else if(element.url.includes("http://")){
+      lblUrl.href = element.url;
+      lblUrl.textContent = element.url.substring(7);
+    }else{
+      lblUrl.href = "https://" + element.url;
+      lblUrl.textContent = element.url;
+    }
+    
+    
     lblUrl.target = "_blank";
-    lblBeginDate.textContent = "Start Date: " + element.beginDate.substring(0,10);
-    lblEndDate.textContent = "End Date: " + element.endDate.substring(0,10);
+    lblBeginDate.textContent = "Start Date: " + new Date(element.beginDate).toLocaleDateString();
+    lblEndDate.textContent = "End Date: " + new Date(element.endDate).toLocaleDateString();
     lblDesc.textContent = element.description;
 
     li.appendChild(lblCompany);
@@ -167,6 +177,8 @@ let buildDom = function (data) {
     iDelete.style.textAlign = "right";
     iDelete.textContent = "clear";
     li.style.display = "inline-block";
+    li.style.maxWidth = "75%";
+    li.style.overflow = "hidden";
     divIco.style.display = "inline-block";
     divIco.style.float = "right";
 
@@ -330,8 +342,16 @@ let makeModal = function (modal, data, type, action) {
             };
             api.put("/profile/experience", sendObj).then(function (res) {
               if (res.status == 200) {
-                console.log("Sucesso.");
-              } else {
+                window.location.reload();
+              } else if (res.status === 215) {
+                let errors = res.data.errors;
+                console.log(errors);
+                if (errors.length > 0) {
+                  textEle.appendChild(document.createTextNode(errors[0].msg));
+                } else {
+                  textEle.appendChild(document.createTextNode("ERROR"));
+                }
+              }else {
                 res.status(500).send("erro");
               }
             });
@@ -354,7 +374,16 @@ let makeModal = function (modal, data, type, action) {
             alert.parentElement.classList.add("alert-success");
             alert.parentElement.classList.remove("visually-hidden");
             if (res.status == 200) {
+              modal.style.display = "none";
               window.location.reload();
+            }else if (res.status === 215) {
+              let errors = res.data.errors;
+              console.log(errors);
+              if (errors.length > 0) {
+                textEle.appendChild(document.createTextNode(errors[0].msg));
+              } else {
+                textEle.appendChild(document.createTextNode("ERROR"));
+              }
             }else {
               res.send("erro");
             }
@@ -411,7 +440,15 @@ let makeModal = function (modal, data, type, action) {
           api.put("/profile/qualification", sendObj).then(function (res) {
             if (res.status == 200) {
               console.log("Sucesso");
-            } else {
+            } else if (res.status === 215) {
+              let errors = res.data.errors;
+              console.log(errors);
+              if (errors.length > 0) {
+                textEle.appendChild(document.createTextNode(errors[0].msg));
+              } else {
+                textEle.appendChild(document.createTextNode("ERROR"));
+              }
+            }else {
               res.status(500).send("erro");
             }
           });
