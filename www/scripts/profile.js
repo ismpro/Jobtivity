@@ -258,8 +258,8 @@ let buildDom = function (data) {
  * @function makeModal
  * @param {HTMLElement} modal - modal element 
  * @param {Object} data - data object 
- * @param {string} type - type of the data, 'experience' or 'academic'
- * @param {string} action - the action to be performed on the modal, used on "edit"
+ * @param {String} type - type of the data, 'experience' or 'academic'
+ * @param {String} action - the action to be performed on the modal, used on "edit"
  * This function creates a modal to create or edit the experience or academic with the provided data 
  */
 let makeModal = function (modal, data, type, action) {
@@ -567,7 +567,7 @@ let makeModal = function (modal, data, type, action) {
 
 /**
  * @function hide
- * @param {string} className - class name of the elements to be hidden
+ * @param {String} className - class name of the elements to be hidden
  * @desc This function is used to hide elements with a given class name
  */
 let hide = function (className) {
@@ -583,7 +583,7 @@ let hide = function (className) {
 
 /**
  * @function show
- * @param {string} className - class name of the elements to be shown
+ * @param {String} className - class name of the elements to be shown
  * @desc This function is used to show elements with a given class name
  */
 let show = function (className){
