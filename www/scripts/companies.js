@@ -12,6 +12,7 @@ let dataController = tableMaker("companies", (element) => {
     h1.style.marginTop = '10px';
     h1.style.marginBottom = '20px';
     h1.style.fontWeight = 'bold';
+    h1.style.color = '#3e588f';
     h1.textContent = element.name;
 
     // Create row container div
@@ -40,6 +41,10 @@ let dataController = tableMaker("companies", (element) => {
     
 
     // Create description element
+    const h3Desc = document.createElement('h4');
+    h3Desc.style.fontWeight = 'bold';
+    h3Desc.style.color = '#3e588f';
+    h3Desc.textContent = "About";
     const p = document.createElement('p');
     p.appendChild(document.createElement('br'))
     p.style.width = '100%';
@@ -51,7 +56,27 @@ let dataController = tableMaker("companies", (element) => {
     p.style.maxHeight = '150px';
     p.style.color = 'rgb(0, 0, 0)';
     p.appendChild(document.createTextNode(element.description));
+
+    
+
+
+    // Create url element
+    const a = document.createElement('a');
+    a.appendChild(document.createElement('br'))
+    a.style.width = '100%';
+    a.style.minWidth = '100px';
+    a.style.textAlign = 'left';
+    a.style.overflow = 'scroll';
+    a.style.overflowY = 'auto';
+    a.style.overflowX = 'visible';
+    a.style.maxHeight = '150px';
+    a.style.color = 'rgb(0, 0, 0)';
+    a.href = element.url;
+    a.appendChild(document.createTextNode(element.url.substring(8)));
+    
+    col2.appendChild(h3Desc);
     col2.appendChild(p);
+    col2.appendChild(a);
 
     row.appendChild(col1);
     row.appendChild(col2);
