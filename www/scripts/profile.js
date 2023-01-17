@@ -107,7 +107,13 @@ let buildDom = function (data) {
     lblDesc.style.fontSize = "15px";
 
     lblCompany.textContent = element.name;
-    lblUrl.textContent = element.url;
+
+    if(element.url.includes("http://")){
+      lblUrl.textContent = element.url.substring(7);
+    }else{
+      lblUrl.textContent = element.url.substring(8);
+    }
+    
     lblUrl.href = element.url;
     
     lblUrl.target = "_blank";
@@ -239,6 +245,12 @@ let buildDom = function (data) {
     makeModal(modal, data, "academic");
   });
   
+  [].forEach.call(
+    document.querySelectorAll(".material-icons"),
+    function (el){
+      el.style.color = "#3e588f";
+    }
+  )
 };
 
 
