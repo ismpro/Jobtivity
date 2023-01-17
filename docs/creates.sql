@@ -1,72 +1,127 @@
-CREATE TABLE `Profissional` (
-  `idProfissional` int NOT NULL AUTO_INCREMENT,
-  `birthday` date DEFAULT NULL,
-  `gender` varchar(1) DEFAULT NULL,
-  `local` varchar(128) DEFAULT NULL,
-  `private` tinyint DEFAULT NULL,
-  PRIMARY KEY (`idProfissional`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE SCHEMA IF NOT EXISTS `pw` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 
-CREATE TABLE `Company` (
-  `idCompany` int NOT NULL AUTO_INCREMENT,
-  `urlWebsite` varchar(500) DEFAULT NULL,
-  `urlLogo` varchar(500) DEFAULT NULL,
-  `valid` tinyint DEFAULT NULL,
-  PRIMARY KEY (`idCompany`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE IF NOT EXISTS `pw`.`Professional` (
+  `idProfessional` INT NOT NULL AUTO_INCREMENT,
+  `birthday` DATE NULL DEFAULT NULL,
+  `gender` VARCHAR(1) NULL DEFAULT NULL,
+  `local` VARCHAR(128) NULL DEFAULT NULL,
+  `private` TINYINT NULL DEFAULT NULL,
+  PRIMARY KEY (`idProfessional`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 12
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
 
-CREATE TABLE `User` (
-  `idUser` int NOT NULL AUTO_INCREMENT,
-  `email` varchar(64) NOT NULL,
-  `password` varchar(100) NOT NULL,
-  `name` varchar(64) DEFAULT NULL,
-  `description` varchar(1024) DEFAULT NULL,
-  `admin` tinyint NOT NULL DEFAULT '0',
-  `companyId` int DEFAULT NULL,
-  `profissionalId` int DEFAULT NULL,
+CREATE TABLE IF NOT EXISTS `pw`.`Company` (
+  `idCompany` INT NOT NULL AUTO_INCREMENT,
+  `urlWebsite` VARCHAR(500) NULL DEFAULT NULL,
+  `urlLogo` VARCHAR(500) NULL DEFAULT NULL,
+  `valid` TINYINT NULL DEFAULT NULL,
+  PRIMARY KEY (`idCompany`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 7
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS `pw`.`User` (
+  `idUser` INT NOT NULL AUTO_INCREMENT,
+  `email` VARCHAR(64) NOT NULL,
+  `password` VARCHAR(100) NOT NULL,
+  `name` VARCHAR(64) NULL DEFAULT NULL,
+  `description` VARCHAR(1024) NULL DEFAULT NULL,
+  `admin` TINYINT NOT NULL DEFAULT '0',
+  `sessionId` VARCHAR(70) NULL DEFAULT NULL,
+  `companyId` INT NULL DEFAULT NULL,
+  `professionalId` INT NULL DEFAULT NULL,
   PRIMARY KEY (`idUser`),
-  KEY `FK_User_Empresa_idx` (`companyId`),
-  KEY `FK_User_Profissional_idx` (`profissionalId`),
-  CONSTRAINT `FK_User_Company` FOREIGN KEY (`companyId`) REFERENCES `Company` (`idCompany`),
-  CONSTRAINT `FK_User_Profissional` FOREIGN KEY (`profissionalId`) REFERENCES `Profissional` (`idProfissional`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  INDEX `FK_User_Company_idx` (`companyId` ASC) VISIBLE,
+  INDEX `FK_User_Profissional_idx` (`professionalId` ASC) VISIBLE,
+  CONSTRAINT `FK_User_Company`
+    FOREIGN KEY (`companyId`)
+    REFERENCES `pw`.`Company` (`idCompany`)
+    ON DELETE CASCADE,
+  CONSTRAINT `FK_User_Professional`
+    FOREIGN KEY (`professionalId`)
+    REFERENCES `pw`.`Professional` (`idProfessional`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 22
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
 
-CREATE TABLE `Qualification` (
-  `idQualification` int NOT NULL AUTO_INCREMENT,
-  `local` varchar(128) NOT NULL,
-  `name` varchar(64) NOT NULL,
-  `type` varchar(50) NOT NULL,
-  `grade` varchar(20) DEFAULT NULL,
-  `idProfissional` int DEFAULT NULL,
+CREATE TABLE IF NOT EXISTS `pw`.`Qualification` (
+  `idQualification` INT NOT NULL AUTO_INCREMENT,
+  `local` VARCHAR(128) NOT NULL,
+  `name` VARCHAR(64) NOT NULL,
+  `type` VARCHAR(50) NOT NULL,
+  `grade` VARCHAR(20) NULL DEFAULT NULL,
+  `idProfissional` INT NULL DEFAULT NULL,
   PRIMARY KEY (`idQualification`),
-  KEY `FK_Profissional_Qualification_idx` (`idProfissional`),
-  CONSTRAINT `FK_Profissional_Qualification` FOREIGN KEY (`idProfissional`) REFERENCES `Profissional` (`idProfissional`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  INDEX `FK_Profissional_Qualification_idx` (`idProfissional` ASC) VISIBLE,
+  CONSTRAINT `FK_Profissional_Qualification`
+    FOREIGN KEY (`idProfissional`)
+    REFERENCES `pw`.`Professional` (`idProfessional`)
+    ON DELETE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 10
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
 
-CREATE TABLE `PastJob` (
-  `idPastJob` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) DEFAULT NULL,
-  `url` varchar(500) DEFAULT NULL,
-  `beginDate` date DEFAULT NULL,
-  `endDate` date DEFAULT NULL,
-  `description` varchar(1024) DEFAULT NULL,
-  `idProfissional` int DEFAULT NULL,
+CREATE TABLE IF NOT EXISTS `pw`.`PastJob` (
+  `idPastJob` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(64) NULL DEFAULT NULL,
+  `url` VARCHAR(500) NULL DEFAULT NULL,
+  `beginDate` DATE NULL DEFAULT NULL,
+  `endDate` DATE NULL DEFAULT NULL,
+  `description` VARCHAR(1024) NULL DEFAULT NULL,
+  `idProfissional` INT NULL DEFAULT NULL,
   PRIMARY KEY (`idPastJob`),
-  KEY `FK_Profissional_PastJob_idx` (`idProfissional`),
-  CONSTRAINT `FK_Profissional_PastJob` FOREIGN KEY (`idProfissional`) REFERENCES `Profissional` (`idProfissional`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  INDEX `FK_Profissional_PastJob_idx` (`idProfissional` ASC) VISIBLE,
+  CONSTRAINT `FK_Profissional_PastJob`
+    FOREIGN KEY (`idProfissional`)
+    REFERENCES `pw`.`Professional` (`idProfessional`)
+    ON DELETE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 16
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
 
-CREATE TABLE `Friends` (
-  `idFriends` int NOT NULL AUTO_INCREMENT,
-  `idProfissional1` int NOT NULL,
-  `idProfissional2` int NOT NULL,
-  `since` datetime NOT NULL,
-  PRIMARY KEY (`idFriends`),
-  KEY `FK_Professional1_idx` (`idProfissional1`),
-  KEY `FK_Professional2_idx` (`idProfissional2`),
-  CONSTRAINT `FK_Professional1` FOREIGN KEY (`idProfissional1`) REFERENCES `Profissional` (`idProfissional`),
-  CONSTRAINT `FK_Professional2` FOREIGN KEY (`idProfissional2`) REFERENCES `Profissional` (`idProfissional`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE IF NOT EXISTS `pw`.`Friend` (
+  `idFriend` INT NOT NULL AUTO_INCREMENT,
+  `idProfessional1` INT NOT NULL,
+  `idProfessional2` INT NOT NULL,
+  `since` DATETIME NOT NULL,
+  PRIMARY KEY (`idFriend`),
+  INDEX `FK_Professional1_idx` (`idProfessional1` ASC) VISIBLE,
+  INDEX `FK_Professional2_idx` (`idProfessional2` ASC) VISIBLE,
+  CONSTRAINT `FK_Professional1`
+    FOREIGN KEY (`idProfessional1`)
+    REFERENCES `pw`.`Professional` (`idProfessional`),
+  CONSTRAINT `FK_Professional2`
+    FOREIGN KEY (`idProfessional2`)
+    REFERENCES `pw`.`Professional` (`idProfessional`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS `pw`.`FriendRequest` (
+  `idFriendRequest` INT NOT NULL AUTO_INCREMENT,
+  `idProfessional1` INT NOT NULL,
+  `idProfessional2` INT NOT NULL,
+  `timestamp` DATETIME NOT NULL,
+  PRIMARY KEY (`idFriendRequest`),
+  INDEX `FK_FriendsRequests_Professional1_idx` (`idProfessional1` ASC) VISIBLE,
+  INDEX `FK_FriendsRequests_Professional2_idx` (`idProfessional2` ASC) VISIBLE,
+  CONSTRAINT `FK_FriendsRequests_Professional1`
+    FOREIGN KEY (`idProfessional1`)
+    REFERENCES `pw`.`Professional` (`idProfessional`),
+  CONSTRAINT `FK_FriendsRequests_Professional2`
+    FOREIGN KEY (`idProfessional2`)
+    REFERENCES `pw`.`Professional` (`idProfessional`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 13
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
 
 INSERT INTO `pw`.`User`
 (`email`,
@@ -76,7 +131,7 @@ INSERT INTO `pw`.`User`
 `admin`)
 VALUES
 ('admin1@gmail.com',
-'gg',
+'$2b$10$3F3n1X/cXT.TO4gpoJA59.iuWOZOCD6tZPsnbLv9g70zpTjYgzJ2i',
 'Admin1',
 'Admin1 account',
 true);
@@ -89,7 +144,7 @@ INSERT INTO `pw`.`User`
 `admin`)
 VALUES
 ('admin2@gmail.com',
-'gg',
+'$2b$10$3F3n1X/cXT.TO4gpoJA59.iuWOZOCD6tZPsnbLv9g70zpTjYgzJ2i',
 'Admin2',
 'Admin2 account',
 true);

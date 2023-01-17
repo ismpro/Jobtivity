@@ -12,8 +12,7 @@ const Company = require("../models/CompanyModel");
 const User = require("../models/UserModel");
 
 /**
- * Route that returns a list of companies that have not yet been validated.
- * Accessible only to administrators.
+ * Route that returns a list of companies that have yet been validated.
  * 
  * @route {GET} /list
  * @return {Array<{idCompany: Number, name: String, description: String, logo: String, url: String}>} output - List of companies
