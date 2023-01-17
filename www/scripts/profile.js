@@ -107,18 +107,14 @@ let buildDom = function (data) {
     lblDesc.style.fontSize = "15px";
 
     lblCompany.textContent = element.name;
-    
-    if(element.url.includes("https://")){
-      lblUrl.href = element.url;
-      lblUrl.textContent = element.url.substring(8);
-    }else if(element.url.includes("http://")){
-      lblUrl.href = element.url;
+
+    if(element.url.includes("http://")){
       lblUrl.textContent = element.url.substring(7);
     }else{
-      lblUrl.href = "https://" + element.url;
-      lblUrl.textContent = element.url;
+      lblUrl.textContent = element.url.substring(8);
     }
     
+    lblUrl.href = element.url;
     
     lblUrl.target = "_blank";
     lblBeginDate.textContent = "Start Date: " + new Date(element.beginDate).toLocaleDateString();
@@ -249,6 +245,12 @@ let buildDom = function (data) {
     makeModal(modal, data, "academic");
   });
   
+  [].forEach.call(
+    document.querySelectorAll(".material-icons"),
+    function (el){
+      el.style.color = "#3e588f";
+    }
+  )
 };
 
 
@@ -303,7 +305,7 @@ let makeModal = function (modal, data, type, action) {
 
       // Properties of input elements
       inputName.type = "text";
-      inputUrl.type = "text";
+      inputUrl.type = "url";
       inputBeginDate.type = "date";
       inputEndDate.type = "date";
       inputDescription.style.resize = "none";
@@ -403,7 +405,6 @@ let makeModal = function (modal, data, type, action) {
             alert.parentElement.classList.add("alert-success");
             alert.parentElement.classList.remove("visually-hidden");
             if (res.status == 200) {
-              modal.style.display = "none";
               window.location.reload();
             }else if (res.status === 215) {
               let errors = res.data.errors;

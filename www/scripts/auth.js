@@ -23,7 +23,7 @@ window.addEventListener("DOMContentLoaded", function () {
                 people.href = "/people";
 
                 let img = document.createElement("img");
-                img.src = "images/Icons/job-icon.png";
+                img.src = "images/Icons/people.png";
                 img.style.width = '50px';
 
                 people.appendChild(img);
@@ -39,9 +39,8 @@ window.addEventListener("DOMContentLoaded", function () {
                     profile.href = "/profile";
 
                     let img = document.createElement("img");
-                    img.src = "images/Icons/job-icon.png";
-                    img.style.width = '50px';
-
+                    img.src = "images/Icons/profile.png";
+                
                     profile.appendChild(img);
                     profile.appendChild(document.createTextNode("Profile"));
 

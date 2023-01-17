@@ -9107,7 +9107,8 @@ fieldset:disabled .btn {
 
 .text-primary {
     --bs-text-opacity: 1;
-    color: rgba(var(--bs-primary-rgb), var(--bs-text-opacity)) !important
+    color: #3e588f;
+    /*color: rgba(var(--bs-primary-rgb), var(--bs-text-opacity)) !important;*/
 }
 
 .text-secondary {

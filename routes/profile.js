@@ -187,7 +187,7 @@ router.post("/experience",
   body("name")
     .isLength({ min: 2 })
     .withMessage("Name must be at least 2 characters"),
-  body("url").isURL()
+  body("url").isURL({require_protocol: true})
     .withMessage("Invalid URL"),
   body("beginDate")
     .isDate()
@@ -231,7 +231,10 @@ router.put("/experience",
   body("endDate")
     .isDate()
     .withMessage("Begin Date must be provided")
-    .toDate(),
+    .toDate(), 
+  body("url").isURL({require_protocol: true})
+    .withMessage("Invalid URL"),
+    global.checkForErrors,
   async function (req, res) {
     let data = req.body;
     let id = data.id;
