@@ -48,6 +48,11 @@ class PastJob {
     }
   }
 
+  /**
+   * Update a PastJob in the database.
+   * @async
+   * @return {Promise<void>}
+   */
   async update() {
     await DB.pool.query(`
     UPDATE PastJob SET
@@ -61,6 +66,11 @@ class PastJob {
     return;
   }
 
+  /**
+   * Delete a PastJob from the database.
+   * @async
+   * @return {Promise<void>}
+   */
   async delete() {
     await DB.pool.query(`
     DELETE FROM PastJob
@@ -93,6 +103,14 @@ class PastJob {
     }
   }
 
+  /**
+  * Retrieves a past job by its ID from the database
+  * @async
+  * @static
+  * @param {Number} id - The ID of the past job to retrieve
+  * @returns {(PastJob|null)} - A PastJob object or null if no past job is found with the given ID
+  * @throws {String} - "Invalid id" if the provided id is not a valid number
+  */
   static async getPastJobById(id) {
     if (id && !isNaN(id) && Number.isSafeInteger(id)) {
       try {
@@ -110,7 +128,6 @@ class PastJob {
       throw "Invalid id"
     }
   }
-
 }
 
 module.exports = PastJob;

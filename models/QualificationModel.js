@@ -39,6 +39,11 @@ class Qualification {
     return qualification[0].insertId;
   }
 
+  /**
+   * Update a Qualification in the database.
+   * @async
+   * @return {Promise<void>}
+   */
   async update() {
     await DB.pool.query(`
     UPDATE Qualification SET
@@ -47,16 +52,21 @@ class Qualification {
     type = ?,
     grade = ?
     WHERE idQualification = ?;`,
-        [this.local, this.name, this.type, this.grade, this.id]);
+      [this.local, this.name, this.type, this.grade, this.id]);
     return;
-}
+  }
 
-  async delete(){
+  /**
+   * Delete a Qualification from the database.
+   * @async
+   * @return {Promise<void>}
+   */
+  async delete() {
     await DB.pool.query(`
       DELETE FROM Qualification
       WHERE idQualification = ?;
     `,
-    [this.id]);
+      [this.id]);
     return;
   }
 
@@ -88,14 +98,22 @@ class Qualification {
     }
   }
 
+  /**
+   * Get a Qualification by its ID.
+   * @static
+   * @async
+   * @param {number} id - The ID of the Qualification.
+   * @return {Promise<Qualification|null>} - The Qualification object if found, otherwise null.
+   * @throws {String} - If the id is invalid. 
+   */
   static async getQualificationById(id) {
     if (id && !isNaN(id) && Number.isSafeInteger(id)) {
       try {
         const [query] = await DB.pool.query(
           `SELECT idQualification"id", local, name, type, grade, idProfissional"professional" FROM Qualification WHERE idQualification=?;`,
           [id]);
-          if (query.length === 0) return null;
-          return new Qualification(query[0]);
+        if (query.length === 0) return null;
+        return new Qualification(query[0]);
       } catch (err) {
         console.log(err);
         throw err;
