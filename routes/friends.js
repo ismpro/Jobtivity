@@ -93,7 +93,7 @@ async function getFriendsRequest(friendsRequests) {
 }
 
 /**
- * @route {GET} /
+ * @route {GET} /friends
  * @description Retrieve all friends and friend requests for the current user
  * @swagger
  * path:
@@ -176,7 +176,7 @@ router.get('/', checkSession, async function (req, res) {
 });
 
 /**
- * @route {POST} /add
+ * @route {POST} /friends/add
  * @description Send a friend request to a user with a specific email
  * @param {String} email - The email of the user to send the friend request to
  * @swagger
@@ -247,7 +247,7 @@ router.post('/add',
     });
 
 /**
- * @route {POST} /request/:type
+ * @route {POST} /friends/request/:type
  * @description Handle accepting or declining a friend request
  * @param {String} type - The type of request (accept or decline)
  * @param {Number} id - The id of the friend request
@@ -315,7 +315,7 @@ router.post('/request/:type',
     });
 
 /**
- * @route {GET} /search
+ * @route {GET} /friends/search
  * @description Search for a user based on a search term
  * @param {String} text - The search term used to filter the results
  * @swagger
@@ -389,7 +389,7 @@ router.get('/search',
 
 
 /**
- * @route {DELETE} /:id
+ * @route {DELETE} /friends/remove
  * @description Handle deleting a friend
  * @param {Number} id - The id of the friend
  * @swagger

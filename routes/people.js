@@ -57,24 +57,24 @@ function calculateAge(birthdate) {
 
 router.get('/all', async function (req, res) {
 
-    let output = [];
-    try {
+  let output = [];
+  try {
 
-      //Retrieve all professionals users  
-      let users = await User.getAllProfessionalsUsers();
-      //Filter professionals that are not the current user  
-      for (const user of users) {
-            if (req.session.userid !== user.id) {
-                output.push(user);
-            }
-        }
+    //Retrieve all professionals users  
+    let users = await User.getAllProfessionalsUsers();
+    //Filter professionals that are not the current user  
+    for (const user of users) {
+      if (req.session.userid !== user.id) {
+        output.push(user);
+      }
+    }
 
-        let professionals = await Promise.all(output.map((user) => Professional.getById(user.professional)));
+    let professionals = await Promise.all(output.map((user) => Professional.getById(user.professional)));
 
-        //Retrieve current user
-        let user = await User.getById(req.session.userid);
+    //Retrieve current user
+    let user = await User.getById(req.session.userid);
 
-        //Filter private professionals if current user is a company
+    //Filter private professionals if current user is a company
     if (user.isCompany()) {
       output = output.filter((user) => {
         let professional = professionals.find((prof) => prof.id === user.professional);
@@ -82,7 +82,7 @@ router.get('/all', async function (req, res) {
       });
     }
 
-        //Filter friends if current user is a professional
+    //Filter friends if current user is a professional
     if (user.isProfessional()) {
       let friends = await Friend.getAllForProfessional(user.professional);
       output = output.filter((user) => {
@@ -95,7 +95,7 @@ router.get('/all', async function (req, res) {
       });
     }
 
-        //Send filtered list of professionals
+    //Send filtered list of professionals
     res.status(200).send(
       output.map((user) => {
         let professional = professionals.find(

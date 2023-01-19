@@ -6,7 +6,7 @@ let DB = require('../app/connection');
  * @class
  */
 class PastJob {
-  
+
   /**
    * Initializes properties of a past job object.
    *
@@ -36,12 +36,11 @@ class PastJob {
     *
     * @return {Promise<Number>} - The ID of the newly created past job.
     */
-
   async create() {
     try {
       let pastjob = await DB.pool.query(
-    "INSERT INTO PastJob (name, url, beginDate, endDate, description, idProfissional) VALUES (?, ?, STR_TO_DATE(?, '%Y-%m-%d'), STR_TO_DATE(?, '%Y-%m-%d'), ?, ?)",
-    [this.name, this.url, this.beginDate.toISOString().split("T")[0], this.endDate.toISOString().split("T")[0], this.description, this.professional]);
+        "INSERT INTO PastJob (name, url, beginDate, endDate, description, idProfissional) VALUES (?, ?, STR_TO_DATE(?, '%Y-%m-%d'), STR_TO_DATE(?, '%Y-%m-%d'), ?, ?)",
+        [this.name, this.url, this.beginDate.toISOString().split("T")[0], this.endDate.toISOString().split("T")[0], this.description, this.professional]);
       this.id = pastjob[0].insertId;
       return pastjob[0].insertId;
     } catch (error) {
@@ -58,18 +57,18 @@ class PastJob {
     endDate = ?,
     description = ?
     WHERE idPastJob = ?;`,
-        [this.name, this.url, this.beginDate.toISOString().split("T")[0], this.endDate.toISOString().split("T")[0], this.description, this.id]);
+      [this.name, this.url, this.beginDate.toISOString().split("T")[0], this.endDate.toISOString().split("T")[0], this.description, this.id]);
     return;
-}
+  }
 
-async delete(){
-  await DB.pool.query(`
+  async delete() {
+    await DB.pool.query(`
     DELETE FROM PastJob
     WHERE idPastJob = ?;
   `,
-  [this.id]);
-  return;
-}
+      [this.id]);
+    return;
+  }
 
   /**
    * Retrieves past job by its professional ID from the database.
@@ -83,9 +82,9 @@ async delete(){
     try {
       const [query] = await DB.pool.query(
         `SELECT idPastJob"id", name, url, beginDate, endDate, description, idProfissional"professional" FROM PastJob WHERE idProfissional=?;`,
-      [id]);
+        [id]);
       for (const element of query) {
-        pastjob.push(new PastJob({...element, beginDate: new Date(element.beginDate), endDate: new Date(element.endDate)}));
+        pastjob.push(new PastJob({ ...element, beginDate: new Date(element.beginDate), endDate: new Date(element.endDate) }));
       }
       return pastjob;
     } catch (err) {
@@ -100,8 +99,8 @@ async delete(){
         const [query] = await DB.pool.query(
           `SELECT idPastJob"id", name, url, beginDate, endDate, description, idProfissional"professional" FROM PastJob WHERE idPastJob=?;`,
           [id]);
-          if (query.length === 0) return null;
-          return new PastJob(query[0]);
+        if (query.length === 0) return null;
+        return new PastJob(query[0]);
       } catch (err) {
         console.log(err);
         throw err;

@@ -28,7 +28,7 @@ class Qualification {
 
   /**
    * Creates a new Qualification in the database.
-   * @returns {Number} The id of the newly created Qualification.
+   * @returns {Promise<Number>} The id of the newly created Qualification.
    */
   async create() {
     let qualification = await DB.pool.query(`
