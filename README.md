@@ -108,6 +108,17 @@ We have 2 admin accounts:
 | admin1@mail.com | BW7dVuGJfQ |
 | admin2@mail.com | 7UGXwYFYet |
 
+## Normal Accounts
+
+| Email | Password |
+| ------ | ------ |
+| deloitte@deloitte.com | 12345Deloitte. |
+| kpmg@kpmg.com | 12345Kpmg. |
+| ey@ey.com | 12345Ey. |
+| joao_sousa@mail.com | 12345Joao. |
+| matilde_sampaio@mail.com | 12345Matilde. |
+| hugo_ferreira@mail.com | 12345Hugo. |
+
 ## Team
 
 Meet the team:
