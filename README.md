@@ -72,6 +72,13 @@ npm run start
 
 Done! Now you can access using the link `localhost:PORT`
 
+## Docs
+
+To access the docs via the browser you uses this links:
+
+- `localhost:PORT/docs` - For the api docs
+- `localhost:PORT/jsdocs` - For the jsdocs
+
 ## Frameworks
 
 Below is a list of framework used in the project.
@@ -91,6 +98,26 @@ Below is a list of framework used in the project.
 ## Relational model
 
 ![Relational model](/docs/db.png "Relational model")
+
+## Admin Accounts
+
+We have 2 admin accounts:
+
+| Email | Password |
+| ------ | ------ |
+| admin1@mail.com | BW7dVuGJfQ |
+| admin2@mail.com | 7UGXwYFYet |
+
+## Normal Accounts
+
+| Email | Password |
+| ------ | ------ |
+| deloitte@deloitte.com | 12345Deloitte. |
+| kpmg@kpmg.com | 12345Kpmg. |
+| ey@ey.com | 12345Ey. |
+| joao_sousa@mail.com | 12345Joao. |
+| matilde_sampaio@mail.com | 12345Matilde. |
+| hugo_ferreira@mail.com | 12345Hugo. |
 
 ## Team
 
