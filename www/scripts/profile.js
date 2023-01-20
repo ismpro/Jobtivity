@@ -475,7 +475,7 @@ let makeModal = function (modal, data, type, action) {
           // API call to update the qualification
           api.put("/profile/qualification", sendObj).then(function (res) {
             if (res.status == 200) {
-              console.log("Sucesso");
+              window.location.reload();
             } else if (res.status === 215) {
               let errors = res.data.errors;
               console.log(errors);
