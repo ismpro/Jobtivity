@@ -400,6 +400,10 @@ router.post('/login',
                 }
             }
 
+            console.log(data)
+            console.log(user)
+            console.log(bcrypt.compareSync(data.password, user.password))
+
             if (bcrypt.compareSync(data.password, user.password)) {
                 let sessionId = createid(64);
                 req.session.userid = user.id;
