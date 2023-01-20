@@ -86,6 +86,8 @@ const checkAdmin = async function (req, res, next) {
  *                                  type: string
  *                              location:
  *                                  type: string 
+ *      400:
+ *        description: Company doesn't exist 
  *      401:
  *        description: Unauthorized
  *      500:
@@ -99,6 +101,10 @@ router.post('/alterValid',
     async function (req, res) {
         try {
             let company = await Company.getById(req.body.id);
+
+            if(!company) {
+                return res.status(400).send("Company doesn't exist")
+            }
 
             if (req.body.type === "accept") {
                 company.valid = true;

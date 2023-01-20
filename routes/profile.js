@@ -120,7 +120,7 @@ const checkLoggedIn = async (req, res, next) => {
  *                                  type: string
  *                              location:
  *                                  type: string 
- *       401:
+ *       400:
  *         description: Invalid ID provided
  *       401:
  *         description: Unauthorized
@@ -137,7 +137,7 @@ router.get("/user",
       if (data.id) {
         user = await User.getById(parseInt(data.id));
         if (!user || !user.isProfessional()) {
-          res.status(401).send("Invalid ID");
+          res.status(400).send("Invalid ID");
           return;
         }
       } else {
@@ -225,6 +225,8 @@ router.get("/user",
  *                                  type: string
  *                              location:
  *                                  type: string 
+ *       400:
+ *         description: Professional Id invalid
  *       500:
  *         description: Internal Server Error
  */
@@ -248,6 +250,10 @@ router.put("/user",
         User.getByProfessionalId(id),
         Professional.getById(id),
       ]);
+
+      if (!user || !professional) {
+        return res.status(400).send("Professional Id invalid")
+      }
 
       user.name = data.name;
       user.description = data.description;
@@ -406,6 +412,8 @@ router.post("/qualification",
  *                                  type: string
  *                              location:
  *                                  type: string 
+ *       400:
+ *         description: Qualification Id invalid
  *       401:
  *         description: Unauthorized access
  *       500:
@@ -433,6 +441,10 @@ router.put("/qualification",
 
     try {
       let qualification = await Qualification.getQualificationById(id);
+
+      if (!qualification) {
+        return res.status(400).send("Qualification Id invalid")
+      }
 
       qualification.local = data.local;
       qualification.name = data.name;
@@ -485,6 +497,8 @@ router.put("/qualification",
  *                                  type: string
  *                              location:
  *                                  type: string 
+ *       400:
+ *         description: Qualification Id invalid
  *       401:
  *         description: Unauthorized access
  *       500:
@@ -497,6 +511,11 @@ router.delete("/qualification",
   async function (req, res) {
     try {
       let qualification = await Qualification.getQualificationById(req.body.id);
+
+      if (!qualification) {
+        return res.status(400).send("Qualification Id invalid")
+      }
+
       await qualification.delete();
       res.status(200).send("Qualification deleted");
     } catch (error) {
@@ -667,7 +686,9 @@ router.post("/experience",
  *                              param:
  *                                  type: string
  *                              location:
- *                                  type: string 
+ *                                  type: string
+ *       400:
+ *         description: PastJob Id invalid 
  *       401:
  *         description: Unauthorized access
  *       500:
@@ -692,6 +713,11 @@ router.put("/experience",
 
     try {
       let experience = await PastJob.getPastJobById(id);
+
+      if (!experience) {
+        return res.status(400).send("PastJob Id invalid")
+      }
+
       experience.name = data.name;
       experience.url = data.url;
       experience.beginDate = data.beginDate;
@@ -746,6 +772,8 @@ router.put("/experience",
  *                                type: string
  *                            location:
  *                                type: string 
+ *       400:
+ *         description: PastJob Id invalid 
  *       401:
  *         description: Unauthorized access
  *       500:
@@ -758,6 +786,11 @@ router.delete("/experience",
   async function (req, res) {
     try {
       let experience = await PastJob.getPastJobById(req.body.id);
+
+      if (!experience) {
+        return res.status(400).send("PastJob Id invalid")
+      }
+
       await experience.delete();
       res.status(200).send("Qualification deleted");
     } catch (error) {
