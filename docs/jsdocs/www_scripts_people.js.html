@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: www/scripts/people.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: www/scripts/people.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+
+// Create dataController function to create professional card element
+let dataController = tableMaker("list-row", (element) => {
+
+    // Create main container div
+    let mainDiv = document.createElement("div");
+    mainDiv.className = "col-12 col-md-6 col-lg-4";
+
+    // Create professional container div
+    let professionalDiv = document.createElement("div");
+    professionalDiv.className = "clean-product-item";
+
+    // Create image container div
+    let imgDiv = document.createElement("div");
+    imgDiv.id = "profileImage";
+    imgDiv.classList.add("rounded-circle", "mb-3", "mt-4", "profileImage");
+    imgDiv.style.margin = "auto";
+    imgDiv.style.textAlign = "center";
+    imgDiv.style.width = "100px";
+    imgDiv.style.height = "100px";
+    imgDiv.style.fontSize = "45px";
+    imgDiv.style.lineHeight = "100px";
+    imgDiv.textContent = element.name.toLocaleUpperCase().charAt(0);
+
+    // Create name container div
+    let nameDiv = document.createElement("div");
+    nameDiv.className = "product-name";
+
+    let locationDiv = document.createElement("div");
+    locationDiv.className = "product-name";
+
+    // Create name element
+    let name = document.createElement("h5");
+    name.className = "text-center";
+    name.textContent = element.name;
+    name.style.fontWeight = "bold";
+
+    // Create location element
+    let location = document.createElement("label");
+    location.textContent = element.local;
+    locationDiv.style.textAlign = "center";
+
+    // Create icon container div
+    let iconDiv = document.createElement("div");
+    iconDiv.className = "text-center";
+
+    // Append name element to name container div
+    nameDiv.appendChild(name);
+    locationDiv.appendChild(location);
+
+    // Append image and name container divs to professional container div
+    professionalDiv.appendChild(imgDiv);
+    professionalDiv.appendChild(nameDiv);
+    professionalDiv.appendChild(locationDiv);
+
+    // Append professional container div to main container div
+    mainDiv.appendChild(professionalDiv);
+
+    // Add click event to professional container div to redirect to profile page
+    professionalDiv.addEventListener("click", ev => {
+        window.location.href = `/profile?id=${element.idUser}`;
+    })
+
+    // Return main container div
+    return mainDiv;
+}, "No public profiles", 6);
+
+/**
+ * FilterController is a module for managing filters for filter data.
+ *
+ * @module FilterController
+ * 
+ * @property {Array} filters - An array with the filters.
+ * @property {function} filterDOM - Comunicates with data controller and passes the filters function.
+ * @property {function} addFilter - Adds a filter.
+ * @property {function} removeFilter - Removes a filter.
+ *
+ * @function add - Adds a filter.
+ * @function remove - Removes a filter.
+ */
+const filterController = (function () {
+    /**
+     * Array with the filters
+     */
+    const filters = [];
+
+    /**
+     * Comunicates with data controller and passes the filters function
+     */
+    let filterDOM = function () {
+        dataController.filter((job) => filters.every(filter => filter.fn(job)));
+    }
+
+    /**
+     * Adds a filter
+     * @param {{type: String, fn: Function}} obj Object with filter information
+     */
+    let addFilter = function (obj) {
+        let filter = filters.find(filter => filter.type === obj.type)
+        if (filter) {
+            filter.fn = obj.fn;
+        } else {
+            filters.push(obj)
+        }
+        filterDOM();
+    }
+
+    /**
+     * Removes a filter
+     * @param {String} type Key with the type to be remove
+     */
+    let removeFilter = function (type) {
+        let index = filters.findIndex(filter => filter.type === type);
+        if (index === -1) return;
+        filters.splice(index, 1);
+        filterDOM();
+    }
+
+    return {
+        add: addFilter,
+        remove: removeFilter
+    }
+}())
+
+// Listen for DOMContentLoaded event
+window.addEventListener("DOMContentLoaded", function () {
+    // Make API call to get people data
+    api.get('/people/all').then(res => {
+        // Check if response status is 200 and data is of object type
+        if (res.status === 200 &amp;&amp; typeof res.data === 'object') {
+            // Add data to dataController function
+            dataController.addData(res.data);
+
+            //Sets the values for the sliders
+            let arrIdade = res.data.map(obj => obj.birthdate);
+
+            createFilterSliders("idadeFilter", "Idade minima", Math.min(...arrIdade), Math.max(...arrIdade), obj => obj.birthdate);
+
+            createFilterCheckboxes("locationFilter", "local", "Location", res.data);
+        }
+    });
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-LoggerCodes.html">LoggerCodes</a></li><li><a href="module-Mailer.html">Mailer</a></li><li><a href="module-compararController.html">compararController</a></li><li><a href="module-routes_admin.html">routes/admin</a></li><li><a href="module-routes_api.html">routes/api</a></li><li><a href="module-routes_auth.html">routes/auth</a></li><li><a href="module-routes_friends.html">routes/friends</a></li><li><a href="module-routes_index.html">routes/index</a></li><li><a href="module-routes_people.html">routes/people</a></li></ul><h3>Classes</h3><ul><li><a href="Company.html">Company</a></li><li><a href="Db.html">Db</a></li><li><a href="Friend.html">Friend</a></li><li><a href="FriendsRequests.html">FriendsRequests</a></li><li><a href="PastJob.html">PastJob</a></li><li><a href="Professional.html">Professional</a></li><li><a href="Qualification.html">Qualification</a></li><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html#autoComplete">autoComplete</a></li><li><a href="global.html#backSignUp">backSignUp</a></li><li><a href="global.html#buildDom">buildDom</a></li><li><a href="global.html#canSend">canSend</a></li><li><a href="global.html#checkLoggedIn">checkLoggedIn</a></li><li><a href="global.html#createCheckbox">createCheckbox</a></li><li><a href="global.html#createCol">createCol</a></li><li><a href="global.html#createContainer">createContainer</a></li><li><a href="global.html#createFilterCheckboxes">createFilterCheckboxes</a></li><li><a href="global.html#createFilterSliders">createFilterSliders</a></li><li><a href="global.html#createFriendUI">createFriendUI</a></li><li><a href="global.html#createHeading">createHeading</a></li><li><a href="global.html#createLI">createLI</a></li><li><a href="global.html#createParagraph">createParagraph</a></li><li><a href="global.html#createRow">createRow</a></li><li><a href="global.html#createSpan">createSpan</a></li><li><a href="global.html#createSpinner">createSpinner</a></li><li><a href="global.html#createStrong">createStrong</a></li><li><a href="global.html#deleteChat">deleteChat</a></li><li><a href="global.html#firstSignUp">firstSignUp</a></li><li><a href="global.html#hide">hide</a></li><li><a href="global.html#makeAdd">makeAdd</a></li><li><a href="global.html#makeFriendList">makeFriendList</a></li><li><a href="global.html#makeLogin">makeLogin</a></li><li><a href="global.html#makeModal">makeModal</a></li><li><a href="global.html#onEdit">onEdit</a></li><li><a href="global.html#onLogout">onLogout</a></li><li><a href="global.html#onReadyToMakeFriends">onReadyToMakeFriends</a></li><li><a href="global.html#remove-Removesafilter.">remove - Removes a filter.</a></li><li><a href="global.html#removeSpinner">removeSpinner</a></li><li><a href="global.html#removeSpinnerFirst">removeSpinnerFirst</a></li><li><a href="global.html#show">show</a></li><li><a href="global.html#submitLogin">submitLogin</a></li><li><a href="global.html#submitRegister">submitRegister</a></li><li><a href="global.html#tableMaker">tableMaker</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Fri Jan 20 2023 14:32:15 GMT+0000 (Hora padrão da Europa Ocidental)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

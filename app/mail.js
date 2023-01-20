@@ -1,5 +1,9 @@
+/**
+ * @module Mailer
+ * @description Function that sends an email using the Nodemailer library and the Gmail API.
+*/
 const nodemailer = require('nodemailer');
-const {readFile} = require('fs');
+const { readFile } = require('fs');
 const { google } = require('googleapis');
 
 const { OAuth2 } = google.auth;
@@ -20,21 +24,21 @@ const oauth2Client = new OAuth2(
 
 /**
  * Function that sends an email using the Nodemailer library and the Gmail API.
- *
+ * @function
  * @param {string} email - The email address of the recipient
  * @return {Promise} - A promise that is resolved or rejected based on the outcome of the email sending operation
  */
-module.exports = function (email) {
+function mailer(email) {
     return new Promise(async (resolve, reject) => {
 
         // Set the OAuth2 client's credentials 
         oauth2Client.setCredentials({
             refresh_token: MAILING_SERVICE_REFRESH_TOKEN,
         });
-    
+
         // Get an access token using the OAuth2 client
         const accessToken = await oauth2Client.getAccessToken();
-    
+
         //Create the SMTP transport using the OAuth2 client
         const smtpTransport = nodemailer.createTransport({
             service: 'gmail',
@@ -47,12 +51,12 @@ module.exports = function (email) {
                 accessToken,
             },
         });
-    
+
         const filePath = `${global.appRoot}\\www\\reject.html`;
-    
+
         //Read the reject email template file
-        readFile(filePath, 'utf8', function(err, html){
-            if(err) reject(err);
+        readFile(filePath, 'utf8', function (err, html) {
+            if (err) reject(err);
             const mailOptions = {
                 from: SENDER_EMAIL_ADDRESS,
                 to: email,
@@ -67,3 +71,5 @@ module.exports = function (email) {
         });
     })
 }
+
+module.exports = mailer;

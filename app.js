@@ -6,7 +6,7 @@ require('dotenv').config();
 const path = require('path');
 const chalk = require('chalk');
 const logger = require('./app/logger');
-let DB = require('./app/connection');
+let DB = require('./config/connection');
 var session = require('express-session');
 var MySQLStore = require('express-mysql-session')(session);
 const { validationResult } = require('express-validator');
@@ -92,19 +92,12 @@ db.connect().then(function () {
   app.use('/people', require('./routes/people'));
   app.use('/companies', require('./routes/companies'));
 
-  const options = {
-    definition: {
-      openapi: '3.0.0',
-      info: {
-        title: 'Jobtivity',
-        version: '1.0.0',
-      },
-    },
-    apis: ['./routes/admin.js', './routes/api.js','./routes/auth.js','./routes/friends.js','./routes/people.js','./routes/profile.js'],
-  };
-  
+  let options = require("./config/swagger.json");
+
   const specs = swaggerJsdoc(options);
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
+
+  app.use('/jsdocs', express.static(path.join(__dirname, 'docs', 'jsdocs')));
 
   console.log(chalk.green('  Done configurating Server'));
 

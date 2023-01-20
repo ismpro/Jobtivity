@@ -1,4 +1,4 @@
-let DB = require('../app/connection');
+let DB = require('../config/connection');
 
 /**
  * Friend represents a friend request or relationship between two professionals

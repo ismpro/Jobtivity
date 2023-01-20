@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: www/scripts/registration.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: www/scripts/registration.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+
+/**
+ * A flag to check if the form can be submitted
+ * @type {Boolean}
+ */
+let canSend = false;
+
+/**
+ * Function to handle the first stage of the registration process
+ * @param {SubmitEvent} ev - The submit event
+ */
+function firstSignUp(ev) {
+    ev.preventDefault();
+    createSpinner("firstButton");
+
+    const data = new FormData(document.querySelector("form"));
+
+    let textEle = document.getElementById("errorTextFirst");
+    textEle.textContent = "";
+    textEle.style.color = "red";
+
+    // Make API call to check email availability
+    api.post('/auth/checkemail', { email: data.get("email"), password: data.get("pass1"), confirmPassword: data.get("pass2") })
+        .then(function (res) {
+            let code = res.status
+            // If email is available, hide first form and show next form based on user's company status
+            if (code === 200) {
+                document.getElementById('firstform').style.display = "none";
+                if (document.getElementById('checkIsComp').checked) {
+                    document.getElementById('compForm').style.display = "block";
+                } else {
+                    document.getElementById('profForm').style.display = "block";
+                }
+                canSend = true;
+            //Show the errors on the error paragraph
+            } else if (code === 210) {
+                textEle.appendChild(document.createTextNode(res.data));
+            } else if (code === 215) {
+                let errors = res.data.errors;
+
+                if (errors.length > 0) {
+                    textEle.appendChild(document.createTextNode(errors[0].msg));
+                } else {
+                    textEle.appendChild(document.createTextNode("ERROR"));
+                }
+            }
+            removeSpinnerFirst();
+        })
+        // Handle any errors from API call
+        .catch(function (err) {
+            console.error(err);
+            textEle.appendChild(document.createTextNode("ERROR"));
+            removeSpinnerFirst();
+        });
+}
+
+/**
+ * Function to handle the back button event
+ * @param {SubmitEvent} ev - The submit event
+ */
+function backSignUp(ev) {
+    ev.preventDefault();
+    document.getElementById('firstform').style.display = "block";
+    document.getElementById('compForm').style.display = "none";
+    document.getElementById('profForm').style.display = "none";
+    canSend = false;
+}
+
+/**
+ * Function to handle the final stage of registration 
+ * @param {SubmitEvent} ev - The submit event
+ */
+function submitRegister(ev) {
+    ev.preventDefault();
+    if (canSend) {
+        const data = new FormData(ev.target);
+        console.log([...data.entries()]);
+
+        let sendObj = {};
+        let id = "";
+
+        let errorText;
+
+        // Determine if user is a company or individual
+        if (data.get("checkIsComp") === null) {
+            sendObj = {
+                email: data.get("email"),
+                password: data.get("pass1"),
+                confirmPassword: data.get("pass2"),
+                name: data.get("nameProf"),
+                description: data.get("descriptionProf"),
+                birthDate: data.get("birth"),
+                gender: data.get("gender"),
+                local: data.get("location"),
+                private: data.get("visableTo") !== null,
+            }
+            id = 'profInput';
+            errorText = document.getElementById("errorTextProf");
+        } else {
+            sendObj = {
+                email: data.get("email"),
+                password: data.get("pass1"),
+                confirmPassword: data.get("pass2"),
+                name: data.get("nameComp"),
+                urlWeb: data.get("urlWeb"),
+                urlLogo: data.get("urlLogo"),
+                description: data.get("descriptionComp")
+            }
+            id = 'compInput';
+            errorText = document.getElementById("errorTextComp");
+        }
+
+        createSpinner(id);
+
+        sendObj.isCompany = data.get("checkIsComp") !== null;
+
+        let alert = document.getElementById("alertText");
+
+        alert.innerHTML = "";
+        errorText.textContent = "";
+
+        api.post('/auth/register', sendObj)
+            .then(function (res) {
+                let code = res.status
+                if (code === 200) {
+                    alert.appendChild(document.createTextNode("Registed Successful"));
+                    alert.parentElement.classList.add("alert-success");
+                    alert.parentElement.classList.remove("visually-hidden");
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 1000);
+                } else if (code === 210) {
+                    alert.appendChild(document.createTextNode(res.data));
+                    alert.parentElement.classList.add("alert-danger");
+                    alert.parentElement.classList.remove("visually-hidden");
+                } else if (code === 215) {
+                    let errors = res.data.errors;
+
+                    if (errors.length > 0) {
+                        errorText.appendChild(document.createTextNode(errors[0].msg));
+                    } else {
+                        errorText.appendChild(document.createTextNode("ERROR"));
+                    }
+                }
+
+                removeSpinner(id);
+            })
+            .catch(function (err) {
+                console.log(err);
+                errorText.appendChild(document.createTextNode("ERROR"));
+                removeSpinner(id);
+            });
+    }
+}
+
+/**
+ * Creates a spinner element
+ * @param {String} id - The id of the button that creates the spinner
+ */
+function createSpinner(id) {
+    let input = document.getElementById(id);
+
+    let parent = input.parentElement;
+
+    let div1 = document.createElement('div');
+    div1.className = "lds-ellipsis";
+    let div2 = document.createElement('div');
+    let div3 = document.createElement('div');
+    let div4 = document.createElement('div');
+    let div5 = document.createElement('div');
+
+    div1.appendChild(div2);
+    div1.appendChild(div3);
+    div1.appendChild(div4);
+    div1.appendChild(div5);
+    parent.appendChild(div1);
+
+    input.remove();
+
+    let inputBack = document.getElementById(id + "Back");
+    if (inputBack) inputBack.remove();
+}
+
+/**
+ * Removes the spinner element and re-adds the Register button
+ * @param {String} id - the id of the register button element
+*/
+function removeSpinner(id) {
+    let div = document.querySelector(".lds-ellipsis");
+    let parent = div.parentElement;
+
+    let input = document.createElement('input');
+    input.className = "btn btn-primary";
+    input.type = "submit";
+    input.style = "margin-top: 10px;";
+    input.value = "Sign Up";
+    input.id = id;
+
+    parent.appendChild(input);
+
+    let button = document.createElement("button");
+    button.id = id + "Back";
+    button.className = "btn btn-primary";
+    button.onclick = (event) => backSignUp(event);
+    button.style = "margin-top: 10px;";
+    button.appendChild(document.createTextNode("Back"));
+
+    parent.appendChild(button);
+
+
+    div.remove();
+}
+
+/**
+ * Removes the spinner from the first button and replaces it with the next button
+ */
+function removeSpinnerFirst() {
+    let div = document.querySelector(".lds-ellipsis");
+    let parent = div.parentElement;
+
+    let input = document.createElement('button');
+    input.className = "btn btn-primary";
+    input.style = "margin-top: 10px;";
+    input.onclick = (event => firstSignUp(event))
+    input.id = "firstButton";
+    input.appendChild(document.createTextNode("Next"))
+
+    parent.appendChild(input);
+    div.remove();
+}
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-LoggerCodes.html">LoggerCodes</a></li><li><a href="module-Mailer.html">Mailer</a></li><li><a href="module-compararController.html">compararController</a></li><li><a href="module-routes_admin.html">routes/admin</a></li><li><a href="module-routes_api.html">routes/api</a></li><li><a href="module-routes_auth.html">routes/auth</a></li><li><a href="module-routes_friends.html">routes/friends</a></li><li><a href="module-routes_index.html">routes/index</a></li><li><a href="module-routes_people.html">routes/people</a></li></ul><h3>Classes</h3><ul><li><a href="Company.html">Company</a></li><li><a href="Db.html">Db</a></li><li><a href="Friend.html">Friend</a></li><li><a href="FriendsRequests.html">FriendsRequests</a></li><li><a href="PastJob.html">PastJob</a></li><li><a href="Professional.html">Professional</a></li><li><a href="Qualification.html">Qualification</a></li><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html#autoComplete">autoComplete</a></li><li><a href="global.html#backSignUp">backSignUp</a></li><li><a href="global.html#buildDom">buildDom</a></li><li><a href="global.html#canSend">canSend</a></li><li><a href="global.html#checkLoggedIn">checkLoggedIn</a></li><li><a href="global.html#createCheckbox">createCheckbox</a></li><li><a href="global.html#createCol">createCol</a></li><li><a href="global.html#createContainer">createContainer</a></li><li><a href="global.html#createFilterCheckboxes">createFilterCheckboxes</a></li><li><a href="global.html#createFilterSliders">createFilterSliders</a></li><li><a href="global.html#createFriendUI">createFriendUI</a></li><li><a href="global.html#createHeading">createHeading</a></li><li><a href="global.html#createLI">createLI</a></li><li><a href="global.html#createParagraph">createParagraph</a></li><li><a href="global.html#createRow">createRow</a></li><li><a href="global.html#createSpan">createSpan</a></li><li><a href="global.html#createSpinner">createSpinner</a></li><li><a href="global.html#createStrong">createStrong</a></li><li><a href="global.html#deleteChat">deleteChat</a></li><li><a href="global.html#firstSignUp">firstSignUp</a></li><li><a href="global.html#hide">hide</a></li><li><a href="global.html#makeAdd">makeAdd</a></li><li><a href="global.html#makeFriendList">makeFriendList</a></li><li><a href="global.html#makeLogin">makeLogin</a></li><li><a href="global.html#makeModal">makeModal</a></li><li><a href="global.html#onEdit">onEdit</a></li><li><a href="global.html#onLogout">onLogout</a></li><li><a href="global.html#onReadyToMakeFriends">onReadyToMakeFriends</a></li><li><a href="global.html#remove-Removesafilter.">remove - Removes a filter.</a></li><li><a href="global.html#removeSpinner">removeSpinner</a></li><li><a href="global.html#removeSpinnerFirst">removeSpinnerFirst</a></li><li><a href="global.html#show">show</a></li><li><a href="global.html#submitLogin">submitLogin</a></li><li><a href="global.html#submitRegister">submitRegister</a></li><li><a href="global.html#tableMaker">tableMaker</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Fri Jan 20 2023 14:32:15 GMT+0000 (Hora padrão da Europa Ocidental)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

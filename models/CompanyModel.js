@@ -1,4 +1,4 @@
-let DB = require('../app/connection');
+let DB = require('../config/connection');
 
 /**
  * A class representing a company.

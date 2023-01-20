@@ -12,15 +12,14 @@ const Company = require("../models/CompanyModel");
 const User = require("../models/UserModel");
 
 /**
- * Route that returns a list of companies that have been validated.
  * 
- * @route {GET} /list
- * @return {Array<{idCompany: Number, name: String, description: String, logo: String, url: String}>} output - List of companies
+ * @route {GET} /companies/list
+ * @description Returns a list of companies that have been validated.
  * @swagger
- * /admin/list:
+ * /companies/list:
  *   get:
  *     tags:
- *     - Admin
+ *     - Companies
  *     summary: Returns a list of companies that have been validated.
  *     responses:
  *       200:
@@ -41,24 +40,6 @@ const User = require("../models/UserModel");
  *                     type: string
  *                   url:
  *                     type: string
- *       215:
- *           description: Validation errors
- *           content:
- *              application/json:
- *                   schema:
- *                       properties:
- *                           errors:
- *                           type: array
- *                       items:
- *                           properties:
- *                              msg:
- *                                  type: string
- *                              param:
- *                                  type: string
- *                              location:
- *                                  type: string 
- *       401:
- *         description: Unauthorized
  *       500:
  *         description: Internal Server Error
  */

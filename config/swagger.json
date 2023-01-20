@@ -1,0 +1,19 @@
+{
+    "definition": {
+        "openapi": "3.0.0",
+        "info": {
+            "title": "Jobtivity",
+            "version": "1.0.0"
+        },
+        "docExpansion": "full"
+    },
+    "apis": [
+        "./routes/admin.js",
+        "./routes/api.js",
+        "./routes/auth.js",
+        "./routes/friends.js",
+        "./routes/people.js",
+        "./routes/profile.js",
+        "./routes/companies.js"
+    ]
+}

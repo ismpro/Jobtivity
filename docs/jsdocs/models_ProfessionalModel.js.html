@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/ProfessionalModel.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/ProfessionalModel.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>let DB = require('../config/connection');
+
+/**
+ * Class representing a Professional.
+ * @class
+ */
+class Professional {
+
+  /**
+   * Creates a new Professional instance.
+   * @constructor
+   * @param {Object} obj - The object containing the properties of a professional.
+   * @param {Number} obj.id - The id of the professional.
+   * @param {Date} obj.birthday - The birthday of the professional.
+   * @param {String} obj.gender - The gender of the professional.
+   * @param {String} obj.local - The local of the professional.
+   * @param {Boolean} obj.private - Indicates if the professional's information is private.
+   */
+  constructor(obj) {
+    if (!obj) return;
+    this.id = obj.id
+    this.birthday = obj.birthday
+    this.gender = obj.gender
+    this.local = obj.local
+    this.private = obj.private
+  }
+
+  /**
+   * Creates a new professional in the database.
+   * @returns {Promise&lt;Number>} - The id of the created professional. 
+   */
+  async create() {
+      let professional = await DB.pool.query(`
+      INSERT INTO Professional (birthday, gender, local, private)
+      VALUES (STR_TO_DATE(?, "%Y-%m-%d"), ?, ?, ?);`,
+        [this.birthday.toISOString().split("T")[0], this.gender, this.local, this.private === true ? 1 : 0]);
+      this.id = professional[0].insertId;
+      return professional[0].insertId;
+  }
+
+  /**
+   * Updates a professional's information in the database.
+   * @returns {Promise&lt;void>}
+   */
+  async update() {
+    await DB.pool.query(`
+    UPDATE Professional SET
+    birthday = STR_TO_DATE(?, "%Y-%m-%d"),
+    gender = ?,
+    local = ?,
+    private = ?
+    WHERE idProfessional= ?;`,
+      [this.birthday.toISOString().split("T")[0], this.gender, this.local, this.private === true ? 1 : 0, this.id]);
+    return;
+  }
+
+  /**
+   * Retrieves a professional from the database by their id.
+   * @static 
+   * @param {Number} id - The id of the professional.
+   * @returns {Promise&lt;Professional|null>} - The professional with the given id or null if no such professional exists.
+   */
+  static async getById(id) {
+    if (id &amp;&amp; !isNaN(id) &amp;&amp; Number.isSafeInteger(id)) {
+      try {
+        const [query] = await DB.pool.query(`select idProfessional"id", birthday, gender, local, private from Professional
+                                                  where idProfessional=?`, [id]);
+        if (query.length === 0) return null;
+        return new Professional({ ...query[0], private: query[0].private === 1, birthday: new Date(query[0].birthday) });
+      } catch (err) {
+        console.log(err);
+        throw err
+      }
+    } else {
+      console.log("Invalid id");
+      throw "Invalid id"
+    }
+  }
+
+  /**
+   * Retrieves all professionals from the database.
+   * @static
+   * @returns {Promise&lt;Professional[]|null>} - An array of all professionals in the database. 
+   */
+  static async getAllProfessionals() {
+    let professionals = [];
+    try {
+      const [query] = await DB.pool.query(`select idProfessional"id", birthday, gender, local, private from Professional`);
+      if (query.length === 0) return null;
+      for (const element of query) {
+        professionals.push(new Professional({ ...element, private: element.private === 1, birthday: new Date(element.birthday) }));
+      }
+      return professionals;
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  }
+
+  /**
+   * Retrieves a professional from the database by their id.
+   * @static
+   * @param {Number} id - The id of the professional.
+   * @returns {Promise&lt;Professional|null>} - The professional with the given id or null if no such professional exists.
+   */
+  static async getProfessionalById(id) {
+    if (id &amp;&amp; !isNaN(id) &amp;&amp; Number.isSafeInteger(id)) {
+      try {
+        const [query] = await DB.pool.query(`select idProfessional"id", birthday, gender, local, private from Professional where idProfessional=?`, [id]);
+        if (query.length === 0) return null;
+        return new Professional({ ...query[0], private: query[0].private === 1, birthday: new Date(query[0].birthday) });
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+    } else {
+      console.log("Invalid id");
+      throw "Invalid id"
+    }
+  }
+}
+
+module.exports = Professional;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-LoggerCodes.html">LoggerCodes</a></li><li><a href="module-Mailer.html">Mailer</a></li><li><a href="module-compararController.html">compararController</a></li><li><a href="module-routes_admin.html">routes/admin</a></li><li><a href="module-routes_api.html">routes/api</a></li><li><a href="module-routes_auth.html">routes/auth</a></li><li><a href="module-routes_friends.html">routes/friends</a></li><li><a href="module-routes_index.html">routes/index</a></li><li><a href="module-routes_people.html">routes/people</a></li></ul><h3>Classes</h3><ul><li><a href="Company.html">Company</a></li><li><a href="Db.html">Db</a></li><li><a href="Friend.html">Friend</a></li><li><a href="FriendsRequests.html">FriendsRequests</a></li><li><a href="PastJob.html">PastJob</a></li><li><a href="Professional.html">Professional</a></li><li><a href="Qualification.html">Qualification</a></li><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html#autoComplete">autoComplete</a></li><li><a href="global.html#backSignUp">backSignUp</a></li><li><a href="global.html#buildDom">buildDom</a></li><li><a href="global.html#canSend">canSend</a></li><li><a href="global.html#checkLoggedIn">checkLoggedIn</a></li><li><a href="global.html#createCheckbox">createCheckbox</a></li><li><a href="global.html#createCol">createCol</a></li><li><a href="global.html#createContainer">createContainer</a></li><li><a href="global.html#createFilterCheckboxes">createFilterCheckboxes</a></li><li><a href="global.html#createFilterSliders">createFilterSliders</a></li><li><a href="global.html#createFriendUI">createFriendUI</a></li><li><a href="global.html#createHeading">createHeading</a></li><li><a href="global.html#createLI">createLI</a></li><li><a href="global.html#createParagraph">createParagraph</a></li><li><a href="global.html#createRow">createRow</a></li><li><a href="global.html#createSpan">createSpan</a></li><li><a href="global.html#createSpinner">createSpinner</a></li><li><a href="global.html#createStrong">createStrong</a></li><li><a href="global.html#deleteChat">deleteChat</a></li><li><a href="global.html#firstSignUp">firstSignUp</a></li><li><a href="global.html#hide">hide</a></li><li><a href="global.html#makeAdd">makeAdd</a></li><li><a href="global.html#makeFriendList">makeFriendList</a></li><li><a href="global.html#makeLogin">makeLogin</a></li><li><a href="global.html#makeModal">makeModal</a></li><li><a href="global.html#onEdit">onEdit</a></li><li><a href="global.html#onLogout">onLogout</a></li><li><a href="global.html#onReadyToMakeFriends">onReadyToMakeFriends</a></li><li><a href="global.html#remove-Removesafilter.">remove - Removes a filter.</a></li><li><a href="global.html#removeSpinner">removeSpinner</a></li><li><a href="global.html#removeSpinnerFirst">removeSpinnerFirst</a></li><li><a href="global.html#show">show</a></li><li><a href="global.html#submitLogin">submitLogin</a></li><li><a href="global.html#submitRegister">submitRegister</a></li><li><a href="global.html#tableMaker">tableMaker</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Fri Jan 20 2023 14:32:15 GMT+0000 (Hora padrão da Europa Ocidental)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

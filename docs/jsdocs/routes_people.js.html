@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: routes/people.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,137 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: routes/people.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file Express router for handling job related routes
+ * @module routes/people
+ */
+let { Router } = require("express");
+let router = Router();
+
+const User = require("../models/UserModel");
+const Professional = require("../models/ProfessionalModel");
+const Friend = require("../models/FriendModel");
+
+/**
+ * Converts a birthdate in age
+ * @param {Date} birthdate - birthdate of the user
+ * @return {Number} age in years
+ */
+function calculateAge(birthdate) {
+  // calculate the difference between the two dates in milliseconds
+  const ageInMilliseconds = Date.now() - birthdate.getTime();
+  // convert the difference to years and return it
+  return Math.floor(ageInMilliseconds / 1000 / 60 / 60 / 24 / 365.25);
+}
 
 
-    <h3> </h3>
+/**
+ * @function
+ * @route {GET} /people/all
+ * @description Retrieve all portfolio infomation
+ * @swagger
+ * /people/all:
+ *   get:
+ *     summary: Retrieve all portfolio information for the current user
+ *     tags:
+ *       - People
+ *     responses:
+ *       200:
+ *         description: List with portfolio information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 properties:
+ *                   idUser:
+ *                     type: integer
+ *                   name:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   local:
+ *                     type: string
+ *                   birthdate:
+ *                     type: integer
+ *       500:
+ *         description: Internal server error
+ */
 
+router.get('/all', async function (req, res) {
 
+  let output = [];
+  try {
 
+    //Retrieve all professionals users  
+    let users = await User.getAllProfessionalsUsers();
+    //Filter professionals that are not the current user  
+    for (const user of users) {
+      if (req.session.userid !== user.id) {
+        output.push(user);
+      }
+    }
 
+    let professionals = await Promise.all(output.map((user) => Professional.getById(user.professional)));
 
+    //Retrieve current user
+    let user = await User.getById(req.session.userid);
 
+    //Filter private professionals if current user is a company
+    if (user.isCompany()) {
+      output = output.filter((user) => {
+        let professional = professionals.find((prof) => prof.id === user.professional);
+        return !professional.private;
+      });
+    }
 
+    //Filter friends if current user is a professional
+    if (user.isProfessional()) {
+      let friends = await Friend.getAllForProfessional(user.professional);
+      output = output.filter((user) => {
+        let friend = friends.find(
+          (fri) =>
+            fri.professional1 === user.professional ||
+            fri.professional2 === user.professional
+        );
+        return friend !== void 0;
+      });
+    }
 
+    //Send filtered list of professionals
+    res.status(200).send(
+      output.map((user) => {
+        let professional = professionals.find(
+          (prof) => prof.id === user.professional
+        );
+        return {
+          idUser: user.id,
+          name: user.name,
+          description: user.description,
+          local: professional.local,
+          birthdate: calculateAge(professional.birthday)
+        };
+      })
+    );
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
 
-
-    
-
-
-
-
-
+module.exports = router;
+</code></pre>
+        </article>
+    </section>
 
 
 

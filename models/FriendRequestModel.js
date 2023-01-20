@@ -1,4 +1,4 @@
-let DB = require('../app/connection');
+let DB = require('../config/connection');
 
 /**
  * Class for handling friend requests between professionals.

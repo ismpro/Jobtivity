@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: routes/api.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,59 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: routes/api.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file Express router for handling job related routes
+ * @module routes/api
+ */
 
+let { Router } = require("express");
+let router = Router();
+const fs = require('fs');
+const path = require("path");
 
-    <h3> </h3>
+/**
+ * @function
+ * @route {GET} /api/jobs
+ * @description Retrieves the list of jobs from the local file system
+ * @swagger
+ * /api/jobs:
+ *   get:
+ *     summary: Retrieves the list of jobs from the local file system
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved list of jobs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   title:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ */
+router.get('/jobs', function (req, res) {
+    let p = path.resolve('./jobs.json');
+    let data = fs.readFileSync(p)
+    res.status(200).send(JSON.parse(data))
+})
 
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+module.exports = router;</code></pre>
+        </article>
+    </section>
 
 
 
